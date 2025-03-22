@@ -29,12 +29,19 @@ public class Agenda {
     }
 
     // 📌 Obtener un contacto por ID (devuelve null si no existe)
-    public Contacto obtenerContacto(int id) {
+    public Contacto obtenerContactoPorId(int id) {
         return contactos.stream()
                 .filter(contacto -> contacto.getId() == id)
                 .findFirst()
                 .orElse(null);
     }
 
+    // 📌 Obtener un contacto por ID (devuelve null si no existe)
+    public Contacto obtenerContactoPorIpYPuerto(String ip, int port) {
+        return contactos.stream()
+                .filter(contacto -> contacto.getIp().equals(ip) && contacto.getPort() == port)
+                .findFirst()
+                .orElse(null);
+    }
+    
 }
-
