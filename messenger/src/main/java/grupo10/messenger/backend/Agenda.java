@@ -11,33 +11,46 @@ public class Agenda {
         this.contactos = new ArrayList<>();
     }
 
-    // Getter de la lista de contactos
+    // Getter y setter
     public List<Contacto> getContactos() {
         return contactos;
     }
     
+    // 📌 Existe un contacto
+    public boolean existeContacto(int id) {
+        return contactos.stream().anyMatch(contacto -> contacto.getId() == id);
+    }
+
+    public boolean existeContacto(String ip, int port) {
+        return contactos.stream().anyMatch(contacto -> contacto.getIp().equals(ip) && contacto.getPort() == port);
+    }
+
     // 📌 Agregar un contacto
     public boolean agregarContacto(Contacto contacto) {
         contactos.add(contacto);
         return true;
     }
 
-    // 📌 Eliminar un contacto por ID
+    // 📌 Eliminar un contacto
     public boolean eliminarContacto(int id) {
         boolean eliminado = contactos.removeIf(contacto -> contacto.getId() == id);
         return eliminado;
     }
 
-    // 📌 Obtener un contacto por ID (devuelve null si no existe)
-    public Contacto obtenerContactoPorId(int id) {
+    public boolean eliminarContacto(String ip, int port) {
+        boolean eliminado = contactos.removeIf(contacto -> contacto.getIp().equals(ip) && contacto.getPort() == port);
+        return eliminado;
+    }
+    
+    // 📌 Obtener un contacto
+    public Contacto obtenerContacto(int id) {
         return contactos.stream()
                 .filter(contacto -> contacto.getId() == id)
                 .findFirst()
                 .orElse(null);
     }
-
-    // 📌 Obtener un contacto por ID (devuelve null si no existe)
-    public Contacto obtenerContactoPorIpYPuerto(String ip, int port) {
+    
+    public Contacto obtenerContacto(String ip, int port) {
         return contactos.stream()
                 .filter(contacto -> contacto.getIp().equals(ip) && contacto.getPort() == port)
                 .findFirst()

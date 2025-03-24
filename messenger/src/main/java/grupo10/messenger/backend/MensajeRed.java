@@ -18,32 +18,27 @@ public class MensajeRed {
         this.contenido = contenido;
     }
 
-    // Getter para obtener el nickname
+    // Getter y setter
     public String getMyNickname() {
         return myNickname;
     }
     
-    // Getter para obtener el ID
     public String getMyIp() {
         return myIp;
     }
 
-    // Getter para obtener el puerto
     public int getMyPort() {
         return myPort;
     }
 
-    // Getter para obtener el ID
     public String getDestinyIp() {
         return destinyIp;
     }
 
-    // Getter para obtener el puerto
     public int getDestinyPort() {
         return destinyPort;
     }
     
-    // Getter para obtener el contenido
     public String getContenido() {
         return contenido;
     }

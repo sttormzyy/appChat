@@ -10,7 +10,7 @@ public class Contacto extends Persona {
         this.id = idCounter++;
     }
 
-    // Getter para obtener el ID
+    // Getter y setter
     public int getId() {
         return id;
     }

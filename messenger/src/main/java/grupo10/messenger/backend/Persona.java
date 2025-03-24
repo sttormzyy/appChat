@@ -13,7 +13,7 @@ public class Persona {
         this.port = port;
     }
 
-    // Getters
+    // Getter y setter
     public String getNickname() {
         return nickname;
     }

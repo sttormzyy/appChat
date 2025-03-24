@@ -31,6 +31,26 @@ public class Conversacion {
         return contacto;
     }
     
+    // 📌 Obtener el nickname del contacto asignado a la conversación
+    public String getContactoNickname() {
+        return contacto.getNickname();
+    }
+    
+    // 📌 Obtener la ip del contacto asignado a la conversación
+    public String getContactoIp() {
+        return contacto.getIp();
+    }
+    
+    // 📌 Obtener el puerto del contacto asignado a la conversación
+    public int getContactoPort() {
+        return contacto.getPort();
+    }
+    
+    // 📌 Verifica si un mensaje ya existe en la conversacion por ID
+    public boolean existeContacto(int id) {
+        return mensajes.stream().anyMatch(mensaje -> mensaje.getId() == id);
+    }
+
     // 📌 Agregar un mensaje a la conversación
     public boolean agregarMensaje(Mensaje mensaje) {
         mensajes.add(mensaje);

@@ -61,7 +61,7 @@ public class Control {
     }
     
     public Mensaje recibirMensaje(MensajeRed msgRed){
-        Contacto con = usuario.getAgenda().obtenerContactoPorIpYPuerto(msgRed.getMyIp(), msgRed.getMyPort());
+        Contacto con = usuario.obtenerContacto(msgRed.getMyIp(), msgRed.getMyPort());
         if (con == null) {
             con = new Contacto(msgRed.getMyNickname(),msgRed.getMyIp(),msgRed.getMyPort());
             usuario.getAgenda().agregarContacto(con);
@@ -85,7 +85,7 @@ public class Control {
     }
     
     public boolean agregarConversacion(int contactId) {
-        Contacto con = usuario.getAgenda().obtenerContactoPorId(contactId);
+        Contacto con = usuario.getAgenda().obtenerContacto(contactId);
         Conversacion chat = new Conversacion(con);
         boolean saveResult = usuario.getHistorial().agregarConversacion(chat);
         return saveResult;

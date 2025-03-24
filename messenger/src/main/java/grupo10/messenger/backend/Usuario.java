@@ -22,6 +22,15 @@ public class Usuario extends Persona {
         return historial;
     }
     
+    // 📌 Existe un contacto
+    public boolean existeContacto(int id) {
+        return agenda.existeContacto(id);
+    }
+
+    public boolean existeContacto(String ip, int port) {
+        return agenda.existeContacto(ip, port);
+    }
+    
     // 📌 Agregar un contacto a la agenda
     public boolean agregarContacto(Contacto contacto) {
         return agenda.agregarContacto(contacto);
@@ -32,12 +41,33 @@ public class Usuario extends Persona {
         return agenda.eliminarContacto(id);
     }
 
-    // 📌 Obtener un contacto de la agenda
-    public Contacto obtenerContacto(int id) {
-        return agenda.obtenerContactoPorId(id);
+    public boolean eliminarContacto(String ip, int port) {
+        return agenda.eliminarContacto(ip, port);
     }
 
-    // 📌 Crear una nueva conversación con un contacto
+    // 📌 Obtener un contacto de la agenda
+    public Contacto obtenerContacto(int id) {
+        return agenda.obtenerContacto(id);
+    }
+
+    public Contacto obtenerContacto(String ip, int port) {
+        return agenda.obtenerContacto(ip, port);
+    }
+    
+    // Existe una conversacion
+    public boolean existeConversacionPorId(int id) {
+        return historial.existeConversacionPorId(id);
+    }
+
+    public boolean existeConversacionPorContactoId(int contactoId) {
+        return historial.existeConversacionPorContactoId(contactoId);
+    }
+    
+    public boolean existeConversacionPorContactoIpYPuerto(String ip, int port) {
+        return historial.existeConversacionPorContactoIpYPuerto(ip, port);
+    }
+    
+    // 📌 Crear una conversacion
     public Conversacion iniciarConversacion(Contacto contacto) {
         Conversacion nuevaConversacion = new Conversacion(contacto);
 
@@ -48,12 +78,33 @@ public class Usuario extends Persona {
         return null;
     }
 
-    // 📌 Eliminar una conversación del historial
-    public boolean eliminarConversacion(int id) {
-        return historial.eliminarConversacion(id);
+    // 📌 Eliminar una conversación
+    public boolean eliminarConversacionPorId(int id) {
+        return historial.eliminarConversacionPorId(id);
     }
     
-    // 📌 Agregar un mensaje a la conversacion del contacto
+    public boolean eliminarConversacionPorContactoId(int contactId) {
+        return historial.eliminarConversacionPorContactoId(contactId);
+    }
+    
+    public boolean eliminarConversacionPorContactoIpYPuerto(String ip, int port) {
+        return historial.eliminarConversacionPorContactoIpYPuerto(ip, port);
+    }
+    
+    // Obtener una conversacion
+    public Conversacion obtenerConversacionPorId(int id) {
+        return historial.obtenerConversacionPorId(id);
+    }
+    
+    public Conversacion obtenerConversacionPorContactoId(int contactId) {
+        return historial.obtenerConversacionPorContactoId(contactId);
+    }
+    
+    public Conversacion obtenerConversacionPorContactoIpYPuerto(String ip, int port) {
+        return historial.obtenerConversacionPorContactoIpYPuerto(ip, port);
+    }
+    
+    // 📌 Agregar un mensaje a conversacion
     public void agregarMensaje(int idContacto, Mensaje mensaje) {
         
     }

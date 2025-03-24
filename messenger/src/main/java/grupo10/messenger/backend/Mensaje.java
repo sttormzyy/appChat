@@ -18,27 +18,24 @@ public class Mensaje {
         this.esMio = esMio;
     }
     
-    // Getter para obtener el ID
+    // Getter y setter
     public int getId() {
         return id;
     }
     
-    // Getter para obtener el contenido del mensaje
     public String getContenido() {
         return contenido;
     }
 
-    // Getter para obtener la fecha y hora
     public String getFechaHora() {
         return fechaHora;
     }
 
-    // Getter para obtener si es mio
     public boolean getEsMio() {
         return esMio;
     }
     
-    // Método para obtener la fecha y hora actual formateada
+    // Obtener la fecha y hora actual formateada
     private String obtenerFechaHoraActual() {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         return LocalDateTime.now().format(formatter);
