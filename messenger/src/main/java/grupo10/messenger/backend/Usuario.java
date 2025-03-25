@@ -1,112 +1,78 @@
 package grupo10.messenger.backend;
 
+import java.util.ArrayList;
+import java.util.List;
+
 
 public class Usuario extends Persona {
-    private final HistorialConversaciones historial;
-    private final Agenda agenda;
+    private final List<Conversacion> conversaciones;
+    private final List<Contacto> agenda;
+
 
     // Constructor
     public Usuario(String nickname, String ip, int port) {
         super(nickname, ip, port);
-        this.historial = new HistorialConversaciones();
-        this.agenda = new Agenda();
+        this.conversaciones = new ArrayList<>();
+        this.agenda = new ArrayList<>();
     }
 
     // 📌 Obtener la agenda
-    public Agenda getAgenda() {
+    public List<Contacto> getAgenda() {
         return agenda;
     }
 
     // 📌 Obtener el historial de conversaciones
-    public HistorialConversaciones getHistorial() {
-        return historial;
+    public List<Conversacion> getConversaciones() {
+        return conversaciones;
     }
     
-    // 📌 Existe un contacto
-    public boolean existeContacto(int id) {
-        return agenda.existeContacto(id);
-    }
-
     public boolean existeContacto(String ip, int port) {
-        return agenda.existeContacto(ip, port);
-    }
-    
-    // 📌 Agregar un contacto a la agenda
-    public boolean agregarContacto(Contacto contacto) {
-        return agenda.agregarContacto(contacto);
-    }
-
-    // 📌 Eliminar un contacto de la agenda
-    public boolean eliminarContacto(int id) {
-        return agenda.eliminarContacto(id);
-    }
-
-    public boolean eliminarContacto(String ip, int port) {
-        return agenda.eliminarContacto(ip, port);
-    }
-
-    // 📌 Obtener un contacto de la agenda
-    public Contacto obtenerContacto(int id) {
-        return agenda.obtenerContacto(id);
+        return agenda.stream().anyMatch(contacto -> contacto.getIp().equals(ip) && contacto.getPort() == port);
     }
 
     public Contacto obtenerContacto(String ip, int port) {
-        return agenda.obtenerContacto(ip, port);
+        return agenda.stream()
+                .filter(contacto -> contacto.getIp().equals(ip) && contacto.getPort() == port)
+                .findFirst()
+                .orElse(null);
     }
     
-    // Existe una conversacion
-    public boolean existeConversacionPorId(int id) {
-        return historial.existeConversacionPorId(id);
-    }
-
-    public boolean existeConversacionPorContactoId(int contactoId) {
-        return historial.existeConversacionPorContactoId(contactoId);
-    }
-    
-    public boolean existeConversacionPorContactoIpYPuerto(String ip, int port) {
-        return historial.existeConversacionPorContactoIpYPuerto(ip, port);
-    }
-    
-    // 📌 Crear una conversacion
-    public Conversacion iniciarConversacion(Contacto contacto) {
-        Conversacion nuevaConversacion = new Conversacion(contacto);
-
-        if (historial.agregarConversacion(nuevaConversacion)) { 
-            return nuevaConversacion;
+    public Contacto agregarContacto(String nickname, String ip, int port) {
+        if (!existeContacto(ip, port)){
+            Contacto newCon = new Contacto(nickname, ip, port);
+            agenda.add(newCon);
+            return newCon;
         }
+        return null;
+    }
+    
+    public boolean existeConversacion(String ip, int port) {
+        boolean eliminado = conversaciones.stream().anyMatch(conversacion -> conversacion.getContacto().getIp().equals(ip) && conversacion.getContacto().getPort() == port);
+        return eliminado;
+    }
 
+    public Conversacion obtenerConversacion(String ip, int port) {
+        return conversaciones.stream()
+                .filter(conversacion -> conversacion.getContacto().getIp().equals(ip) && conversacion.getContacto().getPort() == port)
+                .findFirst()
+                .orElse(null);
+    }
+
+    public Conversacion agregarConversacion(String ip, int port) {
+        Contacto con = obtenerContacto(ip, port);
+        if (con != null) {
+            if (obtenerConversacion(ip, port) == null) {
+                Conversacion newCon = new Conversacion(con);
+                conversaciones.add(newCon);
+                return newCon;
+            }
+        }
         return null;
     }
 
-    // 📌 Eliminar una conversación
-    public boolean eliminarConversacionPorId(int id) {
-        return historial.eliminarConversacionPorId(id);
-    }
-    
-    public boolean eliminarConversacionPorContactoId(int contactId) {
-        return historial.eliminarConversacionPorContactoId(contactId);
-    }
-    
-    public boolean eliminarConversacionPorContactoIpYPuerto(String ip, int port) {
-        return historial.eliminarConversacionPorContactoIpYPuerto(ip, port);
-    }
-    
-    // Obtener una conversacion
-    public Conversacion obtenerConversacionPorId(int id) {
-        return historial.obtenerConversacionPorId(id);
-    }
-    
-    public Conversacion obtenerConversacionPorContactoId(int contactId) {
-        return historial.obtenerConversacionPorContactoId(contactId);
-    }
-    
-    public Conversacion obtenerConversacionPorContactoIpYPuerto(String ip, int port) {
-        return historial.obtenerConversacionPorContactoIpYPuerto(ip, port);
-    }
-    
-    // 📌 Agregar un mensaje a conversacion
-    public void agregarMensaje(int idContacto, Mensaje mensaje) {
-        
+    public boolean agregarMensaje(String ip, int port, Mensaje msg) {
+        Conversacion con = obtenerConversacion(ip, port);
+        return con.agregarMensaje(msg);
     }
 
 }

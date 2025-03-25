@@ -4,21 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Conversacion {
-    private static int idCounter = 1;
-    private final int id;
     private final Contacto contacto;
     private final List<Mensaje> mensajes;
 
     // Constructor
     public Conversacion(Contacto contacto) {
-        this.id = idCounter++;
         this.contacto = contacto;
         this.mensajes = new ArrayList<>();
-    }
-    
-    // Getter para obtener el ID
-    public int getId() {
-        return id;
     }
     
     // 📌 Obtener la lista de mensajes
@@ -46,21 +38,10 @@ public class Conversacion {
         return contacto.getPort();
     }
     
-    // 📌 Verifica si un mensaje ya existe en la conversacion por ID
-    public boolean existeContacto(int id) {
-        return mensajes.stream().anyMatch(mensaje -> mensaje.getId() == id);
-    }
-
     // 📌 Agregar un mensaje a la conversación
     public boolean agregarMensaje(Mensaje mensaje) {
         mensajes.add(mensaje);
         return true;
-    }
-
-    // 📌 Eliminar un contacto por ID
-    public boolean eliminarMensaje(int id) {
-        boolean eliminado = mensajes.removeIf(mensaje -> mensaje.getId() == id);
-        return eliminado;
     }
 
 }
