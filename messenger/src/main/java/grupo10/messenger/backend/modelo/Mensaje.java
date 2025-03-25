@@ -1,4 +1,4 @@
-package grupo10.messenger.backend;
+package grupo10.messenger.backend.modelo;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;

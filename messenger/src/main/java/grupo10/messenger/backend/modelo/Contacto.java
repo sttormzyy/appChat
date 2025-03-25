@@ -1,4 +1,4 @@
-package grupo10.messenger.backend;
+package grupo10.messenger.backend.modelo;
 
 public class Contacto extends Persona {
 

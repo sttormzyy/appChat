@@ -4,6 +4,10 @@
  */
 package grupo10.messenger.backend;
 
+import grupo10.messenger.backend.modelo.Conversacion;
+import grupo10.messenger.backend.modelo.Usuario;
+import grupo10.messenger.backend.modelo.Mensaje;
+import grupo10.messenger.backend.modelo.Contacto;
 import java.util.List;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.AfterAll;
