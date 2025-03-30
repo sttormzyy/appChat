@@ -51,18 +51,12 @@ public class Usuario extends Persona {
     }
 
     public Conversacion buscarConversacion(String ip, int puerto){
-        int i = 0;
-        while(i<conversaciones.size() && noEsConversacion(conversaciones.get(i),ip,puerto))
-            i++;
-        if(i<conversaciones.size())
-            return conversaciones.get(i);
-        return null;
+        return conversaciones.stream()
+                .filter(conversacion -> conversacion.getContactoIp().equals(ip) && conversacion.getContactoPort() == puerto)
+                .findFirst()
+                .orElse(null);
     }
     
-    private boolean noEsConversacion(Conversacion chat, String ip, int puerto){
-        return (chat.getContacto().getIp().equals(ip) && puerto == chat.getContacto().getPort());
-    }
-
     public boolean agregarMensaje(String ip, int port, Mensaje msg) {
         Conversacion con = buscarConversacion(ip, port);
         return con.agregarMensaje(msg);

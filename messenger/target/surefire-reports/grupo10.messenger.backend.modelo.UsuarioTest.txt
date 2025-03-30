@@ -1,0 +1,26 @@
+-------------------------------------------------------------------------------
+Test set: grupo10.messenger.backend.modelo.UsuarioTest
+-------------------------------------------------------------------------------
+Tests run: 7, Failures: 1, Errors: 1, Skipped: 0, Time elapsed: 0.016 s <<< FAILURE! -- in grupo10.messenger.backend.modelo.UsuarioTest
+grupo10.messenger.backend.modelo.UsuarioTest.testAgregarContacto -- Time elapsed: 0.004 s <<< ERROR!
+java.lang.IllegalArgumentException: El nickname no puede ser nulo, vacío o mayor a 16 caracteres.
+	at grupo10.messenger.backend.modelo.Persona.<init>(Persona.java:13)
+	at grupo10.messenger.backend.modelo.Contacto.<init>(Contacto.java:7)
+	at grupo10.messenger.backend.modelo.Usuario.agregarContacto(Usuario.java:27)
+	at grupo10.messenger.backend.modelo.UsuarioTest.testAgregarContacto(UsuarioTest.java:89)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1597)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1597)
+
+grupo10.messenger.backend.modelo.UsuarioTest.testAgregarMensaje -- Time elapsed: 0.002 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: No debería permitir agregar un mensaje nulo. ==> expected: <false> but was: <true>
+	at org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:151)
+	at org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:132)
+	at org.junit.jupiter.api.AssertFalse.failNotFalse(AssertFalse.java:63)
+	at org.junit.jupiter.api.AssertFalse.assertFalse(AssertFalse.java:36)
+	at org.junit.jupiter.api.Assertions.assertFalse(Assertions.java:239)
+	at grupo10.messenger.backend.modelo.UsuarioTest.testAgregarMensaje(UsuarioTest.java:178)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1597)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1597)
+

@@ -1,0 +1,18 @@
+-------------------------------------------------------------------------------
+Test set: grupo10.messenger.backend.red.ClienteTest
+-------------------------------------------------------------------------------
+Tests run: 2, Failures: 0, Errors: 2, Skipped: 0, Time elapsed: 0.008 s <<< FAILURE! -- in grupo10.messenger.backend.red.ClienteTest
+grupo10.messenger.backend.red.ClienteTest.testRun -- Time elapsed: 0.003 s <<< ERROR!
+java.lang.NullPointerException: Cannot invoke "grupo10.messenger.backend.red.Cliente.run()" because "instance" is null
+	at grupo10.messenger.backend.red.ClienteTest.testRun(ClienteTest.java:61)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1597)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1597)
+
+grupo10.messenger.backend.red.ClienteTest.testIsConectado -- Time elapsed: 0 s <<< ERROR!
+java.lang.NullPointerException: Cannot invoke "grupo10.messenger.backend.red.Cliente.isConectado()" because "instance" is null
+	at grupo10.messenger.backend.red.ClienteTest.testIsConectado(ClienteTest.java:48)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1597)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1597)
+

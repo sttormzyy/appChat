@@ -32,5 +32,18 @@ public class Mensaje {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         return LocalDateTime.now().format(formatter);
     }
+    
+    @Override
+    public String toString() {
+        return "[Mensaje: " + contenido + " | Fecha: " + fechaHora + " | Es mío: " + esMio + "]";
+    }
+    
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
 
+        Mensaje mensaje = (Mensaje) obj;
+        return esMio == mensaje.esMio && contenido.equals(mensaje.contenido);
+    }
 }

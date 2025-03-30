@@ -1,0 +1,155 @@
+-------------------------------------------------------------------------------
+Test set: grupo10.messenger.backend.control.ControlTest
+-------------------------------------------------------------------------------
+Tests run: 21, Failures: 11, Errors: 5, Skipped: 0, Time elapsed: 7.178 s <<< FAILURE! -- in grupo10.messenger.backend.control.ControlTest
+grupo10.messenger.backend.control.ControlTest.testRecibirMensaje_MensajeRedEnOrden -- Time elapsed: 0.025 s <<< ERROR!
+java.lang.NullPointerException: Cannot invoke "grupo10.messenger.backend.modelo.Usuario.agregarContacto(String, String, int)" because "this.usuario" is null
+	at grupo10.messenger.backend.control.Control.agregarContacto(Control.java:71)
+	at grupo10.messenger.backend.control.ControlTest.testRecibirMensaje_MensajeRedEnOrden(ControlTest.java:403)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1597)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1597)
+
+grupo10.messenger.backend.control.ControlTest.testEnviarMensajeParametrosInvalidos -- Time elapsed: 1.020 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: Excepción en la prueba: El contenido del mensaje no puede ser nulo o vacío.
+	at org.junit.jupiter.api.AssertionUtils.fail(AssertionUtils.java:38)
+	at org.junit.jupiter.api.Assertions.fail(Assertions.java:138)
+	at grupo10.messenger.backend.control.ControlTest.testEnviarMensajeParametrosInvalidos(ControlTest.java:244)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1597)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1597)
+
+grupo10.messenger.backend.control.ControlTest.testRegistrarParametrosInvalidos -- Time elapsed: 1.006 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: Excepción en la prueba: El nickname no puede ser nulo, vacío o mayor a 16 caracteres.
+	at org.junit.jupiter.api.AssertionUtils.fail(AssertionUtils.java:38)
+	at org.junit.jupiter.api.Assertions.fail(Assertions.java:138)
+	at grupo10.messenger.backend.control.ControlTest.testRegistrarParametrosInvalidos(ControlTest.java:84)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1597)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1597)
+
+grupo10.messenger.backend.control.ControlTest.testEnviarMensaje_SenderNoTieneContactoNiConversacionReciverNada -- Time elapsed: 1.012 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: Excepción en la prueba: Cannot invoke "grupo10.messenger.backend.modelo.Usuario.getNickname()" because "this.usuario" is null
+	at org.junit.jupiter.api.AssertionUtils.fail(AssertionUtils.java:38)
+	at org.junit.jupiter.api.Assertions.fail(Assertions.java:138)
+	at grupo10.messenger.backend.control.ControlTest.testEnviarMensaje_SenderNoTieneContactoNiConversacionReciverNada(ControlTest.java:289)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1597)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1597)
+
+grupo10.messenger.backend.control.ControlTest.testComunicacionConcurrente -- Time elapsed: 3.037 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: Excepción en la prueba: Cannot invoke "grupo10.messenger.backend.modelo.Usuario.agregarContacto(String, String, int)" because "this.usuario" is null
+	at org.junit.jupiter.api.AssertionUtils.fail(AssertionUtils.java:38)
+	at org.junit.jupiter.api.Assertions.fail(Assertions.java:138)
+	at grupo10.messenger.backend.control.ControlTest.testComunicacionConcurrente(ControlTest.java:518)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1597)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1597)
+
+grupo10.messenger.backend.control.ControlTest.testRegistrarUsuario -- Time elapsed: 0.004 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: La IP del usuario no coincide ==> expected: <192.168.1.10> but was: <192.168.0.6>
+	at org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:151)
+	at org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:132)
+	at org.junit.jupiter.api.AssertEquals.failNotEqual(AssertEquals.java:197)
+	at org.junit.jupiter.api.AssertEquals.assertEquals(AssertEquals.java:182)
+	at org.junit.jupiter.api.Assertions.assertEquals(Assertions.java:1156)
+	at grupo10.messenger.backend.control.ControlTest.testRegistrarUsuario(ControlTest.java:51)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1597)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1597)
+
+grupo10.messenger.backend.control.ControlTest.testRecibirMensaje_ContactoExistenteSinConversacion -- Time elapsed: 0.002 s <<< ERROR!
+java.lang.NullPointerException: Cannot invoke "grupo10.messenger.backend.modelo.Usuario.agregarContacto(String, String, int)" because "this.usuario" is null
+	at grupo10.messenger.backend.control.Control.agregarContacto(Control.java:71)
+	at grupo10.messenger.backend.control.ControlTest.testRecibirMensaje_ContactoExistenteSinConversacion(ControlTest.java:426)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1597)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1597)
+
+grupo10.messenger.backend.control.ControlTest.testEnviarMensaje_SenderTodoReciverContacto -- Time elapsed: 0.003 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: Excepción en la prueba: Cannot invoke "grupo10.messenger.backend.modelo.Usuario.agregarContacto(String, String, int)" because "this.usuario" is null
+	at org.junit.jupiter.api.AssertionUtils.fail(AssertionUtils.java:38)
+	at org.junit.jupiter.api.Assertions.fail(Assertions.java:138)
+	at grupo10.messenger.backend.control.ControlTest.testEnviarMensaje_SenderTodoReciverContacto(ControlTest.java:338)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1597)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1597)
+
+grupo10.messenger.backend.control.ControlTest.testNoPermitirMismoPuertoEnMultiplesInstancias -- Time elapsed: 0.003 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: La primera instancia debería poder registrarse correctamente. ==> expected: <true> but was: <false>
+	at org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:151)
+	at org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:132)
+	at org.junit.jupiter.api.AssertTrue.failNotTrue(AssertTrue.java:63)
+	at org.junit.jupiter.api.AssertTrue.assertTrue(AssertTrue.java:36)
+	at org.junit.jupiter.api.Assertions.assertTrue(Assertions.java:214)
+	at grupo10.messenger.backend.control.ControlTest.testNoPermitirMismoPuertoEnMultiplesInstancias(ControlTest.java:101)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1597)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1597)
+
+grupo10.messenger.backend.control.ControlTest.testRecibirMensaje_NullMensajeRed -- Time elapsed: 0.002 s <<< ERROR!
+java.lang.NullPointerException: Cannot invoke "grupo10.messenger.backend.modelo.MensajeRed.getContenido()" because "mensaje" is null
+	at grupo10.messenger.backend.control.Control.recibirMensaje(Control.java:120)
+	at grupo10.messenger.backend.control.ControlTest.testRecibirMensaje_NullMensajeRed(ControlTest.java:390)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1597)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1597)
+
+grupo10.messenger.backend.control.ControlTest.testAgregarContactoParametrosInvalidos -- Time elapsed: 0.003 s <<< ERROR!
+java.lang.IllegalArgumentException: El nickname no puede ser nulo, vacío o mayor a 16 caracteres.
+	at grupo10.messenger.backend.modelo.Persona.<init>(Persona.java:13)
+	at grupo10.messenger.backend.modelo.Contacto.<init>(Contacto.java:7)
+	at grupo10.messenger.backend.modelo.Usuario.agregarContacto(Usuario.java:27)
+	at grupo10.messenger.backend.control.Control.agregarContacto(Control.java:71)
+	at grupo10.messenger.backend.control.ControlTest.testAgregarContactoParametrosInvalidos(ControlTest.java:129)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1597)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1597)
+
+grupo10.messenger.backend.control.ControlTest.testEnviarMensaje_SenderTieneContactoNoConversacionReciverNada -- Time elapsed: 0.003 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: Excepción en la prueba: Cannot invoke "grupo10.messenger.backend.modelo.Usuario.agregarContacto(String, String, int)" because "this.usuario" is null
+	at org.junit.jupiter.api.AssertionUtils.fail(AssertionUtils.java:38)
+	at org.junit.jupiter.api.Assertions.fail(Assertions.java:138)
+	at grupo10.messenger.backend.control.ControlTest.testEnviarMensaje_SenderTieneContactoNoConversacionReciverNada(ControlTest.java:267)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1597)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1597)
+
+grupo10.messenger.backend.control.ControlTest.testRecibirMensaje_SinContactoNiConversacion -- Time elapsed: 0.003 s <<< ERROR!
+java.lang.NullPointerException: Cannot invoke "grupo10.messenger.backend.modelo.Usuario.buscarConversacion(String, int)" because "this.usuario" is null
+	at grupo10.messenger.backend.control.Control.recibirMensaje(Control.java:121)
+	at grupo10.messenger.backend.control.ControlTest.testRecibirMensaje_SinContactoNiConversacion(ControlTest.java:448)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1597)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1597)
+
+grupo10.messenger.backend.control.ControlTest.testVerConversacionParametrosInvalidos -- Time elapsed: 0.004 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: La conversación debería existir. ==> expected: not <null>
+	at org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:152)
+	at org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:132)
+	at org.junit.jupiter.api.AssertNotNull.failNull(AssertNotNull.java:49)
+	at org.junit.jupiter.api.AssertNotNull.assertNotNull(AssertNotNull.java:35)
+	at org.junit.jupiter.api.Assertions.assertNotNull(Assertions.java:312)
+	at grupo10.messenger.backend.control.ControlTest.testVerConversacionParametrosInvalidos(ControlTest.java:170)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1597)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1597)
+
+grupo10.messenger.backend.control.ControlTest.testEnviarMensaje_SenderTodoReciverNada -- Time elapsed: 0.004 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: Excepción en la prueba: Cannot invoke "grupo10.messenger.backend.modelo.Usuario.agregarContacto(String, String, int)" because "this.usuario" is null
+	at org.junit.jupiter.api.AssertionUtils.fail(AssertionUtils.java:38)
+	at org.junit.jupiter.api.Assertions.fail(Assertions.java:138)
+	at grupo10.messenger.backend.control.ControlTest.testEnviarMensaje_SenderTodoReciverNada(ControlTest.java:313)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1597)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1597)
+
+grupo10.messenger.backend.control.ControlTest.testEnviarMensaje_SenderTodoReciverTodo -- Time elapsed: 0.003 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: Excepción en la prueba: Cannot invoke "grupo10.messenger.backend.modelo.Usuario.agregarContacto(String, String, int)" because "this.usuario" is null
+	at org.junit.jupiter.api.AssertionUtils.fail(AssertionUtils.java:38)
+	at org.junit.jupiter.api.Assertions.fail(Assertions.java:138)
+	at grupo10.messenger.backend.control.ControlTest.testEnviarMensaje_SenderTodoReciverTodo(ControlTest.java:377)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1597)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1597)
+

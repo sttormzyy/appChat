@@ -14,7 +14,8 @@ import grupo10.messenger.backend.red.Server;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
-
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 /**
  *
  * @author user
@@ -36,10 +37,16 @@ public class Control {
         return usuario;
     }
     
-    public boolean registrar(String nickname,String ip,int puerto){
+    public boolean registrar(String nickname,int puerto){
         if (this.iniciarServer(puerto)){
-            usuario = new Usuario(nickname,ip,puerto);
-            return true;
+            try {
+                InetAddress localHost = InetAddress.getLocalHost();
+                usuario = new Usuario(nickname, localHost.getHostAddress(),puerto);
+                return true;
+            } catch(UnknownHostException e) {
+                System.out.println("No se pudo obtener la IP.");
+                return false;
+            }
         }
         return false;
     }
@@ -67,14 +74,13 @@ public class Control {
         return false;
     }
     
-    public static boolean isValidPort(int port) {
+    private static boolean isValidPort(int port) {
         return port >= 0 && port <= 65535;
     }
     
-    public static boolean isValidIPv4(String ip) {
+    private static boolean isValidIPv4(String ip) {
         String ipv4Regex = "^((25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])\\.){3}" +
                            "(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])$";
-
         return Pattern.matches(ipv4Regex, ip);
     }
     
