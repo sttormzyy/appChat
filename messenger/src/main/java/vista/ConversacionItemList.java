@@ -95,7 +95,7 @@ public class ConversacionItemList extends MenuItemList {
 
         ultimoMensajeLabel.setForeground(new java.awt.Color(210, 210, 210));
 
-        panelNotificacion.setBackground(Colores.COLOR_MENSAJE);
+        panelNotificacion.setBackground(Colores.COLOR_NOTIFICACION);
         panelNotificacion.setVisible(false);
 
         javax.swing.GroupLayout panelNotificacionLayout = new javax.swing.GroupLayout(panelNotificacion);

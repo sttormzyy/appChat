@@ -25,8 +25,8 @@ public class Cliente implements Runnable{
     private boolean conectado = false;
     
     public Cliente(MensajeRed msj){
-        this.puerto=msj.getDestinyPort();
-        this.IP=msj.getMyIp();
+        this.puerto=msj.getDestinyPuerto();
+        this.IP=msj.getMiIp();
         this.msj=msj;
     }
     
@@ -46,8 +46,8 @@ public class Cliente implements Runnable{
         PrintWriter salida = new PrintWriter(socket.getOutputStream(), true);
         
         salida.println(msj.getMyNickname());
-        salida.println(msj.getMyIp());
-        salida.println(Integer.toString(msj.getMyPort()));
+        salida.println(msj.getMiIp());
+        salida.println(Integer.toString(msj.getMiPuerto()));
         salida.println(IP);
         salida.println(Integer.toString(puerto));
         salida.println(msj.getContenido());

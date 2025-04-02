@@ -11,6 +11,8 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
+import javax.swing.border.BevelBorder;
+import javax.swing.border.SoftBevelBorder;
 import modelo.Contacto;
 import modelo.Conversacion;
 import modelo.Mensaje;
@@ -22,11 +24,12 @@ import modelo.Mensaje;
 
 public class VentanaPrincipal extends javax.swing.JFrame {
     private ActionListener controlador;
-    private int puertoActivo;
-    private String ipActiva;
-    private TipoComunicacion sideBar;
+    private int puertoActivo = -1;
+    private String ipActiva = null;
+    private SideBar sideBar;
+    private boolean barraDeMensajeClikeada = false;
     
-    public enum TipoComunicacion {
+    public enum SideBar {
         AGENDA,
         CONVERSACIONES;
     }
@@ -39,6 +42,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         setLocationRelativeTo(null);
         setIconImage(new ImageIcon(getClass().getResource("/resources/iconApp.png")).getImage());
         this.controlador = controlador;
+        this.sideBar = SideBar.AGENDA;
         botonEnviarMensaje.addActionListener(controlador);
         botonAgenda.addActionListener(controlador);
         botonChats.addActionListener(controlador);
@@ -110,6 +114,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         botonAgregarContacto.setActionCommand("SOLICITUD AGREGAR CONTACTO");
         botonAgregarContacto.setBorder(null);
         botonAgregarContacto.setEnabled(false);
+        botonAgregarContacto.setFocusPainted(false);
         botonAgregarContacto.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseEntered(java.awt.event.MouseEvent evt) {
                 botonAgregarContactoMouseEntered(evt);
@@ -123,6 +128,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         botonAgregarConversacion.setText("agregarconv");
         botonAgregarConversacion.setActionCommand("SOLICITUD AGREGAR CONVERSACION");
         botonAgregarConversacion.setEnabled(false);
+        botonAgregarConversacion.setFocusPainted(false);
         botonAgregarConversacion.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseEntered(java.awt.event.MouseEvent evt) {
                 botonAgregarConversacionMouseEntered(evt);
@@ -137,11 +143,11 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         menuBotonesAbajoLayout.setHorizontalGroup(
             menuBotonesAbajoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, menuBotonesAbajoLayout.createSequentialGroup()
-                .addGap(112, 112, 112)
+                .addGap(116, 116, 116)
                 .addComponent(botonAgregarConversacion, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(52, 52, 52)
+                .addGap(53, 53, 53)
                 .addComponent(botonAgregarContacto, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(133, Short.MAX_VALUE))
+                .addContainerGap(128, Short.MAX_VALUE))
         );
         menuBotonesAbajoLayout.setVerticalGroup(
             menuBotonesAbajoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -150,26 +156,31 @@ public class VentanaPrincipal extends javax.swing.JFrame {
                 .addGroup(menuBotonesAbajoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(botonAgregarConversacion, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(botonAgregarContacto))
-                .addGap(22, 22, 22))
+                .addGap(23, 23, 23))
         );
 
         menu.add(menuBotonesAbajo, java.awt.BorderLayout.PAGE_END);
 
-        contenedorBotonesMenu.setBackground(new java.awt.Color(47, 52, 52));
+        contenedorBotonesMenu.setBackground(Colores.COLOR_BASE);
         contenedorBotonesMenu.setLayout(new java.awt.GridLayout(1, 2));
 
-        botonChats.setBackground(new java.awt.Color(30, 30, 30));
-        botonChats.setFont(new java.awt.Font("Cambria", 1, 12)); // NOI18N
+        botonChats.setBackground(Colores.COLOR_BOTON);
+        botonChats.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         botonChats.setForeground(new java.awt.Color(255, 255, 255));
         botonChats.setText("CHATS");
         botonChats.setActionCommand("MOVER A CONVERSACIONES");
+        botonChats.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED,Colores.COLOR_BOTON,Colores.COLOR_BOTON,Colores.COLOR_BOTON,Colores.COLOR_BOTON));
+        botonChats.setFocusPainted(false);
         contenedorBotonesMenu.add(botonChats);
 
-        botonAgenda.setBackground(new java.awt.Color(30, 30, 30));
-        botonAgenda.setFont(new java.awt.Font("Cambria", 1, 12)); // NOI18N
+        botonAgenda.requestFocusInWindow();
+        botonAgenda.setBackground(Colores.COLOR_BOTON);
+        botonAgenda.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         botonAgenda.setForeground(new java.awt.Color(255, 255, 255));
         botonAgenda.setText("AGENDA");
         botonAgenda.setActionCommand("MOVER A AGENDA");
+        botonAgenda.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED,Colores.COLOR_BOTON,Colores.COLOR_BOTON,Colores.COLOR_BOTON,Colores.COLOR_BOTON));
+        botonAgenda.setFocusPainted(false);
         contenedorBotonesMenu.add(botonAgenda);
 
         menu.add(contenedorBotonesMenu, java.awt.BorderLayout.PAGE_START);
@@ -221,10 +232,17 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         botonEnviarMensaje.setActionCommand("ENVIAR MENSAJE");
         botonEnviarMensaje.setAlignmentX(0.5F);
         botonEnviarMensaje.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        botonEnviarMensaje.setFocusPainted(false);
         botonEnviarMensaje.setIconTextGap(0);
         botonEnviarMensaje.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 botonEnviarMensajeMouseClicked(evt);
+            }
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                botonEnviarMensajeMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                botonEnviarMensajeMouseExited(evt);
             }
         });
 
@@ -302,6 +320,10 @@ public class VentanaPrincipal extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    public boolean isBarraDeMensajeClikeada() {
+        return barraDeMensajeClikeada;
+    }
     
     public String getIPactiva()
     {
@@ -328,7 +350,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         this.puertoActivo = puerto;
     }
     
-    public void setSideBar(TipoComunicacion sideBar)
+    public void setSideBar(SideBar sideBar)
     {
         this.sideBar = sideBar;
     }
@@ -356,9 +378,11 @@ public class VentanaPrincipal extends javax.swing.JFrame {
     
     public void notificar(String contenido, String ip, int puerto)
     {
-        if(sideBar == TipoComunicacion.AGENDA)
+        if(sideBar == SideBar.AGENDA)
         {
-           botonChats.setText("CHATS (.)(.)");
+           botonChats.setBackground(Colores.COLOR_NOTIFICACION);
+           botonChats.setForeground(Color.BLACK);
+           botonChats.setText("CHATS *");
         }
         else
         {
@@ -374,10 +398,11 @@ public class VentanaPrincipal extends javax.swing.JFrame {
      */
     public void agregarMensaje(String contenido,boolean esMio)
     {
-        MensajeVista mensaje =  new MensajeVista(contenido,esMio);
+        ContenedorMensajeVista mensaje =  new ContenedorMensajeVista(contenido,esMio);
         chatBody.add(mensaje);
         chatBody.revalidate();
         chatBody.repaint();
+        scrollChatBody.getVerticalScrollBar().setValue(scrollChatBody.getVerticalScrollBar().getMaximum());
     }
     
     /**
@@ -398,6 +423,8 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         menuList.removeAll();
         menuList.revalidate();
         menuList.repaint();
+        botonAgenda.setBorder(new SoftBevelBorder(BevelBorder.RAISED,Colores.COLOR_BOTON,Colores.COLOR_BOTON,Colores.COLOR_NOTIFICACION,Colores.COLOR_BOTON));
+        botonChats.setBorder(new SoftBevelBorder(BevelBorder.RAISED,Colores.COLOR_BOTON,Colores.COLOR_BOTON,Colores.COLOR_BOTON,Colores.COLOR_BOTON));
         ContactoItemList contactoItemList;
         String nickname;
         for (Contacto contacto: contactos) {
@@ -413,6 +440,10 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         menuList.removeAll();
         menuList.revalidate();
         menuList.repaint();
+        botonAgenda.setBorder(new SoftBevelBorder(BevelBorder.RAISED,Colores.COLOR_BOTON,Colores.COLOR_BOTON,Colores.COLOR_BOTON,Colores.COLOR_BOTON));
+        botonChats.setBorder(new SoftBevelBorder(BevelBorder.RAISED,Colores.COLOR_BOTON,Colores.COLOR_BOTON,Colores.COLOR_NOTIFICACION,Colores.COLOR_BOTON));
+        botonChats.setBackground(Colores.COLOR_BOTON);
+        botonChats.setForeground(Color.WHITE);
         botonChats.setText("CHATS");
         for (Conversacion conversacion: conversaciones) {
             this.agregarConversacion(conversacion);
@@ -431,7 +462,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         if (nickname.length() >= 20) {
             nickname = nickname.substring(0,19) + "...";
         }
-        contactoItemList = new ContactoItemList(nickname,contacto.getIp(),contacto.getPort());
+        contactoItemList = new ContactoItemList(nickname,contacto.getIp(),contacto.getPuerto());
         agregarMenuItemList(contactoItemList);
     }
     
@@ -439,29 +470,38 @@ public class VentanaPrincipal extends javax.swing.JFrame {
      * Carga en el menuList visualmente a una conversacion en particular
      * @param conversacion 
      */
-    public void agregarConversacion(Conversacion conversacion)
-    {
-        Contacto contacto;
-        ConversacionItemList conversacionItemList;  
-        contacto = conversacion.getContacto();
-        conversacionItemList = new ConversacionItemList(controlador, this,contacto.getNickname(), contacto.getIp(), contacto.getPort());
-        if(conversacion.tieneNotificacion())
-        {
-            conversacionItemList.setNotificacion();
-        }
-        agregarMenuItemList(conversacionItemList);
+public void agregarConversacion(Conversacion conversacion) {
+    Contacto contacto;
+    ConversacionItemList conversacionItemList;
+    contacto = conversacion.getContacto();
+    conversacionItemList = new ConversacionItemList(controlador, this, contacto.getNickname(), contacto.getIp(), contacto.getPuerto());
+
+    String ultimoMensaje = conversacion.getUltimoMensaje();
+
+    if (ultimoMensaje.length() > 30) {
+        ultimoMensaje = ultimoMensaje.substring(0, 30) + "...";
     }
+    conversacionItemList.getUltimoMensajeLabel().setText(ultimoMensaje);
+
+    if (conversacion.tieneNotificacion()) {
+        conversacionItemList.setNotificacion();
+    }
+    agregarMenuItemList(conversacionItemList);
+}
+
     
     private void textAreaMensajeMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_textAreaMensajeMouseClicked
-        textAreaMensaje.setText(""); 
+        textAreaMensaje.setText("");
+        this.barraDeMensajeClikeada = true;
     }//GEN-LAST:event_textAreaMensajeMouseClicked
 
     private void botonEnviarMensajeMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_botonEnviarMensajeMouseClicked
         textAreaMensaje.setText("Ingrese su mensaje aqui...");
+        this.barraDeMensajeClikeada = false;
     }//GEN-LAST:event_botonEnviarMensajeMouseClicked
 
     private void botonAgregarContactoMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_botonAgregarContactoMouseEntered
-       botonAgregarContacto.setBorder(BorderFactory.createLineBorder(Color.CYAN, 2));
+       botonAgregarContacto.setBorder(BorderFactory.createLineBorder(Colores.COLOR_NOTIFICACION, 1));
     }//GEN-LAST:event_botonAgregarContactoMouseEntered
 
     private void botonAgregarContactoMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_botonAgregarContactoMouseExited
@@ -469,12 +509,20 @@ public class VentanaPrincipal extends javax.swing.JFrame {
     }//GEN-LAST:event_botonAgregarContactoMouseExited
 
     private void botonAgregarConversacionMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_botonAgregarConversacionMouseEntered
-       botonAgregarConversacion.setBorder(BorderFactory.createLineBorder(Color.CYAN, 2));
+       botonAgregarConversacion.setBorder(BorderFactory.createLineBorder(Colores.COLOR_NOTIFICACION, 1));
     }//GEN-LAST:event_botonAgregarConversacionMouseEntered
 
     private void botonAgregarConversacionMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_botonAgregarConversacionMouseExited
        botonAgregarConversacion.setBorder(BorderFactory.createEmptyBorder());
     }//GEN-LAST:event_botonAgregarConversacionMouseExited
+
+    private void botonEnviarMensajeMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_botonEnviarMensajeMouseEntered
+       botonEnviarMensaje.setBorder(BorderFactory.createLineBorder(Colores.COLOR_NOTIFICACION, 1));
+    }//GEN-LAST:event_botonEnviarMensajeMouseEntered
+
+    private void botonEnviarMensajeMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_botonEnviarMensajeMouseExited
+        botonEnviarMensaje.setBorder(BorderFactory.createEmptyBorder());
+    }//GEN-LAST:event_botonEnviarMensajeMouseExited
 
     public void disableBotonAgregarContacto()
     {

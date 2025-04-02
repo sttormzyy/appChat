@@ -10,16 +10,16 @@ public class MensajeRed {
     private final String myIp;
     private final int myPort;
     private final String destinyIp;
-    private final int destinyPort;
+    private final int destinyPuerto;
     private final String contenido;
     
     // Constructor
-    public MensajeRed(String nickname, String myIp, int myPort, String destinyIp, int destinyPort, String contenido) {
+    public MensajeRed(String nickname, String myIp, int myPort, String destinyIp, int destinyPuerto, String contenido) {
         this.myNickname = nickname;
         this.myIp = myIp;
         this.myPort = myPort;
         this.destinyIp = destinyIp;
-        this.destinyPort = destinyPort;
+        this.destinyPuerto = destinyPuerto;
         this.contenido = contenido;
     }
 
@@ -29,12 +29,12 @@ public class MensajeRed {
     }
     
     // Getter para obtener el ID
-    public String getMyIp() {
+    public String getMiIp() {
         return myIp;
     }
 
     // Getter para obtener el puerto
-    public int getMyPort() {
+    public int getMiPuerto() {
         return myPort;
     }
 
@@ -44,8 +44,8 @@ public class MensajeRed {
     }
 
     // Getter para obtener el puerto
-    public int getDestinyPort() {
-        return destinyPort;
+    public int getDestinyPuerto() {
+        return destinyPuerto;
     }
     
     // Getter para obtener el contenido

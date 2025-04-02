@@ -4,7 +4,10 @@
  */
 package vista;
 
+import java.awt.Color;
 import java.awt.event.ActionListener;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javax.swing.ImageIcon;
 
 /**
@@ -15,11 +18,17 @@ public class VentanaRegistro extends javax.swing.JFrame {
     /**
      * Creates new form VentanaRegistro
      */
+    private boolean flagNickname = false;
+    private boolean flagPuerto = false;
+    
     public VentanaRegistro(ActionListener controlador) {
         initComponents();
+        setBackground(Colores.COLOR_BASE);
         setLocationRelativeTo(null);
         setIconImage(new ImageIcon(getClass().getResource("/resources/iconApp.png")).getImage());
         botonConfirmar.addActionListener(controlador);
+        botonConfirmar.setEnabled(false);
+        setSize(360, 310); // Establecer el tamaño directamente.
     }
     
     
@@ -28,15 +37,26 @@ public class VentanaRegistro extends javax.swing.JFrame {
         return textNickname.getText();
     }
     
-    public String getIP()
-    {
-        return textIP.getText();
-    }
         
     public int getPuerto() {
         // Convierte el texto del JTextField a int
         return Integer.parseInt(textPuerto.getText());
     }
+    
+    private void habilitarBoton(){
+        if(flagNickname && flagPuerto)
+            botonConfirmar.setEnabled(true);
+        else
+            botonConfirmar.setEnabled(false);
+    }
+    
+    private boolean validaIp(String ip){
+        String regex = "^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$";
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(ip);
+        return matcher.matches();
+    }
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -47,66 +67,146 @@ public class VentanaRegistro extends javax.swing.JFrame {
     private void initComponents() {
 
         jPanel1 = new javax.swing.JPanel();
-        jLabel1 = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
-        jLabel3 = new javax.swing.JLabel();
-        textNickname = new javax.swing.JTextField();
+        jPanel2 = new javax.swing.JPanel();
+        labelNickname = new javax.swing.JLabel();
+        labelPuerto = new javax.swing.JLabel();
         textPuerto = new javax.swing.JTextField();
-        textIP = new javax.swing.JTextField();
+        textNickname = new javax.swing.JTextField();
         botonConfirmar = new javax.swing.JButton();
-        jLabel4 = new javax.swing.JLabel();
+        labelTitulo = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Messenger - Registro");
-        setMaximumSize(new java.awt.Dimension(400, 400));
-        setMinimumSize(new java.awt.Dimension(400, 400));
-        setPreferredSize(new java.awt.Dimension(400, 400));
+        setMaximumSize(new java.awt.Dimension(360, 290));
+        setMinimumSize(new java.awt.Dimension(360, 290));
+        setPreferredSize(new java.awt.Dimension(360, 290));
         setResizable(false);
 
-        jPanel1.setBackground(new java.awt.Color(47, 47, 47));
-        jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+        jPanel1.setBackground(Colores.COLOR_BASE);
+        jPanel1.setVerifyInputWhenFocusTarget(false);
 
-        jLabel1.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
-        jLabel1.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel1.setText("IP:");
-        jPanel1.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(80, 180, -1, -1));
+        jPanel2.setBackground(Colores.COLOR_BASE);
+        jPanel2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(211, 211, 211)));
 
-        jLabel2.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
-        jLabel2.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel2.setText("nickname:");
-        jPanel1.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(80, 130, -1, -1));
+        labelNickname.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
+        labelNickname.setForeground(new java.awt.Color(255, 255, 255));
+        labelNickname.setText("nickname:");
 
-        jLabel3.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
-        jLabel3.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel3.setText("puerto:");
-        jPanel1.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(80, 220, -1, -1));
-
-        textNickname.setMinimumSize(new java.awt.Dimension(140, 30));
-        textNickname.setPreferredSize(new java.awt.Dimension(140, 30));
-        jPanel1.add(textNickname, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 140, -1, -1));
+        labelPuerto.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
+        labelPuerto.setForeground(new java.awt.Color(255, 255, 255));
+        labelPuerto.setText("puerto:");
 
         textPuerto.setMinimumSize(new java.awt.Dimension(140, 30));
         textPuerto.setPreferredSize(new java.awt.Dimension(140, 30));
-        jPanel1.add(textPuerto, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 220, -1, -1));
+        textPuerto.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                textPuertoKeyReleased(evt);
+            }
+        });
 
-        textIP.setMinimumSize(new java.awt.Dimension(140, 30));
-        textIP.setPreferredSize(new java.awt.Dimension(140, 30));
-        jPanel1.add(textIP, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 180, -1, -1));
+        textNickname.setMinimumSize(new java.awt.Dimension(140, 30));
+        textNickname.setPreferredSize(new java.awt.Dimension(140, 30));
+        textNickname.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                textNicknameKeyReleased(evt);
+            }
+        });
 
+        botonConfirmar.setBackground(Colores.COLOR_BOTON);
         botonConfirmar.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        botonConfirmar.setForeground(new Color(255,255,255));
         botonConfirmar.setText("registrar");
         botonConfirmar.setActionCommand("REGISTRO");
-        jPanel1.add(botonConfirmar, new org.netbeans.lib.awtextra.AbsoluteConstraints(240, 300, 100, 40));
 
-        jLabel4.setFont(new java.awt.Font("Segoe UI", 1, 36)); // NOI18N
-        jLabel4.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel4.setText("REGISTRO");
-        jPanel1.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 30, -1, -1));
+        labelTitulo.setFont(new java.awt.Font("Segoe UI", 1, 36)); // NOI18N
+        labelTitulo.setForeground(new java.awt.Color(255, 255, 255));
+        labelTitulo.setText("REGISTRO");
+
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGap(39, 39, 39)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(labelNickname)
+                        .addGap(12, 12, 12)
+                        .addComponent(textNickname, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(labelPuerto)
+                        .addGap(44, 44, 44)
+                        .addComponent(textPuerto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                        .addComponent(labelTitulo)
+                        .addGap(81, 81, 81))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                        .addComponent(botonConfirmar, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap())))
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(labelTitulo)
+                .addGap(35, 35, 35)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(labelNickname, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGap(10, 10, 10)
+                        .addComponent(textNickname, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(10, 10, 10)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(labelPuerto)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGap(10, 10, 10)
+                        .addComponent(textPuerto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 55, Short.MAX_VALUE)
+                .addComponent(botonConfirmar, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
+        );
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
+        );
 
         getContentPane().add(jPanel1, java.awt.BorderLayout.CENTER);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void textNicknameKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_textNicknameKeyReleased
+        flagNickname = !this.textNickname.getText().isEmpty() && this.textNickname.getText().length()<=64;
+        habilitarBoton();
+    }//GEN-LAST:event_textNicknameKeyReleased
+
+    private void textPuertoKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_textPuertoKeyReleased
+        String contenido = this.textPuerto.getText();
+        try{
+            int puerto = Integer.parseInt(contenido);
+            flagPuerto = 0<=puerto && puerto<=65535;
+        }catch(NumberFormatException e){
+            flagPuerto = false;
+        }
+        habilitarBoton();
+    }//GEN-LAST:event_textPuertoKeyReleased
 
     /**
      * @param args the command line arguments
@@ -123,12 +223,11 @@ public class VentanaRegistro extends javax.swing.JFrame {
     */
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton botonConfirmar;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JTextField textIP;
+    private javax.swing.JPanel jPanel2;
+    private javax.swing.JLabel labelNickname;
+    private javax.swing.JLabel labelPuerto;
+    private javax.swing.JLabel labelTitulo;
     private javax.swing.JTextField textNickname;
     private javax.swing.JTextField textPuerto;
     // End of variables declaration//GEN-END:variables

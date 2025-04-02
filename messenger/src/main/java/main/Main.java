@@ -5,7 +5,6 @@
 package main;
 
 import controlador.Control;
-import java.awt.Color;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import vista.VentanaPrincipal;

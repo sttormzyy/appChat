@@ -9,8 +9,8 @@ public class Contacto extends Persona {
     private final int id;
 
     // Constructor
-    public Contacto(String nickname, String ip, int port) {
-        super(nickname, ip, port);
+    public Contacto(String nickname, String ip, int puerto) {
+        super(nickname, ip, puerto);
         this.id = idCounter++;
     }
 

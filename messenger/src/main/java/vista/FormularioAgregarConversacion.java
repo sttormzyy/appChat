@@ -1,6 +1,7 @@
 package vista;
 
 import controlador.Control;
+import java.awt.Color;
 import java.util.ArrayList;
 import modelo.Contacto;
 
@@ -21,15 +22,15 @@ public class FormularioAgregarConversacion extends javax.swing.JDialog {
      */
     public FormularioAgregarConversacion(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
-        setLocationRelativeTo(null);
         initComponents();
     }
 
     public FormularioAgregarConversacion(VentanaPrincipal vista, boolean b, Control controlador) {
         super(vista, b);
-        setLocationRelativeTo(vista);
+        setLocationRelativeTo(null);
         initComponents();
         agregarConversacionButton.addActionListener(controlador);
+        agregarConversacionButton.setEnabled(false);
     }
     
     public void agregarContactos(ArrayList<Contacto> contactos)
@@ -37,7 +38,7 @@ public class FormularioAgregarConversacion extends javax.swing.JDialog {
         AgregarConversacionItemList item;
         for(Contacto contacto:contactos)
         {
-            item = new AgregarConversacionItemList(this,contacto.getNickname(),String.valueOf(contacto.getPort()),contacto.getIp());
+            item = new AgregarConversacionItemList(this,contacto.getNickname(),String.valueOf(contacto.getPuerto()),contacto.getIp());
             this.agregarItem(item);
         }
     }
@@ -84,13 +85,14 @@ public class FormularioAgregarConversacion extends javax.swing.JDialog {
         contactosPanel = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle("Formulario Agregar Conversacion");
+        setTitle("Messenger - Formulario Agregar Conversacion");
         setResizable(false);
 
-        panelPrincipal.setBackground(new java.awt.Color(47, 52, 52));
+        panelPrincipal.setBackground(Colores.COLOR_BASE);
 
+        agregarConversacionButton.setBackground(Colores.COLOR_BOTON);
         agregarConversacionButton.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        agregarConversacionButton.setForeground(new java.awt.Color(30, 30, 30));
+        agregarConversacionButton.setForeground(new Color(255,255,255));
         agregarConversacionButton.setText("Agregar conversacion");
         agregarConversacionButton.setActionCommand("AGREGAR CONVERSACION");
         agregarConversacionButton.setEnabled(false);

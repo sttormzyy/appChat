@@ -5,7 +5,6 @@
 package modelo;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  *
@@ -39,6 +38,15 @@ public class Conversacion {
         return true;
     }
     
+    public String getUltimoMensaje() {
+    // Verificar si la lista de mensajes está vacía o el último mensaje es null
+    if (mensajes.isEmpty() || mensajes.getLast() == null) {
+        return "";  // Retorna cadena vacía si no hay mensajes
+    } else {
+        return mensajes.getLast().getContenido();  // Retorna el contenido del último mensaje
+    }
+    }
+
     public void setNotificacion(boolean estado)
     {
         this.notificada = estado;

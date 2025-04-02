@@ -6,6 +6,8 @@ package vista;
 
 import controlador.Control;
 import java.awt.event.ActionListener;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javax.swing.ImageIcon;
 
 /**
@@ -13,6 +15,11 @@ import javax.swing.ImageIcon;
  * @author Usuario
  */
 public class FormularioAgregarContacto extends javax.swing.JDialog {
+    
+    private boolean flagNickname = false;
+    private boolean flagIp = false;
+    private boolean flagPort = false;
+    
     
     /**
      * Creates new form AgregarContacto
@@ -22,9 +29,26 @@ public class FormularioAgregarContacto extends javax.swing.JDialog {
         setLocationRelativeTo(null);
         setIconImage(new ImageIcon(getClass().getResource("/resources/iconApp.png")).getImage());
         initComponents();
-        submitButton.addActionListener(controlador);
+        botonAgregarContacto.addActionListener(controlador);
+        botonAgregarContacto.setEnabled(false);
     }
+    
+    private void habilitarBoton(){
+        System.out.println("flagNickname: " + flagNickname + ", flagPort: " + flagPort + ", flagIp: " + flagIp);
 
+        if(flagNickname && flagPort && flagIp)
+            botonAgregarContacto.setEnabled(true);
+        else
+            botonAgregarContacto.setEnabled(false);
+    }
+    
+    private boolean validaIp(String ip){
+        String regex = "^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$";
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(ip);
+        return matcher.matches();
+    }
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -35,65 +59,161 @@ public class FormularioAgregarContacto extends javax.swing.JDialog {
     private void initComponents() {
 
         jPanel1 = new javax.swing.JPanel();
-        jLabel1 = new javax.swing.JLabel();
-        nicknameField = new javax.swing.JTextField();
-        puertoField = new javax.swing.JTextField();
+        jPanel2 = new javax.swing.JPanel();
+        botonAgregarContacto = new javax.swing.JButton();
+        textNickname = new javax.swing.JTextField();
+        textIp = new javax.swing.JTextField();
+        textPuerto = new javax.swing.JTextField();
         jLabel4 = new javax.swing.JLabel();
-        jLabel3 = new javax.swing.JLabel();
-        ipField = new javax.swing.JTextField();
+        jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
-        submitButton = new javax.swing.JButton();
+        jLabel3 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle("Formulario Agregar Contacto");
+        setTitle("Messenger - Formulario Agregar Contacto");
         setBackground(new java.awt.Color(47, 52, 52));
         setModalityType(java.awt.Dialog.ModalityType.APPLICATION_MODAL);
+        setResizable(false);
 
-        jPanel1.setBackground(new java.awt.Color(47, 47, 47));
-        jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+        jPanel1.setBackground(Colores.COLOR_BASE);
 
-        jLabel1.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
-        jLabel1.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel1.setText("nickname:");
-        jPanel1.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(80, 130, -1, -1));
-        jPanel1.add(nicknameField, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 140, 114, -1));
-        jPanel1.add(puertoField, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 230, 114, -1));
+        jPanel2.setBackground(Colores.COLOR_BASE);
+        jPanel2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(211, 211, 211)));
+
+        botonAgregarContacto.setBackground(Colores.COLOR_BOTON);
+        botonAgregarContacto.setFont(new java.awt.Font("Segoe UI", 1, 12));
+        botonAgregarContacto.setForeground(new java.awt.Color(255, 255, 255));
+        botonAgregarContacto.setText("agregar");
+        botonAgregarContacto.setActionCommand("SUBMIT CONTACTO");
+
+        textNickname.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                textNicknameKeyReleased(evt);
+            }
+        });
+
+        textIp.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                textIpKeyReleased(evt);
+            }
+        });
+
+        textPuerto.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                textPuertoKeyReleased(evt);
+            }
+        });
 
         jLabel4.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
         jLabel4.setForeground(new java.awt.Color(255, 255, 255));
         jLabel4.setText("IP:");
-        jPanel1.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(80, 180, -1, -1));
 
-        jLabel3.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
-        jLabel3.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel3.setText("puerto:");
-        jPanel1.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(80, 220, -1, -1));
-        jPanel1.add(ipField, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 190, 114, -1));
+        jLabel1.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
+        jLabel1.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel1.setText("nickname:");
 
         jLabel2.setFont(new java.awt.Font("Segoe UI", 1, 36)); // NOI18N
         jLabel2.setForeground(new java.awt.Color(255, 255, 255));
         jLabel2.setText("REGISTRO CONTACTO");
-        jPanel1.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 20, -1, -1));
 
-        submitButton.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        submitButton.setText("agregar");
-        submitButton.setActionCommand("SUBMIT CONTACTO");
-        jPanel1.add(submitButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(326, 317, 90, 30));
-        submitButton.getAccessibleContext().setAccessibleDescription("");
+        jLabel3.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
+        jLabel3.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel3.setText("puerto:");
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 456, Short.MAX_VALUE)
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap(21, Short.MAX_VALUE)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel4)
+                            .addComponent(jLabel3)
+                            .addComponent(jLabel1))
+                        .addGap(39, 39, 39)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(textIp, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(textPuerto, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(textNickname, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(66, 66, 66))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                        .addComponent(botonAgregarContacto, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(22, 22, 22))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                        .addComponent(jLabel2)
+                        .addGap(14, 14, 14))))
         );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 374, javax.swing.GroupLayout.PREFERRED_SIZE)
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel2)
+                .addGap(53, 53, 53)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(textNickname, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel1))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel4)
+                    .addComponent(textIp, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel3)
+                    .addComponent(textPuerto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 47, Short.MAX_VALUE)
+                .addComponent(botonAgregarContacto, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(17, 17, 17))
         );
+
+        botonAgregarContacto.getAccessibleContext().setAccessibleDescription("");
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(8, Short.MAX_VALUE))
+        );
+
+        getContentPane().add(jPanel1, java.awt.BorderLayout.CENTER);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void textPuertoKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_textPuertoKeyReleased
+        String contenido = this.textPuerto.getText();
+        try{
+            int puerto = Integer.parseInt(contenido);
+            flagPort = 0<=puerto && puerto<=65535;
+        }catch(NumberFormatException e){
+            flagPort = false;
+        }
+        habilitarBoton();
+        flagNickname = !this.textNickname.getText().isEmpty() && this.textNickname.getText().length()<=64;
+        habilitarBoton();
+    }//GEN-LAST:event_textPuertoKeyReleased
+
+    private void textIpKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_textIpKeyReleased
+        String contenido = this.textIp.getText();
+        flagIp = validaIp(contenido) || contenido.equals("localhost");
+        habilitarBoton();
+    }//GEN-LAST:event_textIpKeyReleased
+
+    private void textNicknameKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_textNicknameKeyReleased
+       flagNickname = !this.textNickname.getText().isEmpty() && this.textNickname.getText().length()<=64;
+       habilitarBoton();
+    }//GEN-LAST:event_textNicknameKeyReleased
 
     /**
      * @param args the command line arguments
@@ -138,27 +258,27 @@ public class FormularioAgregarContacto extends javax.swing.JDialog {
     }*/
 
     public String getNickname() {
-        return nicknameField.getText();
+        return textNickname.getText();
     }
 
     public String getIp() {
-        return ipField.getText();
+        return textIp.getText();
     }
 
     public int getPuerto() {
-        System.out.println(puertoField.getText());
-        return Integer.parseInt(puertoField.getText());
+        return Integer.parseInt(textPuerto.getText());
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JTextField ipField;
+    private javax.swing.JButton botonAgregarContacto;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JTextField nicknameField;
-    private javax.swing.JTextField puertoField;
-    private javax.swing.JButton submitButton;
+    private javax.swing.JPanel jPanel2;
+    private javax.swing.JTextField textIp;
+    private javax.swing.JTextField textNickname;
+    private javax.swing.JTextField textPuerto;
     // End of variables declaration//GEN-END:variables
 }

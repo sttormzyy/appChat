@@ -12,8 +12,8 @@ public class Usuario extends Persona {
     private Agenda agenda = null;
 
     // Constructor
-    public Usuario(String nickname, String ip, int port) {
-        super(nickname, ip, port);
+    public Usuario(String nickname, String ip, int puerto) {
+        super(nickname, ip, puerto);
         this.conversaciones = new ArrayList();
         this.agenda = new Agenda();
     }
@@ -29,10 +29,13 @@ public class Usuario extends Persona {
     }
     
     public Conversacion buscarConversacion(String ip, int puerto){
-            return conversaciones.stream()
-                .filter(conversacion -> conversacion.getContacto().getIp().equals(ip) && conversacion.getContacto().getPort() == puerto)
-                .findFirst()
-                .orElse(null);
+        int i=0;
+        while(i<conversaciones.size() && (!conversaciones.get(i).getContacto().getIp().equals(ip) || conversaciones.get(i).getContacto().getPuerto() != puerto))
+            i++;
+        if (i<conversaciones.size())
+            return conversaciones.get(i);
+        else
+            return null;
     }
 
 
@@ -44,16 +47,6 @@ public class Usuario extends Persona {
     // 📌 Agregar un contacto a la agenda
     public boolean agregarContacto(Contacto contacto) {
         return agenda.agregarContacto(contacto);
-    }
-
-    // 📌 Eliminar un contacto de la agenda
-    public boolean eliminarContacto(int id) {
-        return agenda.eliminarContacto(id);
-    }
-
-    // 📌 Obtener un contacto de la agenda
-    public Contacto obtenerContacto(int id) {
-        return agenda.obtenerContactoPorId(id);
     }
 
     // 📌 Crear una nueva conversación con un contacto

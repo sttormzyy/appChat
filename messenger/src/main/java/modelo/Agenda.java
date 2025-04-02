@@ -5,7 +5,6 @@
 package modelo;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class Agenda {
     private final ArrayList<Contacto> contactos;
@@ -26,26 +25,15 @@ public class Agenda {
         return true;
     }
 
-    // 📌 Eliminar un contacto por ID
-    public boolean eliminarContacto(int id) {
-        boolean eliminado = contactos.removeIf(contacto -> contacto.getId() == id);
-        return eliminado;
-    }
-
-    // 📌 Obtener un contacto por ID (devuelve null si no existe)
-    public Contacto obtenerContactoPorId(int id) {
-        return contactos.stream()
-                .filter(contacto -> contacto.getId() == id)
-                .findFirst()
-                .orElse(null);
-    }
-
     // 📌 Obtener un contacto por ID (devuelve null si no existe)
     public Contacto obtenerContactoPorIpYPuerto(String ip, int port) {
-        return contactos.stream()
-                .filter(contacto -> contacto.getIp().equals(ip) && contacto.getPort() == port)
-                .findFirst()
-                .orElse(null);
+        int i=0;
+        while(i<contactos.size() && (!contactos.get(i).getIp().equals(ip) || contactos.get(i).getPuerto()!=port))
+            i++;
+        if(i<contactos.size())
+            return contactos.get(i);
+        else
+            return null;
     }
     
 }

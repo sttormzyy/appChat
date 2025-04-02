@@ -13,7 +13,7 @@ import java.awt.event.MouseEvent;
  */
 public class AgregarConversacionItemList extends javax.swing.JPanel {
     private FormularioAgregarConversacion agregarConversacion;
-
+    private boolean seleccionado = false;
     
     /**
      * Creates new form NewJPanel1
@@ -130,24 +130,28 @@ public class AgregarConversacionItemList extends javax.swing.JPanel {
 
     private void formMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseEntered
         contenedorPanel.setOpaque(true);
-        contenedorPanel.setBackground(new Color(153,255,255)); // Celeste claro (Light Cyan)
+        contenedorPanel.setBackground(Colores.COLOR_HOVER);     
         nicknameLabel.setForeground(new Color(30,30,30));
         ipLabel.setForeground(new Color(50,50,50));
         puertoLabel.setForeground(new Color(50,50,50));
     }//GEN-LAST:event_formMouseEntered
 
     private void formMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseExited
-        contenedorPanel.setOpaque(false);
-        contenedorPanel.setBackground(new java.awt.Color(47,52,52)); // Celeste claro (Light Cyan)
-        nicknameLabel.setForeground(new Color(255,255,255));
-        ipLabel.setForeground(new Color(210,210,210));
-        puertoLabel.setForeground(new Color(210,210,210));
+        if(!seleccionado)
+        {
+            contenedorPanel.setOpaque(false);
+            contenedorPanel.setBackground(Colores.COLOR_BASE);
+            nicknameLabel.setForeground(new Color(255,255,255));
+            ipLabel.setForeground(new Color(210,210,210));
+            puertoLabel.setForeground(new Color(210,210,210));
+        }
     }//GEN-LAST:event_formMouseExited
 
     private void formMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseClicked
         contenedorPanel.setOpaque(true);
+        this.seleccionado = true;
         agregarConversacion.setItemSeleccionado(this);
-        contenedorPanel.setBackground(new Color(153,255,255)); // Celeste claro (Light Cyan)
+        contenedorPanel.setBackground(Colores.COLOR_HOVER); 
         nicknameLabel.setForeground(new Color(30,30,30));
         ipLabel.setForeground(new Color(50,50,50));
         puertoLabel.setForeground(new Color(50,50,50));    
@@ -156,6 +160,7 @@ public class AgregarConversacionItemList extends javax.swing.JPanel {
     public void reestablecerFondo()
     {
         MouseEvent e = null;
+        this.seleccionado = false;
         this.formMouseExited(e);
     }
     

@@ -15,4 +15,5 @@ public class Colores {
     public static final Color COLOR_HOVER = new Color(95,109,115);
     public static final Color COLOR_NOTIFICACION = new Color(153,255,255);
     public static final Color COLOR_BASE = new Color(47,52,52);
+    public static final Color COLOR_BOTON =  new Color(30,30,30);
 }

@@ -1,9 +1,9 @@
-C:\Users\user\Documents\NetBeansProjects\appChatP2P\messenger\src\test\java\grupo10\messenger\backend\control\ControlTest.java
-C:\Users\user\Documents\NetBeansProjects\appChatP2P\messenger\src\test\java\grupo10\messenger\backend\modelo\ConversacionTest.java
-C:\Users\user\Documents\NetBeansProjects\appChatP2P\messenger\src\test\java\grupo10\messenger\backend\modelo\MensajeRedTest.java
-C:\Users\user\Documents\NetBeansProjects\appChatP2P\messenger\src\test\java\grupo10\messenger\backend\modelo\MensajeTest.java
-C:\Users\user\Documents\NetBeansProjects\appChatP2P\messenger\src\test\java\grupo10\messenger\backend\modelo\PersonaTest.java
-C:\Users\user\Documents\NetBeansProjects\appChatP2P\messenger\src\test\java\grupo10\messenger\backend\modelo\UsuarioTest.java
-C:\Users\user\Documents\NetBeansProjects\appChatP2P\messenger\src\test\java\grupo10\messenger\backend\red\ClienteTest.java
-C:\Users\user\Documents\NetBeansProjects\appChatP2P\messenger\src\test\java\grupo10\messenger\backend\red\ServercitoTest.java
-C:\Users\user\Documents\NetBeansProjects\appChatP2P\messenger\src\test\java\grupo10\messenger\backend\red\ServerTest.java
+E:\INGENIERIA INFORMATICA\MessengerOmega\messenger\src\test\java\modelo\ConversacionTest.java
+E:\INGENIERIA INFORMATICA\MessengerOmega\messenger\src\test\java\modelo\MensajeRedTest.java
+E:\INGENIERIA INFORMATICA\MessengerOmega\messenger\src\test\java\modelo\PersonaTest.java
+E:\INGENIERIA INFORMATICA\MessengerOmega\messenger\src\test\java\red\ClienteTest.java
+E:\INGENIERIA INFORMATICA\MessengerOmega\messenger\src\test\java\red\ServercitoTest.java
+E:\INGENIERIA INFORMATICA\MessengerOmega\messenger\src\test\java\modelo\UsuarioTest.java
+E:\INGENIERIA INFORMATICA\MessengerOmega\messenger\src\test\java\control\ControlTest.java
+E:\INGENIERIA INFORMATICA\MessengerOmega\messenger\src\test\java\modelo\MensajeTest.java
+E:\INGENIERIA INFORMATICA\MessengerOmega\messenger\src\test\java\red\ServerTest.java

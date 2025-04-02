@@ -7,13 +7,13 @@ package modelo;
 public class Persona {
     private final String nickname;
     private final String ip;
-    private final int port;
+    private final int puerto;
 
     // Constructor
-    public Persona(String nickname, String ip, int port) {
+    public Persona(String nickname, String ip, int puerto) {
         this.nickname = nickname;
         this.ip = ip;
-        this.port = port;
+        this.puerto = puerto;
     }
 
     // Getters
@@ -25,8 +25,8 @@ public class Persona {
         return ip;
     }
 
-    public int getPort() {
-        return port;
+    public int getPuerto() {
+        return puerto;
     }
 
 }
