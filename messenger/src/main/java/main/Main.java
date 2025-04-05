@@ -7,6 +7,7 @@ package main;
 import controlador.Control;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
+import vista.IVista;
 import vista.VentanaPrincipal;
 
 /**
@@ -27,8 +28,9 @@ public class Main {
         e.printStackTrace();
         }
         Control control = Control.getInstance();
-        VentanaPrincipal vista = new VentanaPrincipal(control);  
+        IVista vista = new VentanaPrincipal(control);  
         control.setVista(vista);
+        vista.abrirFormularioRegistro();
     }
 }
 

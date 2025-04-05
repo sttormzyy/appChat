@@ -14,7 +14,7 @@ import javax.swing.ImageIcon;
  *
  * @author Usuario
  */
-public class FormularioAgregarContacto extends javax.swing.JDialog {
+public class FormularioAgregarContacto extends javax.swing.JDialog implements IVistaContacto{
     private boolean habilitadoNickname = false;
     private boolean habilitadoIp = false;
     private boolean habiltadoPuerto = false;
@@ -209,16 +209,26 @@ public class FormularioAgregarContacto extends javax.swing.JDialog {
        habilitarBoton();
     }//GEN-LAST:event_textNicknameKeyReleased
 
-    public String getNickname() {
+    public String getNicknameContacto() {
         return textNickname.getText();
     }
 
-    public String getIp() {
+    public String getIPContacto() {
         return textIp.getText();
     }
 
-    public int getPuerto() {
+    public int getPuertoContacto() {
         return Integer.parseInt(textPuerto.getText());
+    }
+
+    
+    public void abrirFormularioAgregarContacto() {
+       this.setVisible(true);
+    }
+
+
+    public void cerrarFormularioAgregarContacto() {
+      this.setVisible(false);
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -233,4 +243,6 @@ public class FormularioAgregarContacto extends javax.swing.JDialog {
     private javax.swing.JTextField textNickname;
     private javax.swing.JTextField textPuerto;
     // End of variables declaration//GEN-END:variables
+
+
 }

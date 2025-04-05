@@ -12,7 +12,7 @@ import javax.swing.ImageIcon;
  *
  * @author Usuario
  */
-public class FormularioRegistro extends javax.swing.JFrame {
+public class FormularioRegistro extends javax.swing.JFrame implements IVistaRegistro {
     private boolean habilitaNickname = false;
     private boolean habilitaPuerto = false;
     
@@ -26,12 +26,12 @@ public class FormularioRegistro extends javax.swing.JFrame {
         setSize(360, 310); 
     }
     
-    public String getNickname()
+    public String getNicknameRegistro()
     {
         return textNickname.getText();
     }
       
-    public int getPuerto() {
+    public int getPuertoRegistro() {
         // Convierte el texto del JTextField a int
         return Integer.parseInt(textPuerto.getText());
     }
@@ -194,6 +194,13 @@ public class FormularioRegistro extends javax.swing.JFrame {
         habilitarBoton();
     }//GEN-LAST:event_textPuertoKeyReleased
 
+    public void cerrarFormularioRegistro() {
+       this.dispose();
+    }
+    
+    public void abrirFormularioRegistro() {
+       this.setVisible(true);
+    }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton botonConfirmar;
     private javax.swing.JPanel jPanel1;
@@ -204,4 +211,5 @@ public class FormularioRegistro extends javax.swing.JFrame {
     private javax.swing.JTextField textNickname;
     private javax.swing.JTextField textPuerto;
     // End of variables declaration//GEN-END:variables
+
 }

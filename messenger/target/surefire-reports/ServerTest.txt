@@ -1,0 +1,25 @@
+-------------------------------------------------------------------------------
+Test set: ServerTest
+-------------------------------------------------------------------------------
+Tests run: 3, Failures: 0, Errors: 3, Skipped: 0, Time elapsed: 0.012 s <<< FAILURE! -- in ServerTest
+ServerTest.testIniciarServidor -- Time elapsed: 0.004 s <<< ERROR!
+java.lang.NullPointerException: Cannot invoke "red.Servidor.iniciarServidor()" because "instance" is null
+	at ServerTest.testIniciarServidor(ServerTest.java:60)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1597)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1597)
+
+ServerTest.testRun -- Time elapsed: 0.001 s <<< ERROR!
+java.lang.NullPointerException: Cannot invoke "red.Servidor.run()" because "instance" is null
+	at ServerTest.testRun(ServerTest.java:72)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1597)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1597)
+
+ServerTest.testIsConectado -- Time elapsed: 0.003 s <<< ERROR!
+java.lang.NullPointerException: Cannot invoke "red.Servidor.isConectado()" because "instance" is null
+	at ServerTest.testIsConectado(ServerTest.java:47)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1597)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1597)
+

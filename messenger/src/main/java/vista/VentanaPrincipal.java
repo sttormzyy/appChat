@@ -25,9 +25,9 @@ import modelo.Mensaje;
 
 public class VentanaPrincipal extends javax.swing.JFrame implements IVista{
     private ActionListener controlador;
-    private FormularioRegistro registro;
-    private FormularioAgregarContacto agregarContacto;
-    private FormularioAgregarConversacion agregarConversacion;
+    private IVistaRegistro registro;
+    private IVistaContacto agregarContacto;
+    private IVistaConversacion agregarConversacion;
     private int puertoActivo = -1;
     private String ipActiva = null;
     private SideBar sideBar;
@@ -49,8 +49,6 @@ public class VentanaPrincipal extends javax.swing.JFrame implements IVista{
         botonChats.addActionListener(controlador);
         botonAgregarContacto.addActionListener(controlador);
         botonAgregarConversacion.addActionListener(controlador);
-        registro = new FormularioRegistro(controlador);
-        registro.setVisible(true);
     }
     
      /** 
@@ -503,63 +501,67 @@ public class VentanaPrincipal extends javax.swing.JFrame implements IVista{
         this.sideBar = sideBar;
     }
     
-        public String getNicknameRegistro() {
-       return registro.getNickname();
+    public void abrirFormularioRegistro()
+    {
+        registro = new FormularioRegistro(controlador);
+        registro.abrirFormularioRegistro();
+    }
+    public String getNicknameRegistro() {
+       return registro.getNicknameRegistro();
     }
 
     public int getPuertoRegistro() {
-       return registro.getPuerto();
+       return registro.getPuertoRegistro();
     }
 
     public void abrirFormularioAgregarContacto() 
     {
         this.agregarContacto = new FormularioAgregarContacto(this,true,controlador);
-        agregarContacto.setVisible(true);
+        agregarContacto.abrirFormularioAgregarContacto();
     }
 
     public void cerrarFormularioAgregarContacto() {
-       this.agregarContacto.dispose(); 
+       this.agregarContacto.cerrarFormularioAgregarContacto();
     }
 
     public String getNicknameContacto() {
-       return this.agregarContacto.getNickname();
+       return this.agregarContacto.getNicknameContacto();
     }
 
     public String getIPContacto() 
     {
-       return this.agregarContacto.getIp();
+       return this.agregarContacto.getIPContacto();
     }
 
     public int getPuertoContacto() 
     {
-       return this.agregarContacto.getPuerto();
+       return this.agregarContacto.getPuertoContacto();
     }
 
     public void abrirFormularioAgregarConversacion(ArrayList<Contacto> contactosSinConversacion) 
     {
        this.agregarConversacion = new FormularioAgregarConversacion(this,true,controlador);
-       agregarConversacion.agregarContactos(contactosSinConversacion);
-       agregarConversacion.setVisible(true);
+       agregarConversacion.abrirFormularioAgregarConversacion(contactosSinConversacion);
     }
 
     public void cerrarFormularioAgregarConversacion() 
     {
-        this.agregarConversacion.dispose();     
+        this.agregarConversacion.cerrarFormularioAgregarConversacion();
     }
 
     public void cerrarFormularioRegistro() 
     {
-       this.registro.dispose();
+       this.registro.cerrarFormularioRegistro();
     }
 
     public String getIPConversacion() 
     {
-      return this.agregarConversacion.getIp();
+      return this.agregarConversacion.getIPConversacion();
     }
 
     public int getPuertoConversacion() 
     {
-      return this.agregarConversacion.getPuerto();
+      return this.agregarConversacion.getPuertoConversacion();
     }
    
     

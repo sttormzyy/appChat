@@ -17,7 +17,7 @@ import modelo.Contacto;
  *
  * @author vanci
  */
-public class FormularioAgregarConversacion extends javax.swing.JDialog {
+public class FormularioAgregarConversacion extends javax.swing.JDialog implements IVistaConversacion{
     AgregarConversacionItemList itemSeleccionado = null;
     
 
@@ -31,7 +31,6 @@ public class FormularioAgregarConversacion extends javax.swing.JDialog {
     
     public void agregarContactos(ArrayList<Contacto> contactos)
     {
-        System.out.println("UJHSDAHD");
         AgregarConversacionItemList item;
         for(Contacto contacto:contactos)
         {
@@ -55,17 +54,25 @@ public class FormularioAgregarConversacion extends javax.swing.JDialog {
         agregarConversacionButton.setEnabled(true);
     }
     
-    public int getPuerto()
+    public int getPuertoConversacion()
     {
         return itemSeleccionado.getPuerto();
     }
     
-    public String getIp()
+    public String getIPConversacion()
     {
         return itemSeleccionado.getIp();
     }
     
-    
+    public void abrirFormularioAgregarConversacion(ArrayList<Contacto> contactosSinConversacion) {
+        this.agregarContactos(contactosSinConversacion);
+        this.setVisible(true);
+    }
+
+    public void cerrarFormularioAgregarConversacion() {
+        this.setVisible(false);
+    }
+ 
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always

@@ -1,0 +1,19 @@
+-------------------------------------------------------------------------------
+Test set: red.ServerTest
+-------------------------------------------------------------------------------
+Tests run: 1, Failures: 0, Errors: 1, Skipped: 0, Time elapsed: 0.004 s <<< FAILURE! -- in red.ServerTest
+red.ServerTest -- Time elapsed: 0.004 s <<< ERROR!
+java.lang.Error: 
+Unresolved compilation problem: 
+
+	at red.ServerTest.setUpClass(ServerTest.java:24)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1597)
+	Suppressed: java.lang.Error: Unresolved compilation problem: 
+
+		at red.ServerTest.tearDownClass(ServerTest.java:28)
+		at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+		at java.base/java.util.ArrayList.forEach(ArrayList.java:1597)
+		at java.base/java.util.Collections$UnmodifiableCollection.forEach(Collections.java:1117)
+		... 1 more
+

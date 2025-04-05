@@ -1,6 +1,7 @@
 E:\INGENIERIA INFORMATICA\MessengerOmega\messenger\src\main\java\modelo\Conversacion.java
 E:\INGENIERIA INFORMATICA\MessengerOmega\messenger\src\main\java\vista\FormularioAgregarConversacion.java
 E:\INGENIERIA INFORMATICA\MessengerOmega\messenger\src\main\java\controlador\Control.java
+E:\INGENIERIA INFORMATICA\MessengerOmega\messenger\src\main\java\vista\IVistaContacto.java
 E:\INGENIERIA INFORMATICA\MessengerOmega\messenger\src\main\java\red\Servercito.java
 E:\INGENIERIA INFORMATICA\MessengerOmega\messenger\src\main\java\vista\AgregarConversacionItemList.java
 E:\INGENIERIA INFORMATICA\MessengerOmega\messenger\src\main\java\vista\FormularioRegistro.java
@@ -10,8 +11,10 @@ E:\INGENIERIA INFORMATICA\MessengerOmega\messenger\src\main\java\modelo\MensajeR
 E:\INGENIERIA INFORMATICA\MessengerOmega\messenger\src\main\java\red\Cliente.java
 E:\INGENIERIA INFORMATICA\MessengerOmega\messenger\src\main\java\vista\ContenedorMensajeVista.java
 E:\INGENIERIA INFORMATICA\MessengerOmega\messenger\src\main\java\vista\IVista.java
+E:\INGENIERIA INFORMATICA\MessengerOmega\messenger\src\main\java\vista\IVistaConversacion.java
 E:\INGENIERIA INFORMATICA\MessengerOmega\messenger\src\main\java\modelo\Usuario.java
 E:\INGENIERIA INFORMATICA\MessengerOmega\messenger\src\main\java\vista\ModernScrollBarUI.java
+E:\INGENIERIA INFORMATICA\MessengerOmega\messenger\src\main\java\vista\IGestorConversacion.java
 E:\INGENIERIA INFORMATICA\MessengerOmega\messenger\src\main\java\vista\MenuItemList.java
 E:\INGENIERIA INFORMATICA\MessengerOmega\messenger\src\main\java\vista\Colores.java
 E:\INGENIERIA INFORMATICA\MessengerOmega\messenger\src\main\java\vista\MensajeVista.java
@@ -22,5 +25,6 @@ E:\INGENIERIA INFORMATICA\MessengerOmega\messenger\src\main\java\vista\Formulari
 E:\INGENIERIA INFORMATICA\MessengerOmega\messenger\src\main\java\modelo\Agenda.java
 E:\INGENIERIA INFORMATICA\MessengerOmega\messenger\src\main\java\modelo\Persona.java
 E:\INGENIERIA INFORMATICA\MessengerOmega\messenger\src\main\java\vista\ContactoItemList.java
+E:\INGENIERIA INFORMATICA\MessengerOmega\messenger\src\main\java\vista\IVistaRegistro.java
 E:\INGENIERIA INFORMATICA\MessengerOmega\messenger\src\main\java\main\Main.java
 E:\INGENIERIA INFORMATICA\MessengerOmega\messenger\src\main\java\vista\ConversacionItemList.java
