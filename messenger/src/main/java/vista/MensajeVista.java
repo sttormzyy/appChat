@@ -61,10 +61,10 @@ private void ajustarTamaño() {
     // Iterar sobre cada línea del texto
     for (String line : lineas) {
         int lineWidth = metrics.stringWidth(line);  // Obtener el ancho de la línea actual
+        int currentLineWidthForThisLine = 0;
         if (lineWidth > maxWidth) {
             // Si una línea es más ancha que el límite, necesitaríamos dividirla
             // Hacer una comprobación por caracteres
-            int currentLineWidthForThisLine = 0;
             for (int i = 0; i < line.length(); i++) {
                 char c = line.charAt(i);
                 int charWidth = metrics.charWidth(c);
@@ -80,6 +80,7 @@ private void ajustarTamaño() {
         } else {
             // Si la línea cabe sin romperse, simplemente sumamos a las líneas
             lines++;
+            currentLineWidthForThisLine = 0;
         }
     }
 
@@ -99,46 +100,5 @@ private void ajustarTamaño() {
     setPreferredSize(new Dimension(textWidth + 10, textHeight - 5));  // Añadir solo un margen para el alto
 }
 
-    /*
-    private void ajustarTamaño() {
-        // Obtener las métricas de la fuente actual
-        FontMetrics metrics = getFontMetrics(getFont());
-
-        // Definir el ancho máximo para el JTextArea
-        int maxWidth = ANCHO_MAX - 10;  // Consideramos un margen de 10 píxeles
-
-        // Obtener el texto completo
-        String text = getText();
-
-        int currentLineWidth = 0;  // Ancho actual de la línea
-        int lines = 1;  // Comenzamos con 1 línea por defecto
-
-        // Iterar sobre el texto letra por letra
-        for (int i = 0; i < text.length(); i++) {
-            char c = text.charAt(i);  // Obtener el carácter actual
-            int charWidth = metrics.charWidth(c);  // Medir el ancho de la letra
-
-            // Si el ancho total excede el ancho máximo, saltamos a la siguiente línea
-            if (currentLineWidth + charWidth > maxWidth) {
-                lines++;  // Incrementamos el número de líneas
-                currentLineWidth = charWidth;  // Reiniciamos el ancho de la línea con el nuevo carácter
-            } else {
-                currentLineWidth += charWidth;  // Sumamos el ancho de la letra a la línea actual
-            }
-        }
-
-        // Obtener el alto necesario para las líneas
-        int lineHeight = metrics.getHeight();  // Altura de la línea
-        int textHeight = lineHeight * lines;  // Calcular el alto total según las líneas
-
-        // Calcular el ancho necesario para el texto, respetando el límite de ANCHO_MAX
-        int textWidth = 0;
-        for (String line : text.split("\n")) {
-            textWidth = Math.max(textWidth, metrics.stringWidth(line));
-    }
-        textWidth = Math.min(textWidth, ANCHO_MAX);
-        setPreferredSize(new Dimension(textWidth + 10, textHeight + 20));  // Añadir un margen extra
-}
-*/
 
 }
