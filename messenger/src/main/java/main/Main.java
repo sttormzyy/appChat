@@ -8,7 +8,6 @@ import controlador.Control;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import vista.VentanaPrincipal;
-import vista.VentanaRegistro;
 
 /**
  *
@@ -28,11 +27,8 @@ public class Main {
         e.printStackTrace();
         }
         Control control = Control.getInstance();
-        VentanaRegistro registro = new VentanaRegistro(control);
         VentanaPrincipal vista = new VentanaPrincipal(control);  
-        control.setRegistro(registro);
         control.setVista(vista);
-        registro.setVisible(true);
     }
 }
 

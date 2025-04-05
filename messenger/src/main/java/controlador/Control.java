@@ -8,28 +8,23 @@ package controlador;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
-import vista.VentanaPrincipal;
+import javax.swing.JFrame;
 import modelo.Agenda;
 import modelo.Contacto;
 import modelo.Conversacion;
 import modelo.Mensaje;
 import modelo.MensajeRed;
 import modelo.Usuario;
-import red.Server;
-import vista.FormularioAgregarContacto;
-import vista.FormularioAgregarConversacion;
+import red.Servidor;
+import vista.IVista;
 import vista.VentanaError;
 import vista.VentanaPrincipal.SideBar;
-import vista.VentanaRegistro;
 
 public class Control implements ActionListener{
     private static Control instance = null;
-    private Server servidor;
+    private Servidor servidor;
     private Usuario usuario;
-    private VentanaPrincipal vista;
-    private VentanaRegistro registro;
-    private FormularioAgregarContacto agregarContacto;
-    private FormularioAgregarConversacion agregarConversacion;
+    private IVista vista;
     private Control(){}
     
     public static Control getInstance(){      
@@ -38,12 +33,7 @@ public class Control implements ActionListener{
         return instance;
     }
     
-    public void setRegistro(VentanaRegistro registro)
-    {
-        this.registro = registro;
-    }
-   
-    public void setVista(VentanaPrincipal vista)
+    public void setVista(IVista vista)
     {
         this.vista = vista;
     }
@@ -72,73 +62,81 @@ public class Control implements ActionListener{
         
         switch(evento.getActionCommand()) {
             case "REGISTRO":
-                nickname = registro.getNickname();
-                puerto = registro.getPuerto();
-                this.registrar(nickname,"localhost",puerto);
+                nickname = vista.getNicknameRegistro();
+                puerto = vista.getPuertoRegistro();
+                this.registrar(nickname,"127.0.0.1",puerto);
                 break;
                 
             case "ENVIAR MENSAJE":
                 String contenido = vista.getMensaje();
-                if(sePuedeEnviarMensaje(contenido)){
-                    ip = vista.getIPactiva();
-                    puerto = vista.getPuertoActivo();
-                    if(this.enviarMensaje(contenido,ip,puerto)) 
-                    {
-                        usuario.buscarConversacion(ip, puerto).agregarMensaje(new Mensaje(contenido,true));
-                        vista.agregarMensaje(contenido,true);
+                System.out.println(contenido);
+                if(hayChatSeleccionado())
+                {
+                    if(sePuedeEnviarMensaje(contenido)){
+                        ip = vista.getIPactiva();
+                        puerto = vista.getPuertoActivo();
+                        if(this.enviarMensaje(contenido,ip,puerto)) 
+                        {
+                            usuario.buscarConversacion(ip, puerto).agregarMensaje(new Mensaje(contenido,true));
+                            vista.agregarMensaje(contenido,true);
+                        }
+                        else{
+                            VentanaError error = new VentanaError((JFrame)vista,true,"No se pudo enviar el mensaje");
+                        }
+                    }else{
+                        VentanaError error = new VentanaError((JFrame)vista,true,"Por favor, escriba un mensaje para ser enviado");
                     }
-                    else{
-                        VentanaError error = new VentanaError(vista,true,"No se pudo enviar el mensaje");
-                    }
-                }else{
-                    VentanaError error = new VentanaError(vista,true,"Por favor, seleccione o cree una conversacion para enviar mensaje");
+                }else
+                {
+                    VentanaError error = new VentanaError((JFrame)vista,true,"Por favor, seleccione una conversacion para enviar mensajes");
                 }
                 break;
                            
             case "SOLICITUD AGREGAR CONVERSACION":
-                agregarConversacion = new FormularioAgregarConversacion(vista, true, instance);
                 ArrayList<Contacto> contactosSinConversacion = new ArrayList<>();
                 ArrayList<Contacto> contactos = usuario.getAgenda().getContactos();
-                
                 for(Contacto contacto: contactos)
                 {
                     conversacion = usuario.buscarConversacion(contacto.getIp(),contacto.getPuerto());
                     if(conversacion == null)
                         contactosSinConversacion.add(contacto);
                 }
-                agregarConversacion.agregarContactos(contactosSinConversacion);
-                agregarConversacion.setVisible(true);
-                break;
-                
-            case "SOLICITUD AGREGAR CONTACTO":
-                agregarContacto = new FormularioAgregarContacto(vista, true, instance);
-                agregarContacto.setVisible(true);
+                if(contactosSinConversacion.size() != 0)
+                    vista.abrirFormularioAgregarConversacion(contactosSinConversacion);
+                else
+                {
+                    VentanaError error = new VentanaError((JFrame)vista,true,"Agregue mas contactos para iniciar nuevas conversaciones");
+                }
                 break;
                 
             case "AGREGAR CONVERSACION":
-                ip = agregarConversacion.getIp();
-                puerto = agregarConversacion.getPuerto();
+                ip = vista.getIPConversacion();
+                puerto = vista.getPuertoConversacion();
                 Contacto contacto = usuario.getAgenda().obtenerContactoPorIpYPuerto(ip, puerto);
                 usuario.iniciarConversacion(contacto);
-                vista.setIpActiva(ip);
+                vista.setIPactiva(ip);
                 vista.setPuertoActivo(puerto);
-                System.out.println("ip:" + ip + " puerto:" + puerto);
                 vista.agregarConversacion(usuario.buscarConversacion(ip, puerto));
                 vista.mostrarConversacion(null,contacto.getNickname(),ip,puerto);
-                agregarConversacion.dispose();
+                vista.cerrarFormularioAgregarConversacion();
                 break;
                 
-            case "SUBMIT CONTACTO":
-                ip = agregarContacto.getIp();
-                nickname = agregarContacto.getNickname();
-                puerto = agregarContacto.getPuerto();
+                                
+            case "SOLICITUD AGREGAR CONTACTO":
+                vista.abrirFormularioAgregarContacto();
+                break;
+                
+            case "AGENDAR CONTACTO":
+                ip = vista.getIPContacto();
+                nickname = vista.getNicknameContacto();
+                puerto = vista.getPuertoContacto();
                 if(usuario.getAgenda().obtenerContactoPorIpYPuerto(ip, puerto) == null){
                     contacto = new Contacto(nickname,ip,puerto);
                     this.vista.agregarContacto(contacto);
                     this.usuario.agregarContacto(contacto);
-                    agregarContacto.dispose();
+                    vista.cerrarFormularioAgregarContacto();
                 }else{
-                    VentanaError error = new VentanaError(vista,true,"Contacto ya existente");
+                    VentanaError error = new VentanaError((JFrame)vista,true,"Contacto ya existente");
                 }
                 break;
                 
@@ -167,32 +165,49 @@ public class Control implements ActionListener{
         }
     }
     
+    /**
+     * Registra usuario activo de la app con los datos recibidos por parametro.
+     * @param nickname
+     * @param ip
+     * @param puerto 
+     */
     private void registrar(String nickname,String ip,int puerto){
         if (this.iniciarServer(puerto)){
             usuario = new Usuario(nickname,ip,puerto);
-            registro.dispose();
-            vista.setVisible(true);
+            vista.cerrarFormularioRegistro();
+            vista.hacerVisible(true);
         }
         else{
-            VentanaError error = new VentanaError(registro,true,"No fue posible iniciar el servidor en el puerto " + puerto);
+            VentanaError error = new VentanaError((JFrame)vista,true,"No fue posible iniciar el servidor en el puerto " + puerto);
         }
     }
     
+    /**
+     * Inicia el servidor en el puerto indicado, en caso de error informa.
+     * @param puerto
+     * @return 
+     */
     private boolean iniciarServer(int puerto){
-        
-         this.servidor = new Server(puerto,instance);
+        this.servidor = new Servidor(puerto,instance);
         
         Thread hilo = new Thread(servidor);
         hilo.start();
         
         try {
-            hilo.join(1000);//espero 1 seg para comprobar si se conecto o no el servidor al puerto
+            hilo.join(1000);
         } catch (InterruptedException ex) {
             return false;
         }
         return servidor.isConectado();
     }
     
+    /**
+     * Delega al servidor el envio de un mensaje. En caso de error, informa.
+     * @param contenido
+     * @param IP
+     * @param puerto
+     * @return 
+     */
     public synchronized boolean enviarMensaje(String contenido, String IP, int puerto){
        MensajeRed msjRed = new MensajeRed(usuario.getNickname(),usuario.getIp(),usuario.getPuerto(),IP,puerto,contenido);
        if (servidor.enviarMensaje(msjRed)){
@@ -203,6 +218,10 @@ public class Control implements ActionListener{
        return false;
     }
     
+    /**
+     * Recibe un mensaje y actualiza la vista dependiendo si el mensaje pertenece o no al chat activo de la misma.
+     * @param mensaje 
+     */
     public synchronized void recibirMensaje(MensajeRed mensaje){
         Mensaje msj = new Mensaje(mensaje.getContenido(),false);
         Conversacion conversacion = usuario.buscarConversacion(mensaje.getMiIp(), mensaje.getMiPuerto());
@@ -218,19 +237,18 @@ public class Control implements ActionListener{
             usuario.agregarConversacion(conversacion);
             usuario.agregarContacto(contacto);
             conversacion.setNotificacion(true);
-            vista.notificar(mensaje.getContenido(),mensaje.getMiIp(),mensaje.getMiPuerto());
+            vista.notificar();
         }else
         {   
             conversacion.agregarMensaje(msj);
             if(mensaje.getMiIp().equals(ipActiva) && puertoActivo == mensaje.getMiPuerto())
             {
                  vista.agregarMensaje(mensaje.getContenido(),false);
-                  System.out.println(" puertoAct "+puertoActivo+" puertoMensjae "+mensaje.getMiPuerto());
             }
             else
             {
                  conversacion.setNotificacion(true);
-                 vista.notificar(mensaje.getContenido(),mensaje.getMiIp(),mensaje.getMiPuerto());
+                 vista.notificar();
             }
 
         }
@@ -238,8 +256,12 @@ public class Control implements ActionListener{
     
     private boolean sePuedeEnviarMensaje(String mensaje)
     {
-        return (!mensaje.equals("") && !(mensaje.equals("Ingrese un mensaje...") && !vista.isBarraDeMensajeClikeada()) ) 
-                && vista.getIPactiva()!=null && vista.getPuertoActivo()!= -1;
+        return (!mensaje.equals("") && !(mensaje.equals("Ingrese su mensaje aqui...") && !vista.isBarraDeMensajeClickeada()));
+    }
+    
+    private boolean hayChatSeleccionado()
+    {
+        return  vista.getIPactiva()!=null && vista.getPuertoActivo()!= -1;
     }
 }
 

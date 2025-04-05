@@ -11,19 +11,16 @@ public class Usuario extends Persona {
     private ArrayList<Conversacion> conversaciones = null;
     private Agenda agenda = null;
 
-    // Constructor
     public Usuario(String nickname, String ip, int puerto) {
         super(nickname, ip, puerto);
         this.conversaciones = new ArrayList();
         this.agenda = new Agenda();
     }
 
-    // 📌 Obtener la agenda
     public Agenda getAgenda() {
         return agenda;
     }
 
-    // 📌 Obtener lista de conversaciones
     public ArrayList<Conversacion> getConversaciones() {
         return conversaciones;
     }
@@ -38,28 +35,23 @@ public class Usuario extends Persona {
             return null;
     }
 
-
     public boolean agregarConversacion(Conversacion conversacion) {
         conversaciones.add(conversacion);
     return true;
     }
     
-    // 📌 Agregar un contacto a la agenda
     public boolean agregarContacto(Contacto contacto) {
         return agenda.agregarContacto(contacto);
     }
 
-    // 📌 Crear una nueva conversación con un contacto
     public Conversacion iniciarConversacion(Contacto contacto) {
         Conversacion nuevaConversacion = new Conversacion(contacto);
 
         if (this.agregarConversacion(nuevaConversacion)) { 
             return nuevaConversacion;
         }
-
         return null;
     }
-
 }
 
 

@@ -11,6 +11,7 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
+import javax.swing.JScrollBar;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.SoftBevelBorder;
 import modelo.Contacto;
@@ -22,38 +23,174 @@ import modelo.Mensaje;
  * @author Usuario
  */
 
-public class VentanaPrincipal extends javax.swing.JFrame {
+public class VentanaPrincipal extends javax.swing.JFrame implements IVista{
     private ActionListener controlador;
+    private FormularioRegistro registro;
+    private FormularioAgregarContacto agregarContacto;
+    private FormularioAgregarConversacion agregarConversacion;
     private int puertoActivo = -1;
     private String ipActiva = null;
     private SideBar sideBar;
     private boolean barraDeMensajeClikeada = false;
-    
+
     public enum SideBar {
         AGENDA,
         CONVERSACIONES;
     }
-    
-    /**
-     * Creates new form Main
-     */
+   
     public VentanaPrincipal(ActionListener controlador) {
         initComponents();
+        hacerVisible(false);
         setLocationRelativeTo(null);
         setIconImage(new ImageIcon(getClass().getResource("/resources/iconApp.png")).getImage());
         this.controlador = controlador;
-        this.sideBar = SideBar.AGENDA;
         botonEnviarMensaje.addActionListener(controlador);
         botonAgenda.addActionListener(controlador);
         botonChats.addActionListener(controlador);
         botonAgregarContacto.addActionListener(controlador);
         botonAgregarConversacion.addActionListener(controlador);
+        registro = new FormularioRegistro(controlador);
+        registro.setVisible(true);
     }
     
-    public VentanaPrincipal() {
-        setLocationRelativeTo(null);
-        initComponents();
+     /** 
+     * Muestra en el chatBody la conversacion con un contacto
+     * @param mensajes: lista de mensajes de la conversacion que se quiere mostrar
+     * @param nickname: nickname del contacto con el que se tiene la conversacion a ser mostrada
+     * @param ip: ip del contacto con el que se tiene la conversacion a ser mostrada
+     * @param puerto:  puerto del contacto con el que se tiene la conversacion a ser mostrada
+     */
+    public void mostrarConversacion(ArrayList<Mensaje> mensajes, String nickname, String ip, int puerto)
+    {
+        chatBody.removeAll();
+        chatBody.revalidate();
+        chatBody.repaint();
+        nicknameConversacion.setText(nickname);
+        if(mensajes != null)
+            for(Mensaje mensaje: mensajes)
+                if(mensaje.esMio())
+                    this.agregarMensaje(mensaje.getContenido(),true);
+                else
+                    this.agregarMensaje(mensaje.getContenido(),false);
     }
+    
+    public void notificar()
+    {
+        if(sideBar == SideBar.AGENDA)
+        {
+           botonChats.setBackground(Colores.COLOR_NOTIFICACION);
+           botonChats.setForeground(Color.BLACK);
+           botonChats.setText("CHATS *");
+        }
+        else
+        {
+           ActionEvent event = new ActionEvent(botonChats, ActionEvent.ACTION_PERFORMED, "MOVER A CONVERSACIONES");
+           controlador.actionPerformed(event);
+        }
+    }
+    
+    /**
+     * En base a un contenido y a quien pertenece el mensaje, agrega el mensaje visualmente al chatBody
+     * @param contenido: contenido del mensaje a agregar
+     * @param esMio: booleano que define si el mensaje pertenece al usuario registrado o al contacto
+     */
+    public void agregarMensaje(String contenido,boolean esMio)
+    {
+        ContenedorMensajeVista mensaje =  new ContenedorMensajeVista(contenido,esMio);
+        chatBody.add(mensaje);
+        chatBody.revalidate();
+        chatBody.repaint();
+        scrollChatBody.getVerticalScrollBar().setValue(scrollChatBody.getVerticalScrollBar().getMaximum());
+    }
+    
+    /**
+     * Agrega en menuList el item recibido por parametro (podria ser un contactoItem o una conversacionItem)
+     * @param item: item a ser agregado
+     */
+    public void agregarMenuItemList(MenuItemList item) 
+    {
+        menuList.add(item);
+        menuList.revalidate();
+        menuList.repaint();
+    }
+    
+    /**
+     * Carga en el menuList visualmente a los contactos del usuario registrado
+     * @param contactos 
+     */
+    public void cargarContactos(ArrayList<Contacto> contactos) 
+    {
+        menuList.removeAll();
+        menuList.revalidate();
+        menuList.repaint();
+        botonAgenda.setBorder(new SoftBevelBorder(BevelBorder.RAISED,Colores.COLOR_BOTON,Colores.COLOR_BOTON,Colores.COLOR_NOTIFICACION,Colores.COLOR_BOTON));
+        botonChats.setBorder(new SoftBevelBorder(BevelBorder.RAISED,Colores.COLOR_BOTON,Colores.COLOR_BOTON,Colores.COLOR_BOTON,Colores.COLOR_BOTON));
+        ContactoItemList contactoItemList;
+        String nickname;
+        for (Contacto contacto: contactos) {
+            this.agregarContacto(contacto);
+        }
+    }
+    
+    /**
+     * Carga en el menuList visualmente a las conversaciones del usuario registrado
+     * @param conversaciones 
+     */
+    public void cargarConversaciones(ArrayList<Conversacion> conversaciones)
+    {
+        menuList.removeAll();
+        menuList.revalidate();
+        menuList.repaint();
+        botonAgenda.setBorder(new SoftBevelBorder(BevelBorder.RAISED,Colores.COLOR_BOTON,Colores.COLOR_BOTON,Colores.COLOR_BOTON,Colores.COLOR_BOTON));
+        botonChats.setBorder(new SoftBevelBorder(BevelBorder.RAISED,Colores.COLOR_BOTON,Colores.COLOR_BOTON,Colores.COLOR_NOTIFICACION,Colores.COLOR_BOTON));
+        botonChats.setBackground(Colores.COLOR_BOTON);
+        botonChats.setForeground(Color.WHITE);
+        botonChats.setText("CHATS");
+        for (Conversacion conversacion: conversaciones) {
+            this.agregarConversacion(conversacion);
+        }
+    }
+    
+    /**
+     * Carga en el menuList visualmente a un contacto en particular
+     * @param contacto 
+     */
+    public void agregarContacto(Contacto contacto)
+    {
+        ContactoItemList contactoItemList;
+        String nickname;
+        nickname = contacto.getNickname();
+        if (nickname.length() >= 20) {
+            nickname = nickname.substring(0,19) + "...";
+        }
+        contactoItemList = new ContactoItemList(nickname,contacto.getIp(),contacto.getPuerto());
+        agregarMenuItemList(contactoItemList);
+    }
+    
+    /**
+     * Carga en el menuList visualmente a una conversacion en particular
+     * @param conversacion 
+     */ 
+    public void agregarConversacion(Conversacion conversacion) 
+    {
+        Contacto contacto;
+        ConversacionItemList conversacionItemList;
+        contacto = conversacion.getContacto();
+        conversacionItemList = new ConversacionItemList(controlador, this, contacto.getNickname(), contacto.getIp(), contacto.getPuerto());
+
+        String ultimoMensaje = conversacion.getUltimoMensaje();
+
+        if (ultimoMensaje.length() > 30) {
+            ultimoMensaje = ultimoMensaje.substring(0, 30) + "...";
+        }
+        conversacionItemList.getUltimoMensajeLabel().setText(ultimoMensaje);
+
+        if (conversacion.tieneNotificacion()) {
+            conversacionItemList.setNotificacion();
+        }
+        agregarMenuItemList(conversacionItemList);
+}
+  
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -185,7 +322,9 @@ public class VentanaPrincipal extends javax.swing.JFrame {
 
         menu.add(contenedorBotonesMenu, java.awt.BorderLayout.PAGE_START);
 
-        scrollMenuList.setVerticalScrollBar(new ScrollBar());
+        JScrollBar scrollBar = new JScrollBar();
+        scrollBar.setUI(new ModernScrollBarUI());
+        scrollMenuList.setVerticalScrollBar(scrollBar);
         scrollMenuList.setBorder(null);
         scrollMenuList.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 
@@ -267,7 +406,9 @@ public class VentanaPrincipal extends javax.swing.JFrame {
 
         jPanel5.setBackground(new java.awt.Color(47, 52, 52));
 
-        ScrollPaneMensaje.setVerticalScrollBar(new ScrollBar());
+        JScrollBar scrollBarMensaje = new JScrollBar();
+        scrollBarMensaje.setUI(new ModernScrollBarUI());
+        ScrollPaneMensaje.setVerticalScrollBar(scrollBarMensaje);
         ScrollPaneMensaje.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 
         textAreaMensaje.setBackground(new java.awt.Color(47, 52, 52));
@@ -275,7 +416,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         textAreaMensaje.setForeground(new java.awt.Color(255, 255, 255));
         textAreaMensaje.setLineWrap(true);
         textAreaMensaje.setRows(5);
-        textAreaMensaje.setText("Ingrese un mensaje...");
+        textAreaMensaje.setText("Ingrese su mensaje aqui...");
         textAreaMensaje.setAutoscrolls(false);
         textAreaMensaje.setMargin(new java.awt.Insets(0, 10, 10, 20));
         textAreaMensaje.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -306,7 +447,9 @@ public class VentanaPrincipal extends javax.swing.JFrame {
 
         chat.add(contenedorEnviarMsj, java.awt.BorderLayout.PAGE_END);
 
-        scrollChatBody.setVerticalScrollBar(new ScrollBar());
+        JScrollBar scrollBarChatBody = new JScrollBar();
+        scrollBarChatBody.setUI(new ModernScrollBarUI());
+        scrollChatBody.setVerticalScrollBar(scrollBarChatBody);
         scrollChatBody.setViewportView(chatBody);
         scrollChatBody.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(30, 30, 30)));
 
@@ -321,10 +464,15 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    public boolean isBarraDeMensajeClikeada() {
+    public boolean isBarraDeMensajeClickeada() {
         return barraDeMensajeClikeada;
     }
     
+    public void hacerVisible(boolean b)
+    {
+        this.setVisible(b);
+    }
+      
     public String getIPactiva()
     {
         return ipActiva;
@@ -340,7 +488,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         return this.textAreaMensaje.getText();
     }
     
-    public void setIpActiva(String ip)
+    public void setIPactiva(String ip)
     {
         this.ipActiva = ip;
     }    
@@ -355,140 +503,85 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         this.sideBar = sideBar;
     }
     
-    /** 
-     * Muestra en el chatBody la conversacion con un contacto
-     * @param mensajes: lista de mensajes de la conversacion que se quiere mostrar
-     * @param nickname: nickname del contacto con el que se tiene la conversacion a ser mostrada
-     * @param ip: ip del contacto con el que se tiene la conversacion a ser mostrada
-     * @param puerto:  puerto del contacto con el que se tiene la conversacion a ser mostrada
-     */
-    public void mostrarConversacion(ArrayList<Mensaje> mensajes, String nickname, String ip, int puerto)
-    {
-        chatBody.removeAll();
-        chatBody.revalidate();
-        chatBody.repaint();
-        nicknameConversacion.setText(nickname);
-        if(mensajes != null)
-            for(Mensaje mensaje: mensajes)
-                if(mensaje.esMio())
-                    this.agregarMensaje(mensaje.getContenido(),true);
-                else
-                    this.agregarMensaje(mensaje.getContenido(),false);
+        public String getNicknameRegistro() {
+       return registro.getNickname();
     }
-    
-    public void notificar(String contenido, String ip, int puerto)
-    {
-        if(sideBar == SideBar.AGENDA)
-        {
-           botonChats.setBackground(Colores.COLOR_NOTIFICACION);
-           botonChats.setForeground(Color.BLACK);
-           botonChats.setText("CHATS *");
-        }
-        else
-        {
-           ActionEvent event = new ActionEvent(botonChats, ActionEvent.ACTION_PERFORMED, "MOVER A CONVERSACIONES");
-           controlador.actionPerformed(event);
-        }
-    }
-    
-    /**
-     * En base a un contenido y a quien pertenece el mensaje, agrega el mensaje visualmente al chatBody
-     * @param contenido: contenido del mensaje a agregar
-     * @param esMio: booleano que define si el mensaje pertenece al usuario registrado o al contacto
-     */
-    public void agregarMensaje(String contenido,boolean esMio)
-    {
-        ContenedorMensajeVista mensaje =  new ContenedorMensajeVista(contenido,esMio);
-        chatBody.add(mensaje);
-        chatBody.revalidate();
-        chatBody.repaint();
-        scrollChatBody.getVerticalScrollBar().setValue(scrollChatBody.getVerticalScrollBar().getMaximum());
-    }
-    
-    /**
-     * Agrega en menuList el item recibido por parametro (podria ser un contactoItem o una conversacionItem)
-     * @param item: item a ser agregado
-     */
-    public void agregarMenuItemList(MenuItemList item) {
-        menuList.add(item);
-        menuList.revalidate();
-        menuList.repaint();
-    }
-    
-    /**
-     * Carga en el menuList visualmente a los contactos del usuario registrado
-     * @param contactos 
-     */
-    public void cargarContactos(ArrayList<Contacto> contactos) {
-        menuList.removeAll();
-        menuList.revalidate();
-        menuList.repaint();
-        botonAgenda.setBorder(new SoftBevelBorder(BevelBorder.RAISED,Colores.COLOR_BOTON,Colores.COLOR_BOTON,Colores.COLOR_NOTIFICACION,Colores.COLOR_BOTON));
-        botonChats.setBorder(new SoftBevelBorder(BevelBorder.RAISED,Colores.COLOR_BOTON,Colores.COLOR_BOTON,Colores.COLOR_BOTON,Colores.COLOR_BOTON));
-        ContactoItemList contactoItemList;
-        String nickname;
-        for (Contacto contacto: contactos) {
-            this.agregarContacto(contacto);
-        }
-    }
-    
-    /**
-     * Carga en el menuList visualmente a las conversaciones del usuario registrado
-     * @param conversaciones 
-     */
-    public void cargarConversaciones(ArrayList<Conversacion> conversaciones) {
-        menuList.removeAll();
-        menuList.revalidate();
-        menuList.repaint();
-        botonAgenda.setBorder(new SoftBevelBorder(BevelBorder.RAISED,Colores.COLOR_BOTON,Colores.COLOR_BOTON,Colores.COLOR_BOTON,Colores.COLOR_BOTON));
-        botonChats.setBorder(new SoftBevelBorder(BevelBorder.RAISED,Colores.COLOR_BOTON,Colores.COLOR_BOTON,Colores.COLOR_NOTIFICACION,Colores.COLOR_BOTON));
-        botonChats.setBackground(Colores.COLOR_BOTON);
-        botonChats.setForeground(Color.WHITE);
-        botonChats.setText("CHATS");
-        for (Conversacion conversacion: conversaciones) {
-            this.agregarConversacion(conversacion);
-        }
-    }
-    
-    /**
-     * Carga en el menuList visualmente a un contacto en particular
-     * @param contacto 
-     */
-    public void agregarContacto(Contacto contacto)
-    {
-        ContactoItemList contactoItemList;
-        String nickname;
-        nickname = contacto.getNickname();
-        if (nickname.length() >= 20) {
-            nickname = nickname.substring(0,19) + "...";
-        }
-        contactoItemList = new ContactoItemList(nickname,contacto.getIp(),contacto.getPuerto());
-        agregarMenuItemList(contactoItemList);
-    }
-    
-    /**
-     * Carga en el menuList visualmente a una conversacion en particular
-     * @param conversacion 
-     */
-public void agregarConversacion(Conversacion conversacion) {
-    Contacto contacto;
-    ConversacionItemList conversacionItemList;
-    contacto = conversacion.getContacto();
-    conversacionItemList = new ConversacionItemList(controlador, this, contacto.getNickname(), contacto.getIp(), contacto.getPuerto());
 
-    String ultimoMensaje = conversacion.getUltimoMensaje();
-
-    if (ultimoMensaje.length() > 30) {
-        ultimoMensaje = ultimoMensaje.substring(0, 30) + "...";
+    public int getPuertoRegistro() {
+       return registro.getPuerto();
     }
-    conversacionItemList.getUltimoMensajeLabel().setText(ultimoMensaje);
 
-    if (conversacion.tieneNotificacion()) {
-        conversacionItemList.setNotificacion();
+    public void abrirFormularioAgregarContacto() 
+    {
+        this.agregarContacto = new FormularioAgregarContacto(this,true,controlador);
+        agregarContacto.setVisible(true);
     }
-    agregarMenuItemList(conversacionItemList);
-}
 
+    public void cerrarFormularioAgregarContacto() {
+       this.agregarContacto.dispose(); 
+    }
+
+    public String getNicknameContacto() {
+       return this.agregarContacto.getNickname();
+    }
+
+    public String getIPContacto() 
+    {
+       return this.agregarContacto.getIp();
+    }
+
+    public int getPuertoContacto() 
+    {
+       return this.agregarContacto.getPuerto();
+    }
+
+    public void abrirFormularioAgregarConversacion(ArrayList<Contacto> contactosSinConversacion) 
+    {
+       this.agregarConversacion = new FormularioAgregarConversacion(this,true,controlador);
+       agregarConversacion.agregarContactos(contactosSinConversacion);
+       agregarConversacion.setVisible(true);
+    }
+
+    public void cerrarFormularioAgregarConversacion() 
+    {
+        this.agregarConversacion.dispose();     
+    }
+
+    public void cerrarFormularioRegistro() 
+    {
+       this.registro.dispose();
+    }
+
+    public String getIPConversacion() 
+    {
+      return this.agregarConversacion.getIp();
+    }
+
+    public int getPuertoConversacion() 
+    {
+      return this.agregarConversacion.getPuerto();
+    }
+   
+    
+    public void disableBotonAgregarContacto()
+    {
+        botonAgregarContacto.setEnabled(false);
+    }
+    
+    public void disableBotonAgregarConversacion()
+    {
+        botonAgregarConversacion.setEnabled(false);
+    }
+    
+    public void enableBotonAgregarContacto()
+    {
+        botonAgregarContacto.setEnabled(true);
+    }
+    
+    public void enableBotonAgregarConversacion()
+    {
+        botonAgregarConversacion.setEnabled(true);
+    }
     
     private void textAreaMensajeMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_textAreaMensajeMouseClicked
         textAreaMensaje.setText("");
@@ -523,26 +616,6 @@ public void agregarConversacion(Conversacion conversacion) {
     private void botonEnviarMensajeMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_botonEnviarMensajeMouseExited
         botonEnviarMensaje.setBorder(BorderFactory.createEmptyBorder());
     }//GEN-LAST:event_botonEnviarMensajeMouseExited
-
-    public void disableBotonAgregarContacto()
-    {
-        botonAgregarContacto.setEnabled(false);
-    }
-    
-    public void disableBotonAgregarConversacion()
-    {
-        botonAgregarConversacion.setEnabled(false);
-    }
-    
-    public void enableBotonAgregarContacto()
-    {
-        botonAgregarContacto.setEnabled(true);
-    }
-    
-    public void enableBotonAgregarConversacion()
-    {
-        botonAgregarConversacion.setEnabled(true);
-    }
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JScrollPane ScrollPaneMensaje;

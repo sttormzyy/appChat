@@ -143,8 +143,8 @@
                 <Property name="font" type="java.awt.Font" editor="org.netbeans.modules.form.RADConnectionPropertyEditor" postCode="botonAgregarContacto.setForeground(new java.awt.Color(255, 255, 255));">
                   <Connection code="new java.awt.Font(&quot;Segoe UI&quot;, 1, 12)" type="code"/>
                 </Property>
-                <Property name="text" type="java.lang.String" value="agregar"/>
-                <Property name="actionCommand" type="java.lang.String" value="SUBMIT CONTACTO"/>
+                <Property name="text" type="java.lang.String" value="agendar"/>
+                <Property name="actionCommand" type="java.lang.String" value="AGENDAR CONTACTO"/>
               </Properties>
               <AccessibilityProperties>
                 <Property name="AccessibleContext.accessibleDescription" type="java.lang.String" value=""/>

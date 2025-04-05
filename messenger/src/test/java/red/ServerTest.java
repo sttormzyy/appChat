@@ -9,7 +9,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
-import red.Server;
+import red.Servidor;
 
 /**
  *
@@ -37,12 +37,12 @@ public class ServerTest {
     }
 
     /**
-     * Test of isConectado method, of class Server.
+     * Test of isConectado method, of class Servidor.
      */
     @Test
     public void testIsConectado() {
         System.out.println("isConectado");
-        Server instance = null;
+        Servidor instance = null;
         boolean expResult = false;
         boolean result = instance.isConectado();
         assertEquals(expResult, result);
@@ -51,24 +51,24 @@ public class ServerTest {
     }
 
     /**
-     * Test of iniciarServidor method, of class Server.
+     * Test of iniciarServidor method, of class Servidor.
      */
     @Test
     public void testIniciarServidor() throws Exception {
         System.out.println("iniciarServidor");
-        Server instance = null;
+        Servidor instance = null;
         instance.iniciarServidor();
         // TODO review the generated test code and remove the default call to fail.
         fail("The test case is a prototype.");
     }
 
     /**
-     * Test of run method, of class Server.
+     * Test of run method, of class Servidor.
      */
     @Test
     public void testRun() {
         System.out.println("run");
-        Server instance = null;
+        Servidor instance = null;
         instance.run();
         // TODO review the generated test code and remove the default call to fail.
         fail("The test case is a prototype.");

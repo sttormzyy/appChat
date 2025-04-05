@@ -2,7 +2,10 @@ package vista;
 
 import controlador.Control;
 import java.awt.Color;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import javax.swing.JFrame;
+import javax.swing.JScrollBar;
 import modelo.Contacto;
 
 /*
@@ -17,15 +20,8 @@ import modelo.Contacto;
 public class FormularioAgregarConversacion extends javax.swing.JDialog {
     AgregarConversacionItemList itemSeleccionado = null;
     
-    /**
-     * Creates new form AgregarConversacion
-     */
-    public FormularioAgregarConversacion(java.awt.Frame parent, boolean modal) {
-        super(parent, modal);
-        initComponents();
-    }
 
-    public FormularioAgregarConversacion(VentanaPrincipal vista, boolean b, Control controlador) {
+    public FormularioAgregarConversacion(JFrame vista, boolean b, ActionListener controlador) {
         super(vista, b);
         setLocationRelativeTo(null);
         initComponents();
@@ -35,6 +31,7 @@ public class FormularioAgregarConversacion extends javax.swing.JDialog {
     
     public void agregarContactos(ArrayList<Contacto> contactos)
     {
+        System.out.println("UJHSDAHD");
         AgregarConversacionItemList item;
         for(Contacto contacto:contactos)
         {
@@ -101,7 +98,9 @@ public class FormularioAgregarConversacion extends javax.swing.JDialog {
         tituloLabel.setForeground(new java.awt.Color(255, 255, 255));
         tituloLabel.setText("SELECCIONAR CONTACTO");
 
-        scrollContactos.setVerticalScrollBar(new ScrollBar());
+        JScrollBar scrollBar = new JScrollBar();
+        scrollBar.setUI(new ModernScrollBarUI());
+        scrollContactos.setVerticalScrollBar(scrollBar);
         scrollContactos.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 
         contactosPanel.setBackground(new java.awt.Color(47, 52, 52));

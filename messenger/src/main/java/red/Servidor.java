@@ -16,13 +16,12 @@ import modelo.MensajeRed;
  *
  * @author Usuario
  */
-public class Server implements Runnable{
-    
+public class Servidor implements Runnable{
     private int puerto;
     private Control controlador;
     private boolean conectado = false;
 
-    public Server(int puerto,Control controlador) {
+    public Servidor(int puerto,Control controlador) {
         this.puerto = puerto;
         this.controlador = controlador;
     }
@@ -34,12 +33,11 @@ public class Server implements Runnable{
     public void iniciarServidor() throws IOException{
         try (ServerSocket serverSocket = new ServerSocket(puerto)) {
             conectado = true;
-            System.out.println("Servidor iniciado en el puerto " + puerto);
+            //System.out.println("Servidor iniciado en el puerto " + puerto);
 
             while (true) {
-                // Aceptar la conexión de un cliente
                 Socket clienteSocket = serverSocket.accept();
-                System.out.println("Cliente conectado desde: " + clienteSocket.getInetAddress());
+                //System.out.println("Cliente conectado desde: " + clienteSocket.getInetAddress());
 
                 // Crear un hilo para manejar la conexión con este cliente
                 Servercito hilo = new Servercito(clienteSocket,controlador);
@@ -59,26 +57,17 @@ public class Server implements Runnable{
         } catch (InterruptedException ex) {
             Logger.getLogger(Control.class.getName()).log(Level.SEVERE, null, ex);
         }
-        System.out.println(cliente.isConectado());
+        //System.out.println(cliente.isConectado());
         return cliente.isConectado();
     }
       
-   /* 
-    public static void main(String[] args) throws IOException{
-        Server servidor = new Server(puerto,Controlador);
-
-        // Crear un hilo y ejecutar el servidor en él
-        Thread hiloServidor = new Thread(servidor);
-        hiloServidor.start(); // Iniciar el servidor en otro hil
-    }
-    */
     @Override
     public void run() {
         try {
             this.iniciarServidor();
         } catch (IOException ex) {
-            System.out.println("Servidor no se pudo conectar");
-            Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
+            //System.out.println("Servidor no se pudo conectar");
+            Logger.getLogger(Servidor.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 }

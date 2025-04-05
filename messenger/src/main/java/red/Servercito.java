@@ -29,21 +29,33 @@ public class Servercito implements Runnable{
     @Override
     public void run() {
         try{
-        BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-        PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
+            BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
         
-        String nickname = in.readLine();
-        String MyIp = in.readLine();
-        String MyPort = in.readLine();
-        String DestinyIp = in.readLine();
-        String DestinyPort = in.readLine();
-        String contenido = in.readLine();
-        System.out.println("Mensaje recibido del cliente: " + contenido + " desde la IP " + MyIp);
-        MensajeRed msj = new MensajeRed(nickname,MyIp,Integer.parseInt(MyPort),DestinyIp,Integer.parseInt(DestinyPort),contenido);
-        controlador.recibirMensaje(msj);
+            String nickname = in.readLine();
+            String MyIp = in.readLine();
+            String MyPort = in.readLine();
+            String DestinyIp = in.readLine();
+            String DestinyPort = in.readLine();        
+            StringBuilder contenidoBuilder = new StringBuilder();
+            String line;
+        
+            line = in.readLine();
+            if (line != null) {
+                contenidoBuilder.append(line);  // Añadimos la primera línea
+            }
+            // Leemos las siguientes líneas, pero agregamos un salto de línea solo si no es la última
+            while ((line = in.readLine()) != null) {
+                contenidoBuilder.append("\n");  
+                contenidoBuilder.append(line); 
+            }
+            String contenido = contenidoBuilder.toString();
+            MensajeRed msj = new MensajeRed(nickname, MyIp, Integer.parseInt(MyPort), DestinyIp, Integer.parseInt(DestinyPort), contenido);
+            controlador.recibirMensaje(msj);
+            //System.out.println("Mensaje recibido del cliente: " + contenido + " desde la IP " + MyIp);
         
         }catch(IOException e){
-            e.printStackTrace(); //nunca deberia pasar
+            e.printStackTrace(); 
         }finally{
             try {
                 socket.close();
@@ -51,8 +63,6 @@ public class Servercito implements Runnable{
                 e.printStackTrace();
             }
         }
-        System.out.println("Conexion cerrada con el servidor");
+        //System.out.println("Conexion cerrada con el servidor");
     }
-    
-    
 }

@@ -202,7 +202,7 @@
             <Property name="horizontalScrollBarPolicy" type="int" value="31"/>
           </Properties>
           <AuxValues>
-            <AuxValue name="JavaCodeGenerator_InitCodePre" type="java.lang.String" value="scrollMenuList.setVerticalScrollBar(new ScrollBar());"/>
+            <AuxValue name="JavaCodeGenerator_InitCodePre" type="java.lang.String" value="JScrollBar scrollBar = new JScrollBar();&#xa;scrollBar.setUI(new ModernScrollBarUI());&#xa;scrollMenuList.setVerticalScrollBar(scrollBar);"/>
           </AuxValues>
           <Constraints>
             <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout" value="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout$BorderConstraintsDescription">
@@ -391,7 +391,7 @@
                     </Property>
                   </Properties>
                   <AuxValues>
-                    <AuxValue name="JavaCodeGenerator_InitCodePre" type="java.lang.String" value="ScrollPaneMensaje.setVerticalScrollBar(new ScrollBar());"/>
+                    <AuxValue name="JavaCodeGenerator_InitCodePre" type="java.lang.String" value="JScrollBar scrollBarMensaje = new JScrollBar();&#xa;scrollBarMensaje.setUI(new ModernScrollBarUI());&#xa;ScrollPaneMensaje.setVerticalScrollBar(scrollBarMensaje);"/>
                     <AuxValue name="autoScrollPane" type="java.lang.Boolean" value="true"/>
                   </AuxValues>
 
@@ -408,7 +408,7 @@
                         </Property>
                         <Property name="lineWrap" type="boolean" value="true"/>
                         <Property name="rows" type="int" value="5"/>
-                        <Property name="text" type="java.lang.String" value="Ingrese un mensaje..."/>
+                        <Property name="text" type="java.lang.String" value="Ingrese su mensaje aqui..."/>
                         <Property name="autoscrolls" type="boolean" value="false"/>
                         <Property name="margin" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
                           <Insets value="[0, 10, 10, 20]"/>
@@ -435,7 +435,7 @@
             </Property>
           </Properties>
           <AuxValues>
-            <AuxValue name="JavaCodeGenerator_InitCodePre" type="java.lang.String" value="scrollChatBody.setVerticalScrollBar(new ScrollBar());&#xa;scrollChatBody.setViewportView(chatBody);"/>
+            <AuxValue name="JavaCodeGenerator_InitCodePre" type="java.lang.String" value="JScrollBar scrollBarChatBody = new JScrollBar();&#xa;scrollBarChatBody.setUI(new ModernScrollBarUI());&#xa;scrollChatBody.setVerticalScrollBar(scrollBarChatBody);&#xa;scrollChatBody.setViewportView(chatBody);"/>
           </AuxValues>
           <Constraints>
             <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout" value="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout$BorderConstraintsDescription">

@@ -15,15 +15,11 @@ import javax.swing.ImageIcon;
  * @author Usuario
  */
 public class FormularioAgregarContacto extends javax.swing.JDialog {
+    private boolean habilitadoNickname = false;
+    private boolean habilitadoIp = false;
+    private boolean habiltadoPuerto = false;
     
-    private boolean flagNickname = false;
-    private boolean flagIp = false;
-    private boolean flagPort = false;
     
-    
-    /**
-     * Creates new form AgregarContacto
-     */
     public FormularioAgregarContacto(java.awt.Frame parent, boolean modal, ActionListener controlador) {
         super(parent, modal);
         setLocationRelativeTo(null);
@@ -34,9 +30,7 @@ public class FormularioAgregarContacto extends javax.swing.JDialog {
     }
     
     private void habilitarBoton(){
-        System.out.println("flagNickname: " + flagNickname + ", flagPort: " + flagPort + ", flagIp: " + flagIp);
-
-        if(flagNickname && flagPort && flagIp)
+        if(habilitadoNickname && habiltadoPuerto && habilitadoIp)
             botonAgregarContacto.setEnabled(true);
         else
             botonAgregarContacto.setEnabled(false);
@@ -83,8 +77,8 @@ public class FormularioAgregarContacto extends javax.swing.JDialog {
         botonAgregarContacto.setBackground(Colores.COLOR_BOTON);
         botonAgregarContacto.setFont(new java.awt.Font("Segoe UI", 1, 12));
         botonAgregarContacto.setForeground(new java.awt.Color(255, 255, 255));
-        botonAgregarContacto.setText("agregar");
-        botonAgregarContacto.setActionCommand("SUBMIT CONTACTO");
+        botonAgregarContacto.setText("agendar");
+        botonAgregarContacto.setActionCommand("AGENDAR CONTACTO");
 
         textNickname.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
@@ -195,67 +189,25 @@ public class FormularioAgregarContacto extends javax.swing.JDialog {
         String contenido = this.textPuerto.getText();
         try{
             int puerto = Integer.parseInt(contenido);
-            flagPort = 0<=puerto && puerto<=65535;
+            habiltadoPuerto = 0<=puerto && puerto<=65535;
         }catch(NumberFormatException e){
-            flagPort = false;
+            habiltadoPuerto = false;
         }
         habilitarBoton();
-        flagNickname = !this.textNickname.getText().isEmpty() && this.textNickname.getText().length()<=64;
+        habilitadoNickname = !this.textNickname.getText().isEmpty() && this.textNickname.getText().length()<=64;
         habilitarBoton();
     }//GEN-LAST:event_textPuertoKeyReleased
 
     private void textIpKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_textIpKeyReleased
         String contenido = this.textIp.getText();
-        flagIp = validaIp(contenido) || contenido.equals("localhost");
+        habilitadoIp = validaIp(contenido) || contenido.equals("localhost");
         habilitarBoton();
     }//GEN-LAST:event_textIpKeyReleased
 
     private void textNicknameKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_textNicknameKeyReleased
-       flagNickname = !this.textNickname.getText().isEmpty() && this.textNickname.getText().length()<=64;
+       habilitadoNickname = !this.textNickname.getText().isEmpty() && this.textNickname.getText().length()<=64;
        habilitarBoton();
     }//GEN-LAST:event_textNicknameKeyReleased
-
-    /**
-     * @param args the command line arguments
-     */
-    //public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-/*        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(FormularioAgregarContacto.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(FormularioAgregarContacto.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(FormularioAgregarContacto.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(FormularioAgregarContacto.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-
-        /* Create and display the dialog */
-    /*    java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                FormularioAgregarContacto dialog = new FormularioAgregarContacto(new javax.swing.JFrame(), true);
-                dialog.addWindowListener(new java.awt.event.WindowAdapter() {
-                    @Override
-                    public void windowClosing(java.awt.event.WindowEvent e) {
-                        System.exit(0);
-                    }
-                });
-                dialog.setVisible(true);
-            }
-        });
-    }*/
 
     public String getNickname() {
         return textNickname.getText();

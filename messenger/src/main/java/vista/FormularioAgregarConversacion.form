@@ -110,7 +110,7 @@
             <Property name="horizontalScrollBarPolicy" type="int" value="31"/>
           </Properties>
           <AuxValues>
-            <AuxValue name="JavaCodeGenerator_InitCodePre" type="java.lang.String" value="scrollContactos.setVerticalScrollBar(new ScrollBar());"/>
+            <AuxValue name="JavaCodeGenerator_InitCodePre" type="java.lang.String" value="JScrollBar scrollBar = new JScrollBar();&#xa;scrollBar.setUI(new ModernScrollBarUI());&#xa;scrollContactos.setVerticalScrollBar(scrollBar);"/>
           </AuxValues>
 
           <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>

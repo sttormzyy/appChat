@@ -129,8 +129,6 @@ public class MenuItemList extends javax.swing.JPanel {
         return subTextLabel;
     }
     
-    
-    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;

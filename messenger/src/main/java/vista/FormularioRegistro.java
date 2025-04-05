@@ -6,55 +6,41 @@ package vista;
 
 import java.awt.Color;
 import java.awt.event.ActionListener;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import javax.swing.ImageIcon;
 
 /**
  *
  * @author Usuario
  */
-public class VentanaRegistro extends javax.swing.JFrame {
-    /**
-     * Creates new form VentanaRegistro
-     */
-    private boolean flagNickname = false;
-    private boolean flagPuerto = false;
+public class FormularioRegistro extends javax.swing.JFrame {
+    private boolean habilitaNickname = false;
+    private boolean habilitaPuerto = false;
     
-    public VentanaRegistro(ActionListener controlador) {
+    public FormularioRegistro(ActionListener controlador) {
         initComponents();
         setBackground(Colores.COLOR_BASE);
         setLocationRelativeTo(null);
         setIconImage(new ImageIcon(getClass().getResource("/resources/iconApp.png")).getImage());
         botonConfirmar.addActionListener(controlador);
         botonConfirmar.setEnabled(false);
-        setSize(360, 310); // Establecer el tamaño directamente.
+        setSize(360, 310); 
     }
-    
     
     public String getNickname()
     {
         return textNickname.getText();
     }
-    
-        
+      
     public int getPuerto() {
         // Convierte el texto del JTextField a int
         return Integer.parseInt(textPuerto.getText());
     }
     
     private void habilitarBoton(){
-        if(flagNickname && flagPuerto)
+        if(habilitaNickname && habilitaPuerto)
             botonConfirmar.setEnabled(true);
         else
             botonConfirmar.setEnabled(false);
-    }
-    
-    private boolean validaIp(String ip){
-        String regex = "^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$";
-        Pattern pattern = Pattern.compile(regex);
-        Matcher matcher = pattern.matcher(ip);
-        return matcher.matches();
     }
     
     /**
@@ -193,7 +179,7 @@ public class VentanaRegistro extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void textNicknameKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_textNicknameKeyReleased
-        flagNickname = !this.textNickname.getText().isEmpty() && this.textNickname.getText().length()<=64;
+        habilitaNickname = !this.textNickname.getText().isEmpty() && this.textNickname.getText().length()<=64;
         habilitarBoton();
     }//GEN-LAST:event_textNicknameKeyReleased
 
@@ -201,26 +187,13 @@ public class VentanaRegistro extends javax.swing.JFrame {
         String contenido = this.textPuerto.getText();
         try{
             int puerto = Integer.parseInt(contenido);
-            flagPuerto = 0<=puerto && puerto<=65535;
+            habilitaPuerto = 0<=puerto && puerto<=65535;
         }catch(NumberFormatException e){
-            flagPuerto = false;
+            habilitaPuerto = false;
         }
         habilitarBoton();
     }//GEN-LAST:event_textPuertoKeyReleased
 
-    /**
-     * @param args the command line arguments
-     */
-    /*
-    public static void main(String args[]) {
-
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new VentanaRegistro().setVisible(true);
-            }
-        });
-    }
-    */
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton botonConfirmar;
     private javax.swing.JPanel jPanel1;

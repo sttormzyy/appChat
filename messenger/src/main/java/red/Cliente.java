@@ -18,16 +18,15 @@ import modelo.MensajeRed;
  * @author Usuario
  */
 public class Cliente implements Runnable{
-    
+    private MensajeRed msj;
     private int puerto;
     private String IP;
-    private MensajeRed msj;
     private boolean conectado = false;
     
     public Cliente(MensajeRed msj){
-        this.puerto=msj.getDestinyPuerto();
-        this.IP=msj.getMiIp();
-        this.msj=msj;
+        this.puerto = msj.getDestinyPuerto();
+        this.IP = msj.getMiIp();
+        this.msj = msj;
     }
     
     public boolean isConectado() {
@@ -36,23 +35,20 @@ public class Cliente implements Runnable{
     
     private void conectar()throws IOException{
         try {
-        Socket socket = new Socket(IP,puerto);
-        this.conectado = true;
-        // Crear un socket y conectarse al servidor
-        System.out.println("Conectado al servidor en " + IP + " en el puerto " + puerto);
+            Socket socket = new Socket(IP,puerto);
+            this.conectado = true;
+            //System.out.println("Conectado al servidor en " + IP + " en el puerto " + puerto);
 
-        // Crear flujos para leer y escribir en el socket, aunque el de entrada no se utilizaria
-        BufferedReader entrada = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-        PrintWriter salida = new PrintWriter(socket.getOutputStream(), true);
+            BufferedReader entrada = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            PrintWriter salida = new PrintWriter(socket.getOutputStream(), true);
         
-        salida.println(msj.getMyNickname());
-        salida.println(msj.getMiIp());
-        salida.println(Integer.toString(msj.getMiPuerto()));
-        salida.println(IP);
-        salida.println(Integer.toString(puerto));
-        salida.println(msj.getContenido());
-        // Cerrar el socket y los flujos
-        socket.close();
+            salida.println(msj.getMyNickname());
+            salida.println(msj.getMiIp());
+            salida.println(Integer.toString(msj.getMiPuerto()));
+            salida.println(IP);
+            salida.println(Integer.toString(puerto));
+            salida.println(msj.getContenido());
+            socket.close();
         }catch (UnknownHostException e){
             throw new IOException("Host desconocido " + IP);
         }
@@ -66,7 +62,7 @@ public class Cliente implements Runnable{
         try {
             this.conectar();
         } catch (IOException ex) {
-            System.out.println("Fallo alguno en la conexion del cliente con el servidor");
+            //System.out.println("Fallo alguno en la conexion del cliente con el servidor");
             Logger.getLogger(Cliente.class.getName()).log(Level.SEVERE, null, ex);
         }
     }

@@ -152,7 +152,7 @@ public class ConversacionItemList extends MenuItemList {
     }//GEN-LAST:event_formMouseExited
 
     private void formMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseClicked
-        vista.setIpActiva(ip);
+        vista.setIPactiva(ip);
         vista.setPuertoActivo(puerto);
         panelNotificacion.setVisible(false);
         ActionEvent event = new ActionEvent(nicknameLabel, ActionEvent.ACTION_PERFORMED, "VER CONVERSACION");
