@@ -256,13 +256,23 @@ public class Control implements ActionListener{
     
     private boolean sePuedeEnviarMensaje(String mensaje)
     {
-        return (!mensaje.equals("") && !(mensaje.equals("Ingrese su mensaje aqui...") && !vista.isBarraDeMensajeClickeada()));
+        return (tieneCaracteres(mensaje) && !(mensaje.equals("Ingrese su mensaje aqui...") && !vista.isBarraDeMensajeClickeada()));
     }
     
+    private boolean tieneCaracteres(String str) {
+        for (int i = 0; i < str.length(); i++) {
+            char c = str.charAt(i);
+            if (c != ' ' && c != '\n') {
+                return true;
+            }
+        }
+        return false;
+    }
     private boolean hayChatSeleccionado()
     {
         return  vista.getIPactiva()!=null && vista.getPuertoActivo()!= -1;
     }
+    
 }
 
 
