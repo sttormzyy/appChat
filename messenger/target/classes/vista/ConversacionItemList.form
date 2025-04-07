@@ -141,7 +141,7 @@
         </Component>
         <Container class="javax.swing.JPanel" name="panelNotificacion">
           <AuxValues>
-            <AuxValue name="JavaCodeGenerator_InitCodePre" type="java.lang.String" value="panelNotificacion.setBackground(Colores.COLOR_NOTIFICACION);&#xa;panelNotificacion.setVisible(false);"/>
+            <AuxValue name="JavaCodeGenerator_InitCodePre" type="java.lang.String" value="panelNotificacion.setBackground(Colores.COLOR_MENSAJE);&#xa;panelNotificacion.setVisible(false);"/>
           </AuxValues>
 
           <Layout>

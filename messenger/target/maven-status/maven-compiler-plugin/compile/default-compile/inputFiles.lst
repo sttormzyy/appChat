@@ -1,30 +1,30 @@
-E:\INGENIERIA INFORMATICA\MessengerOmega\messenger\src\main\java\modelo\Conversacion.java
-E:\INGENIERIA INFORMATICA\MessengerOmega\messenger\src\main\java\vista\FormularioAgregarConversacion.java
-E:\INGENIERIA INFORMATICA\MessengerOmega\messenger\src\main\java\controlador\Control.java
-E:\INGENIERIA INFORMATICA\MessengerOmega\messenger\src\main\java\vista\IVistaContacto.java
-E:\INGENIERIA INFORMATICA\MessengerOmega\messenger\src\main\java\red\Servercito.java
-E:\INGENIERIA INFORMATICA\MessengerOmega\messenger\src\main\java\vista\AgregarConversacionItemList.java
-E:\INGENIERIA INFORMATICA\MessengerOmega\messenger\src\main\java\vista\FormularioRegistro.java
-E:\INGENIERIA INFORMATICA\MessengerOmega\messenger\src\main\java\modelo\Mensaje.java
-E:\INGENIERIA INFORMATICA\MessengerOmega\messenger\src\main\java\modelo\Contacto.java
-E:\INGENIERIA INFORMATICA\MessengerOmega\messenger\src\main\java\modelo\MensajeRed.java
-E:\INGENIERIA INFORMATICA\MessengerOmega\messenger\src\main\java\red\Cliente.java
-E:\INGENIERIA INFORMATICA\MessengerOmega\messenger\src\main\java\vista\ContenedorMensajeVista.java
-E:\INGENIERIA INFORMATICA\MessengerOmega\messenger\src\main\java\vista\IVista.java
-E:\INGENIERIA INFORMATICA\MessengerOmega\messenger\src\main\java\vista\IVistaConversacion.java
-E:\INGENIERIA INFORMATICA\MessengerOmega\messenger\src\main\java\modelo\Usuario.java
-E:\INGENIERIA INFORMATICA\MessengerOmega\messenger\src\main\java\vista\ModernScrollBarUI.java
-E:\INGENIERIA INFORMATICA\MessengerOmega\messenger\src\main\java\vista\IGestorConversacion.java
-E:\INGENIERIA INFORMATICA\MessengerOmega\messenger\src\main\java\vista\MenuItemList.java
-E:\INGENIERIA INFORMATICA\MessengerOmega\messenger\src\main\java\vista\Colores.java
-E:\INGENIERIA INFORMATICA\MessengerOmega\messenger\src\main\java\vista\MensajeVista.java
-E:\INGENIERIA INFORMATICA\MessengerOmega\messenger\src\main\java\vista\VentanaError.java
-E:\INGENIERIA INFORMATICA\MessengerOmega\messenger\src\main\java\vista\VentanaPrincipal.java
-E:\INGENIERIA INFORMATICA\MessengerOmega\messenger\src\main\java\red\Servidor.java
-E:\INGENIERIA INFORMATICA\MessengerOmega\messenger\src\main\java\vista\FormularioAgregarContacto.java
-E:\INGENIERIA INFORMATICA\MessengerOmega\messenger\src\main\java\modelo\Agenda.java
-E:\INGENIERIA INFORMATICA\MessengerOmega\messenger\src\main\java\modelo\Persona.java
-E:\INGENIERIA INFORMATICA\MessengerOmega\messenger\src\main\java\vista\ContactoItemList.java
-E:\INGENIERIA INFORMATICA\MessengerOmega\messenger\src\main\java\vista\IVistaRegistro.java
-E:\INGENIERIA INFORMATICA\MessengerOmega\messenger\src\main\java\main\Main.java
-E:\INGENIERIA INFORMATICA\MessengerOmega\messenger\src\main\java\vista\ConversacionItemList.java
+C:\Users\vanci\OneDrive\Escritorio\messenger\src\main\java\controlador\Control.java
+C:\Users\vanci\OneDrive\Escritorio\messenger\src\main\java\main\Main.java
+C:\Users\vanci\OneDrive\Escritorio\messenger\src\main\java\modelo\Agenda.java
+C:\Users\vanci\OneDrive\Escritorio\messenger\src\main\java\modelo\Contacto.java
+C:\Users\vanci\OneDrive\Escritorio\messenger\src\main\java\modelo\Conversacion.java
+C:\Users\vanci\OneDrive\Escritorio\messenger\src\main\java\modelo\Mensaje.java
+C:\Users\vanci\OneDrive\Escritorio\messenger\src\main\java\modelo\MensajeRed.java
+C:\Users\vanci\OneDrive\Escritorio\messenger\src\main\java\modelo\Persona.java
+C:\Users\vanci\OneDrive\Escritorio\messenger\src\main\java\modelo\Usuario.java
+C:\Users\vanci\OneDrive\Escritorio\messenger\src\main\java\red\Cliente.java
+C:\Users\vanci\OneDrive\Escritorio\messenger\src\main\java\red\Servercito.java
+C:\Users\vanci\OneDrive\Escritorio\messenger\src\main\java\red\Servidor.java
+C:\Users\vanci\OneDrive\Escritorio\messenger\src\main\java\vista\AgregarConversacionItemList.java
+C:\Users\vanci\OneDrive\Escritorio\messenger\src\main\java\vista\Colores.java
+C:\Users\vanci\OneDrive\Escritorio\messenger\src\main\java\vista\ContactoItemList.java
+C:\Users\vanci\OneDrive\Escritorio\messenger\src\main\java\vista\ContenedorMensajeVista.java
+C:\Users\vanci\OneDrive\Escritorio\messenger\src\main\java\vista\ConversacionItemList.java
+C:\Users\vanci\OneDrive\Escritorio\messenger\src\main\java\vista\FormularioAgregarContacto.java
+C:\Users\vanci\OneDrive\Escritorio\messenger\src\main\java\vista\FormularioAgregarConversacion.java
+C:\Users\vanci\OneDrive\Escritorio\messenger\src\main\java\vista\FormularioRegistro.java
+C:\Users\vanci\OneDrive\Escritorio\messenger\src\main\java\vista\IGestorConversacion.java
+C:\Users\vanci\OneDrive\Escritorio\messenger\src\main\java\vista\IVista.java
+C:\Users\vanci\OneDrive\Escritorio\messenger\src\main\java\vista\IVistaContacto.java
+C:\Users\vanci\OneDrive\Escritorio\messenger\src\main\java\vista\IVistaConversacion.java
+C:\Users\vanci\OneDrive\Escritorio\messenger\src\main\java\vista\IVistaRegistro.java
+C:\Users\vanci\OneDrive\Escritorio\messenger\src\main\java\vista\MensajeVista.java
+C:\Users\vanci\OneDrive\Escritorio\messenger\src\main\java\vista\MenuItemList.java
+C:\Users\vanci\OneDrive\Escritorio\messenger\src\main\java\vista\ModernScrollBarUI.java
+C:\Users\vanci\OneDrive\Escritorio\messenger\src\main\java\vista\VentanaError.java
+C:\Users\vanci\OneDrive\Escritorio\messenger\src\main\java\vista\VentanaPrincipal.java

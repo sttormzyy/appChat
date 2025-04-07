@@ -69,7 +69,6 @@ public class Control implements ActionListener{
                 
             case "ENVIAR MENSAJE":
                 String contenido = vista.getMensaje();
-                System.out.println(contenido);
                 if(hayChatSeleccionado())
                 {
                     if(sePuedeEnviarMensaje(contenido)){
@@ -79,6 +78,7 @@ public class Control implements ActionListener{
                         {
                             usuario.buscarConversacion(ip, puerto).agregarMensaje(new Mensaje(contenido,true));
                             vista.agregarMensaje(contenido,true);
+                            
                         }
                         else{
                             VentanaError error = new VentanaError((JFrame)vista,true,"No se pudo enviar el mensaje");
@@ -156,8 +156,12 @@ public class Control implements ActionListener{
                 break;
                 
             case "VER CONVERSACION":
-                ip = vista.getIPactiva();
-                puerto = vista.getPuertoActivo();
+                String parametros = (String) evento.getSource();
+                String[] partes = parametros.split(":");
+                ip = partes[0];     
+                puerto = Integer.parseInt(partes[1]); 
+                vista.setIPactiva(ip);
+                vista.setPuertoActivo(puerto);
                 conversacion = usuario.buscarConversacion(ip, puerto);
                 conversacion.setNotificacion(false);
                 contacto = conversacion.getContacto();
@@ -210,12 +214,7 @@ public class Control implements ActionListener{
      */
     public synchronized boolean enviarMensaje(String contenido, String IP, int puerto){
        MensajeRed msjRed = new MensajeRed(usuario.getNickname(),usuario.getIp(),usuario.getPuerto(),IP,puerto,contenido);
-       if (servidor.enviarMensaje(msjRed)){
-           Mensaje mensaje = new Mensaje(contenido,true);
-           usuario.buscarConversacion(IP, puerto).agregarMensaje(mensaje);
-           return true;
-       }
-       return false;
+       return servidor.enviarMensaje(msjRed);
     }
     
     /**
@@ -256,23 +255,13 @@ public class Control implements ActionListener{
     
     private boolean sePuedeEnviarMensaje(String mensaje)
     {
-        return (tieneCaracteres(mensaje) && !(mensaje.equals("Ingrese su mensaje aqui...") && !vista.isBarraDeMensajeClickeada()));
+        return (!mensaje.equals("") && !(mensaje.equals("Ingrese su mensaje aqui...") && !vista.isBarraDeMensajeClickeada()));
     }
     
-    private boolean tieneCaracteres(String str) {
-        for (int i = 0; i < str.length(); i++) {
-            char c = str.charAt(i);
-            if (c != ' ' && c != '\n') {
-                return true;
-            }
-        }
-        return false;
-    }
     private boolean hayChatSeleccionado()
     {
         return  vista.getIPactiva()!=null && vista.getPuertoActivo()!= -1;
     }
-    
 }
 
 

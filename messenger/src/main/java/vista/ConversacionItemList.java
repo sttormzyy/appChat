@@ -17,7 +17,6 @@ import javax.swing.JPanel;
  */
 public class ConversacionItemList extends MenuItemList {
     private ActionListener controlador;
-    private VentanaPrincipal vista;
     private String ip;
     private int puerto;
     
@@ -27,7 +26,6 @@ public class ConversacionItemList extends MenuItemList {
     public ConversacionItemList(ActionListener controlador, VentanaPrincipal vista, String nickname, String ip, int puerto) {
         initComponents();
         this.controlador = controlador;
-        this.vista = vista;
         this.nicknameLabel.setText(nickname);
         this.ip = ip;
         this.puerto = puerto;
@@ -152,10 +150,9 @@ public class ConversacionItemList extends MenuItemList {
     }//GEN-LAST:event_formMouseExited
 
     private void formMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseClicked
-        vista.setIPactiva(ip);
-        vista.setPuertoActivo(puerto);
+        String parametros = ip + ":" +puerto;
         panelNotificacion.setVisible(false);
-        ActionEvent event = new ActionEvent(nicknameLabel, ActionEvent.ACTION_PERFORMED, "VER CONVERSACION");
+        ActionEvent event = new ActionEvent(parametros, ActionEvent.ACTION_PERFORMED, "VER CONVERSACION");
         controlador.actionPerformed(event);
     }//GEN-LAST:event_formMouseClicked
 
