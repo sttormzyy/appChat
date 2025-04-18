@@ -25,9 +25,9 @@ public class Usuario extends Persona {
         return conversaciones;
     }
     
-    public Conversacion buscarConversacion(String ip, int puerto){
+    public Conversacion buscarConversacion(String nickname){
         int i=0;
-        while(i<conversaciones.size() && (!conversaciones.get(i).getContacto().getIp().equals(ip) || conversaciones.get(i).getContacto().getPuerto() != puerto))
+        while(i<conversaciones.size() && (conversaciones.get(i).getNickname().equals(nickname)))
             i++;
         if (i<conversaciones.size())
             return conversaciones.get(i);
@@ -46,7 +46,6 @@ public class Usuario extends Persona {
 
     public Conversacion iniciarConversacion(Contacto contacto) {
         Conversacion nuevaConversacion = new Conversacion(contacto);
-
         if (this.agregarConversacion(nuevaConversacion)) { 
             return nuevaConversacion;
         }

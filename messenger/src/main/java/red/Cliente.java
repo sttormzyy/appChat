@@ -13,7 +13,7 @@ import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import modelo.MensajeRed;
+
 import servidor.MensajeDeRed;
 
 /**
@@ -25,17 +25,39 @@ public class Cliente implements Runnable{
     private final String IP_servidor = "localhost";
     private BufferedReader in;
     private PrintWriter out;
+    private String nickname;
     private Control controlador;
+    private String estado;
     
-    public Cliente(String nickname, Control controlador) throws IOException{
+    public Cliente(String nickname, Control controlador){
+    	this.controlador = controlador;
+    	this.nickname = nickname;
+    }
+    
+    private void conectar()throws IOException{
         try {
-            this.controlador = controlador;
-            Socket socket = new Socket(IP_servidor, puerto_servidor);
+        	Socket socket = new Socket(IP_servidor, puerto_servidor);
             System.out.println("Conectado al servidor en " + IP_servidor + " en el puerto " + puerto_servidor);
-            in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            out = new PrintWriter(socket.getOutputStream(), true);
-            verificarme(nickname);
-        }catch (UnknownHostException e){
+            this.in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            this.out = new PrintWriter(socket.getOutputStream(), true);
+            if(this.verificarme(nickname).equals("VERIFICADO")) {
+            	estado = "VERIFICADO";
+            	while(true){
+            		String comando = in.readLine();
+            		switch (comando) {
+                    	case "recibir mensaje":
+                    		String nicknameOrigen = in.readLine();
+                    		String nicknameDestino = in.readLine();
+                    		String contenido = in.readLine();
+                    		MensajeDeRed msj = new MensajeDeRed(nicknameOrigen, nicknameDestino, contenido);
+                    		controlador.recibirMensaje(msj);
+                    		System.out.println("Mensaje recibido del cliente: " + contenido + " desde el nickname " + nicknameOrigen);
+                    		break;
+            		}
+            }
+            }else estado = "Nickname repetido";
+        }
+        catch (UnknownHostException e){
             throw new IOException("Host desconocido " + IP_servidor);
         }
         catch (IOException ex) {
@@ -43,37 +65,17 @@ public class Cliente implements Runnable{
         }
     }
     
-    private void conectar()throws IOException{
-        try {
-            while(true){
-                String comando = in.readLine();
-                switch (comando) {
-                    case "recibir mensaje":
-                        String nicknameOrigen = in.readLine();
-                        String nicknameDestino = in.readLine();
-                        String contenido = in.readLine();
-                        MensajeDeRed msj = new MensajeDeRed(nicknameOrigen, nicknameDestino, contenido);
-                        controlador.recibirMensaje(msj);
-                        System.out.println("Mensaje recibido del cliente: " + contenido + " desde el nickname " + nicknameOrigen);
-                        break;
-                    case "recibir clientes":
-                        ArrayList<String> clientes = new ArrayList<String>();
-                        int cantidad_clientes = Integer.parseInt(in.readLine());
-                        for (int i = 0; i < cantidad_clientes; i++) {
-                            clientes.add(in.readLine());
-                        }
-                        controlador.recibirListaClientes(clientes);
-                        break;
-                }
-            }
-        }
-        catch (IOException ex) {
-            throw new IOException("Error al conectar al servidor " + IP_servidor);
-        }
-    }
-    
-    public void verificarme(String nickname) {
+    public String verificarme(String nickname) {
         out.println(nickname);
+        String cod;
+		try {
+			cod = in.readLine();
+			return cod;
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+        return null;
     }
     
     public void enviarMensaje(MensajeDeRed msj) {
@@ -84,8 +86,28 @@ public class Cliente implements Runnable{
 
     }
     
-    public void pedirListaClientes(){
+    public ArrayList pedirListaClientes(){
         out.println("recibir clientes");
+        try {
+			String comando = in.readLine();
+			while(!comando.equals("recibir clientes")) {
+				comando = in.readLine();
+			}
+			ArrayList<String> clientes = new ArrayList<String>();
+	    	int cantidad_clientes = Integer.parseInt(in.readLine());
+	        for (int i = 0; i < cantidad_clientes; i++) {
+	        	clientes.add(in.readLine());
+	        }
+	        return clientes;
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+        return null;
+    }
+    
+    public String getEstado() {
+    	return estado;
     }
     
     @Override
@@ -93,8 +115,7 @@ public class Cliente implements Runnable{
         try {
             this.conectar();
         } catch (IOException ex) {
-            //System.out.println("Fallo alguno en la conexion del cliente con el servidor");
-            Logger.getLogger(Cliente.class.getName()).log(Level.SEVERE, null, ex);
+        	estado = "IMPOSIBLE CONECTARSE CON EL SERVIDOR";
         }
     }
 }

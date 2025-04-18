@@ -56,4 +56,9 @@ public class Conversacion {
     {
         return this.notificada;
     }
+
+
+	public String getNickname() {
+		return contacto.getNickname();
+	}
 }

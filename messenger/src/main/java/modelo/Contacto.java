@@ -5,8 +5,15 @@
 package modelo;
 
 public class Contacto extends Persona {
+	
+	private String nicknameAgendado;
 
-    public Contacto(String nickname, String ip, int puerto) {
-        super(nickname, ip, puerto);
+    public Contacto(String nicknameAgendado,String nicknameReal, String ip, int puerto) {
+        super(nicknameReal, ip, puerto);
+        this.nicknameAgendado = nicknameAgendado;
+    }
+    
+    public String getNicknameAgendado() {
+    	return nicknameAgendado;
     }
 }

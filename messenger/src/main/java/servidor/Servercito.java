@@ -12,21 +12,20 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.ArrayList;
-import modelo.MensajeRed;
 
 
 /**
  *
  * @author Usuario
  */
-public class ServidorEscucha implements Runnable{
+public class Servercito implements Runnable{
     private String nickname;
     private Socket socket;
     private Servidor servidor;
     private BufferedReader in;
     private PrintWriter out;
     
-    public ServidorEscucha(Socket socket, Servidor servidor) {
+    public Servercito(Socket socket, Servidor servidor) {
         this.socket = socket;
         try{
             this.in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
@@ -35,12 +34,12 @@ public class ServidorEscucha implements Runnable{
             e.printStackTrace(); //nunca deberia pasar
         }
     }
-
-    @Override
-    public void run() {
+    
+    public void conectar() {
         try{
             String nickname = in.readLine();
-            if (!servidor.verificarClienteActivo(nickname)) {
+            if (servidor.verificarClienteActivo(nickname)) {
+            	out.println("verificado");
                 servidor.agregarClienteActivo(nickname, this);
                 while(true){
                     String comando = in.readLine();
@@ -59,6 +58,8 @@ public class ServidorEscucha implements Runnable{
                     }
                     
                 }
+            }else {
+            	out.println("rechazado");
             }
         }catch(IOException e){
            
@@ -71,6 +72,11 @@ public class ServidorEscucha implements Runnable{
             }
         }
         System.out.println("Conexion cerrada con el servidor");
+    }
+
+    @Override
+    public void run() {
+        this.conectar();
     }
     
     public void enviarMensaje(MensajeDeRed msj){

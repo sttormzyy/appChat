@@ -13,20 +13,20 @@ public class Agenda {
         this.contactos = new ArrayList<>();
     }
 
-    public ArrayList<Contacto> getContactos() {
+    public ArrayList getContactos() {
         return contactos;
     }
     
     public boolean agregarContacto(Contacto contacto) {
-        contactos.add(contacto);
+    	contactos.add(contacto);
         return true;
     }
 
-    public Contacto obtenerContactoPorIpYPuerto(String ip, int port) {
+    public Contacto obtenerContactoPorNickname(String nickname) {
         int i=0;
-        while(i<contactos.size() && (!contactos.get(i).getIp().equals(ip) || contactos.get(i).getPuerto()!=port))
+        while(i<contactos.size() && (contactos.get(i).getNickname().equals(nickname)))
             i++;
-        if(i<contactos.size())
+        if (i<contactos.size())
             return contactos.get(i);
         else
             return null;

@@ -13,18 +13,19 @@ import modelo.Agenda;
 import modelo.Contacto;
 import modelo.Conversacion;
 import modelo.Mensaje;
-import modelo.MensajeRed;
 import modelo.Usuario;
-import red.Servidor;
+import red.Cliente;
+import red.MensajeDeRed;
 import vista.IVista;
 import vista.VentanaError;
 import vista.VentanaPrincipal.SideBar;
 
 public class Control implements ActionListener{
     private static Control instance = null;
-    private Servidor servidor;
     private Usuario usuario;
     private IVista vista;
+    private Cliente cliente;
+    
     private Control(){}
     
     public static Control getInstance(){      
@@ -72,11 +73,10 @@ public class Control implements ActionListener{
                 if(hayChatSeleccionado())
                 {
                     if(sePuedeEnviarMensaje(contenido)){
-                        ip = vista.getIPactiva();
-                        puerto = vista.getPuertoActivo();
-                        if(this.enviarMensaje(contenido,ip,puerto)) 
+                        nickname = vista.getNicknameActivo();
+                        if(this.enviarMensaje(contenido,nickname)) 
                         {
-                            usuario.buscarConversacion(ip, puerto).agregarMensaje(new Mensaje(contenido,true));
+                            usuario.buscarConversacion(nickname).agregarMensaje(new Mensaje(contenido,true));
                             vista.agregarMensaje(contenido,true);
                             
                         }
@@ -97,7 +97,7 @@ public class Control implements ActionListener{
                 ArrayList<Contacto> contactos = usuario.getAgenda().getContactos();
                 for(Contacto contacto: contactos)
                 {
-                    conversacion = usuario.buscarConversacion(contacto.getIp(),contacto.getPuerto());
+                    conversacion = usuario.buscarConversacion(nickname);
                     if(conversacion == null)
                         contactosSinConversacion.add(contacto);
                 }
@@ -110,28 +110,26 @@ public class Control implements ActionListener{
                 break;
                 
             case "AGREGAR CONVERSACION":
-                ip = vista.getIPConversacion();
-                puerto = vista.getPuertoConversacion();
-                Contacto contacto = usuario.getAgenda().obtenerContactoPorIpYPuerto(ip, puerto);
+                nickname = vista.getNicknameConversacion();
+                Contacto contacto = usuario.getAgenda().obtenerContactoPorNickname(nickname);
                 usuario.iniciarConversacion(contacto);
-                vista.setIPactiva(ip);
-                vista.setPuertoActivo(puerto);
-                vista.agregarConversacion(usuario.buscarConversacion(ip, puerto));
-                vista.mostrarConversacion(null,contacto.getNickname(),ip,puerto);
+                vista.setNicknameActivo(nickname);
+                vista.agregarConversacion(usuario.buscarConversacion(nickname));
+                vista.mostrarConversacion(null,contacto.getNickname(),nickname);
                 vista.cerrarFormularioAgregarConversacion();
                 break;
                 
                                 
             case "SOLICITUD AGREGAR CONTACTO":
-                vista.abrirFormularioAgregarContacto();
+                vista.abrirFormularioAgregarContacto(cliente.pedirListaClientes());
                 break;
                 
             case "AGENDAR CONTACTO":
-                ip = vista.getIPContacto();
-                nickname = vista.getNicknameContacto();
-                puerto = vista.getPuertoContacto();
-                if(usuario.getAgenda().obtenerContactoPorIpYPuerto(ip, puerto) == null){
-                    contacto = new Contacto(nickname,ip,puerto);
+                nickname = vista.getNicknameContacto(); // nickname con el que agendo
+                String nicknameReal = vista.getNicknameSeleccionado();
+                
+                if(usuario.getAgenda().obtenerContactoPorNickname(nickname) == null){
+                    contacto = new Contacto(nickname,nicknameReal);
                     this.vista.agregarContacto(contacto);
                     this.usuario.agregarContacto(contacto);
                     vista.cerrarFormularioAgregarContacto();
@@ -157,15 +155,13 @@ public class Control implements ActionListener{
                 
             case "VER CONVERSACION":
                 String parametros = (String) evento.getSource();
-                String[] partes = parametros.split(":");
-                ip = partes[0];     
-                puerto = Integer.parseInt(partes[1]); 
-                vista.setIPactiva(ip);
-                vista.setPuertoActivo(puerto);
-                conversacion = usuario.buscarConversacion(ip, puerto);
+                String[] partes = parametros.split(":"); 
+                nickname = partes[0];
+                vista.setNicknameActivo(nickname);
+                conversacion = usuario.buscarConversacion(nickname);
                 conversacion.setNotificacion(false);
                 contacto = conversacion.getContacto();
-                vista.mostrarConversacion(conversacion.getMensajes(), contacto.getNickname(), contacto.getIp(), contacto.getPuerto());  
+                vista.mostrarConversacion(conversacion.getMensajes(), contacto.getNickname());  
         }
     }
     
@@ -176,13 +172,14 @@ public class Control implements ActionListener{
      * @param puerto 
      */
     private void registrar(String nickname,String ip,int puerto){
-        if (this.iniciarServer(puerto)){
+    	String estado = this.iniciarCliente(nickname,this);
+        if (estado.equals("VERIFICADO")){
             usuario = new Usuario(nickname,ip,puerto);
             vista.cerrarFormularioRegistro();
             vista.hacerVisible(true);
         }
         else{
-            VentanaError error = new VentanaError((JFrame)vista,true,"No fue posible iniciar el servidor en el puerto " + puerto);
+            VentanaError error = new VentanaError((JFrame)vista,true,estado);
         }
     }
     
@@ -191,18 +188,16 @@ public class Control implements ActionListener{
      * @param puerto
      * @return 
      */
-    private boolean iniciarServer(int puerto){
-        this.servidor = new Servidor(puerto,instance);
-        
-        Thread hilo = new Thread(servidor);
+    private String iniciarCliente(String nickname,Control controlador){
+        this.cliente= new Cliente(nickname,controlador);
+        Thread hilo = new Thread(cliente);
         hilo.start();
-        
         try {
             hilo.join(1000);
         } catch (InterruptedException ex) {
-            return false;
+            return "FALLO POR INTERRUMPCION";
         }
-        return servidor.isConectado();
+        return cliente.getEstado();
     }
     
     /**
@@ -212,26 +207,25 @@ public class Control implements ActionListener{
      * @param puerto
      * @return 
      */
-    public synchronized boolean enviarMensaje(String contenido, String IP, int puerto){
-       MensajeRed msjRed = new MensajeRed(usuario.getNickname(),usuario.getIp(),usuario.getPuerto(),IP,puerto,contenido);
-       return servidor.enviarMensaje(msjRed);
+    public synchronized void enviarMensaje(String contenido, String nickname){
+       MensajeDeRed msjRed = new MensajeDeRed(usuario.getNickname(),nickname,contenido);
+       cliente.enviarMensaje(msjRed);
     }
     
     /**
      * Recibe un mensaje y actualiza la vista dependiendo si el mensaje pertenece o no al chat activo de la misma.
      * @param mensaje 
      */
-    public synchronized void recibirMensaje(MensajeRed mensaje){
+    public synchronized void recibirMensaje(MensajeDeRed mensaje){
         Mensaje msj = new Mensaje(mensaje.getContenido(),false);
-        Conversacion conversacion = usuario.buscarConversacion(mensaje.getMiIp(), mensaje.getMiPuerto());
-        String ipActiva = vista.getIPactiva();
-        int puertoActivo = vista.getPuertoActivo();
+        Conversacion conversacion = usuario.buscarConversacion(mensaje.getNicknameOrigen());
+        String nicknameActivo = vista.getNicknameActivo();
         Contacto contacto;
         
         if( conversacion == null)
         {
-            contacto = new Contacto(mensaje.getMyNickname(),mensaje.getMiIp(),mensaje.getMiPuerto());
-            conversacion = new Conversacion(new Contacto(mensaje.getMyNickname(),mensaje.getMiIp(),mensaje.getMiPuerto()));
+            contacto = new Contacto(mensaje.getNicknameOrigen(),mensaje.getNicknameOrigen());
+            conversacion = new Conversacion(contacto);
             conversacion.agregarMensaje(msj);
             usuario.agregarConversacion(conversacion);
             usuario.agregarContacto(contacto);
@@ -240,7 +234,7 @@ public class Control implements ActionListener{
         }else
         {   
             conversacion.agregarMensaje(msj);
-            if(mensaje.getMiIp().equals(ipActiva) && puertoActivo == mensaje.getMiPuerto())
+            if(mensaje.getNicknameOrigen().equals(nicknameActivo))
             {
                  vista.agregarMensaje(mensaje.getContenido(),false);
             }
@@ -260,7 +254,7 @@ public class Control implements ActionListener{
     
     private boolean hayChatSeleccionado()
     {
-        return  vista.getIPactiva()!=null && vista.getPuertoActivo()!= -1;
+        return  vista.getNicknameActivo()!=null;
     }
 }
 

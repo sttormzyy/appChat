@@ -3,6 +3,8 @@ package modelo;
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
 
+import red.MensajeRed;
+
 public class MensajeRedTest {
 
     @Test

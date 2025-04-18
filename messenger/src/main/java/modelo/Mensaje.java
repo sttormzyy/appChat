@@ -8,21 +8,14 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 public class Mensaje {
-    private static int idCounter = 1;
-    private final int id;
     private final String contenido;
     private final String fechaHora;
     private final boolean esMio;
     
     public Mensaje(String contenido, boolean esMio) {
-        this.id = idCounter++;
         this.contenido = contenido;
         this.fechaHora = obtenerFechaHoraActual();
         this.esMio = esMio;
-    }
-    
-    public int getId() {
-        return id;
     }
     
     public String getContenido() {
