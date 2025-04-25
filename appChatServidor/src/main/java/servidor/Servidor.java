@@ -15,7 +15,7 @@ import java.util.HashMap;
  * @author Usuario
  */
 public class Servidor {
-    private static final int PUERTO = 10000;
+    private static final int PUERTO = 10001;
     private ArrayList<String> clientes = new ArrayList<>();
     private HashMap<String, HiloServidor> clientesActivos = new HashMap<>();
     private HashMap<String, ArrayList<MensajeDeRed>> mensajesPendientes = new HashMap<>();   
@@ -38,15 +38,16 @@ public class Servidor {
         }
     }
 
-    public void iniciarServidor(int puerto) throws IOException {
+    public void iniciarServidor(int puerto) throws IOException 
+    {
         serverSocket = new ServerSocket(puerto);
         System.out.println("Servidor iniciado en el puerto " + puerto);
-
-        while (ejecutando) {
-            try {
+        while (ejecutando) 
+        {
+            try 
+            {
                 Socket clienteSocket = serverSocket.accept();
                 System.out.println("Cliente conectado desde: " + clienteSocket.getInetAddress());
-
                 HiloServidor hilo = new HiloServidor(clienteSocket, this);
                 new Thread(hilo).start();
             } catch (IOException e) {
@@ -59,11 +60,12 @@ public class Servidor {
 
     public void detenerServidor() {
         ejecutando = false;
-        try {
+        try 
+        {
             if (serverSocket != null && !serverSocket.isClosed()) {
                 serverSocket.close();
                 System.out.println("Servidor detenido y puerto liberado.");
-            }
+        }
         } catch (IOException e) {
             System.err.println("Error al cerrar el servidor: " + e.getMessage());
         }
@@ -82,31 +84,31 @@ public class Servidor {
         }
     }   
 
-    public synchronized boolean verificarClienteActivo(String nickname) {
-        if (clientesActivos.get(nickname) != null) {
-            return false;
-        }
-        return true;
+    public synchronized boolean validarNickname(String nickname) {
+        return !clientesActivos.containsKey(nickname);
     }
     
-    public synchronized void agregarClienteActivo(String nickname, HiloServidor srvEscucha){
+    public synchronized void agregarClienteActivo(String nickname, HiloServidor hiloServidor){
         if(!clientes.contains(nickname)){
             clientes.add(nickname);
         }
-        clientesActivos.put(nickname, srvEscucha);
+        clientesActivos.put(nickname, hiloServidor);
     }
     
-    public void enviarMensajesPendientes(String nickname, HiloServidor srvEscucha)
+    public void enviarMensajesPendientes(String nickname, HiloServidor hiloServidor)
     {
         ArrayList<MensajeDeRed> msjPendientes = mensajesPendientes.get(nickname);
-        if (msjPendientes != null) {
-            while(!msjPendientes.isEmpty()) {
-                srvEscucha.enviarMensaje(msjPendientes.get(0));
+        if (msjPendientes != null) 
+        {
+            while(!msjPendientes.isEmpty()) 
+            {
+                hiloServidor.enviarMensaje(msjPendientes.get(0));
                 msjPendientes.remove(0);
             }
             mensajesPendientes.remove(nickname);
         }
     }
+    
     public synchronized void eliminarClienteActivo(String nickname) {
         clientesActivos.remove(nickname);
     }

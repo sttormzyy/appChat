@@ -10,6 +10,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.ArrayList;
+import static servidor.Constantes.*;
 
 
 /**
@@ -29,41 +30,41 @@ public class HiloServidor implements Runnable{
         try{
             this.in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             this.out = new PrintWriter(socket.getOutputStream(), true);
-        } catch (IOException e){
-            e.printStackTrace(); //nunca deberia pasar
-        }
+        } catch (IOException e)
+        { }
     }
     
-    public void conectar() {
-        try{
+    public void conectar() 
+    {
+        try
+        {
             this.nickname = in.readLine();
-            if (servidor.verificarClienteActivo(nickname)) {
-            	out.println("VERIFICADO");
+            if (servidor.validarNickname(nickname)) 
+            {
+            	out.println(ESTADO_VERIFICADO);
                 servidor.agregarClienteActivo(nickname, this);
                 while(true){
                     String comando = in.readLine();
-                    System.out.println("comando "+comando);
                     switch (comando) {
-                        case "enviar mensaje":
+                        case ENVIAR_MENSAJE:
                             String nicknameOrigen = in.readLine();
                             String nicknameDestino = in.readLine();
                             String contenido = in.readLine();
                             String hora = in.readLine();
                             MensajeDeRed msj = new MensajeDeRed(nicknameOrigen, nicknameDestino, contenido, hora);
                             servidor.enviarMensaje(msj);
-                            System.out.println("Mensaje recibido del cliente: " + contenido + " desde el nickname " + nicknameOrigen);
                             break;
-                        case "recibir clientes":                     
+                        case RECIBIR_CLIENTES:                     
                             enviarListaClientes();
                             break;
-                        case "recibir mensajes pendientes":                     
+                        case RECIBIR_MENSAJES_PENDIENTES:                     
                             enviarMensajesPendientes();
                             break;
                     }
                     
                 }
             }else {
-            	out.println("RECHAZADO");
+            	out.println(ESTADO_RECHAZADO);
                 return;
             }
         }catch(IOException e){
@@ -78,14 +79,9 @@ public class HiloServidor implements Runnable{
         }
         System.out.println("Conexion cerrada con el servidor");
     }
-
-    @Override
-    public void run() {
-        this.conectar();
-    }
     
     public void enviarMensaje(MensajeDeRed msj){
-        out.println("recibir mensaje");
+        out.println(RECIBIR_MENSAJE);
         out.println(msj.getNicknameOrigen());
         out.println(msj.getNicknameDestino());
         out.println(msj.getContenido());
@@ -94,7 +90,7 @@ public class HiloServidor implements Runnable{
     
     public void enviarListaClientes(){
         ArrayList<String> clientes = servidor.obtenerListaClientes();
-        out.println("recibir clientes");
+        out.println(RECIBIR_CLIENTES);
         out.println(clientes.size());
         for (int i = 0; i < clientes.size(); i++) {
             out.println(clientes.get(i));
@@ -104,5 +100,10 @@ public class HiloServidor implements Runnable{
     public void enviarMensajesPendientes()
     {
         servidor.enviarMensajesPendientes(nickname, this);
+    }
+    
+    @Override
+    public void run() {
+        this.conectar();
     }
 }
