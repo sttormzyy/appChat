@@ -15,5 +15,5 @@ public class Constantes {
     public static final String RECIBIR_MENSAJES_PENDIENTES = "RECIBIR MENSAJES PENDIENTES";
     public static final String ENVIAR_MENSAJE = "ENVIAR MENSAJE";
     public static final String ESTADO_VERIFICADO = "VERIFICADO";
-    public static final String ESTADO_RECHAZADO = "RECHAZADO";       
+    public static final String YA_EXISTE_UNA_SESION_ACTIVA_CON_ESE_NICKNAME = "Ya existe una sesion activa con ese nickname";       
 }

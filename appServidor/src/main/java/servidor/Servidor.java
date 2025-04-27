@@ -9,6 +9,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.HashMap;
+import static servidor.Constantes.*;
 
 /**
  *
@@ -78,20 +79,31 @@ public class Servidor {
         if (socket != null) {
             socket.enviarMensaje(msj);
         } else {
-            mensajesPendientes
-            .computeIfAbsent(destino, k -> new ArrayList<>())
-            .add(msj);
+            if (!mensajesPendientes.containsKey(destino)) {
+                mensajesPendientes.put(destino, new ArrayList<>());
+            }
+            mensajesPendientes.get(destino).add(msj);
         }
     }   
 
-    public synchronized boolean validarNickname(String nickname) {
-        return !clientesActivos.containsKey(nickname);
+    public synchronized String validarNickname(String nickname) {
+        if(!clientes.contains(nickname))
+            return ESTADO_VERIFICADO;  
+        else
+            if(clientesActivos.containsKey(nickname))
+                return YA_EXISTE_UNA_SESION_ACTIVA_CON_ESE_NICKNAME;
+            else
+                return ESTADO_VERIFICADO; 
     }
     
-    public synchronized void agregarClienteActivo(String nickname, HiloServidor hiloServidor){
-        if(!clientes.contains(nickname)){
+    public synchronized void agregarClienteActivo(String nickname, HiloServidor hiloServidor) {
+        // Agrega a la lista de todos los clientes si aún no está
+        if (!clientes.contains(nickname)) {
             clientes.add(nickname);
+            System.out.println("Nuevo cliente registrado: "+nickname);
         }
+        // Agrega como cliente activo
+        System.out.println("Nuevo cliente activo: "+nickname);
         clientesActivos.put(nickname, hiloServidor);
     }
     
@@ -111,6 +123,11 @@ public class Servidor {
     
     public synchronized void eliminarClienteActivo(String nickname) {
         clientesActivos.remove(nickname);
+        System.out.println(nickname+" se desconecto");
+        if (clientesActivos.isEmpty()) {
+            System.out.println("No hay mas clientes activos. Cerrando servidor...");
+            detenerServidor();
+        }
     }
     
     public ArrayList<String> obtenerListaClientes() {

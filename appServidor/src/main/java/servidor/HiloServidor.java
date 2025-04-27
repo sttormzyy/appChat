@@ -23,6 +23,7 @@ public class HiloServidor implements Runnable{
     private Servidor servidor;
     private BufferedReader in;
     private PrintWriter out;
+    private String estado;
     
     public HiloServidor(Socket socket, Servidor servidor) {
         this.socket = socket;
@@ -39,7 +40,8 @@ public class HiloServidor implements Runnable{
         try
         {
             this.nickname = in.readLine();
-            if (servidor.validarNickname(nickname)) 
+            estado = servidor.validarNickname(nickname);
+            if (estado.equals(ESTADO_VERIFICADO)) 
             {
             	out.println(ESTADO_VERIFICADO);
                 servidor.agregarClienteActivo(nickname, this);
@@ -64,7 +66,7 @@ public class HiloServidor implements Runnable{
                     
                 }
             }else {
-            	out.println(ESTADO_RECHAZADO);
+            	out.println(estado);
                 return;
             }
         }catch(IOException e){
@@ -72,7 +74,8 @@ public class HiloServidor implements Runnable{
         }finally{
             try {
                 socket.close();
-                servidor.eliminarClienteActivo(nickname);
+                if(estado.equals(ESTADO_VERIFICADO)){
+                   servidor.eliminarClienteActivo(nickname);}
             } catch (IOException e) {
                 e.printStackTrace();
             }
