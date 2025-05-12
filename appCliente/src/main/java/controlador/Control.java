@@ -228,7 +228,7 @@ public class Control implements ActionListener,IReceptor{
      */
     public synchronized void recibirMensaje(MensajeDeRed mensaje){
         Conversacion conversacion = usuario.buscarConversacionPorNickname(mensaje.getNicknameOrigen());
-        String nicknameConversacionActiva = vista.getNicknameConversacionActiva();
+        String nicknameConversacionActiva = vista.getNicknameRealActivo();
         String nicknameNuevoContacto = mensaje.getNicknameOrigen();
         Contacto contacto;
         String hora = mensaje.getHoraEnvio().substring(11,16);
@@ -246,7 +246,7 @@ public class Control implements ActionListener,IReceptor{
         {   
             contacto = usuario.obtenerContactoPorNickname(mensaje.getNicknameOrigen());
             conversacion.agregarMensaje(mensaje.getContenido(),false,mensaje.getHoraEnvio());
-            if(contacto.getNicknameAgendado().equals(nicknameConversacionActiva))
+            if(contacto.getNicknameReal().equals(nicknameConversacionActiva))
             {
                  vista.agregarMensaje(mensaje.getContenido(),false,hora);
             }
