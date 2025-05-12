@@ -9,6 +9,8 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import static servidor.Constantes.*;
 
 /**
@@ -16,32 +18,31 @@ import static servidor.Constantes.*;
  * @author Usuario
  */
 public class Servidor {
-    private static final int PUERTO = 10001;
+    private int puerto;
+    private String IP;
+    private Sincronizador sincronizador;
+    //private Monitor monitor;
     private ArrayList<String> clientes = new ArrayList<>();
     private HashMap<String, HiloServidor> clientesActivos = new HashMap<>();
     private HashMap<String, ArrayList<MensajeDeRed>> mensajesPendientes = new HashMap<>();   
     private ServerSocket serverSocket;
     private boolean ejecutando = true;
-
-    public static void main(String[] args) {
-        Servidor srv = new Servidor();
-        
-        // Liberar el puerto al cerrar
-        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-            System.out.println("Apagando servidor...");
-            srv.detenerServidor();
-        }));
-
+    
+    public Servidor(String IP, int puerto, String IPDirectorio, int puertoDirectorio)
+    {
+        this.puerto = puerto;
+        this.IP = IP;
+        this.sincronizador = new Sincronizador(this,IPDirectorio, puertoDirectorio);
         try {
-            srv.iniciarServidor(PUERTO);
-        } catch (IOException e) {
-            System.err.println("No se pudo iniciar el servidor: " + e.getMessage());
+            this.iniciarServidor();
+        } catch (IOException ex) {
+            Logger.getLogger(Servidor.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-
-    public void iniciarServidor(int puerto) throws IOException 
+    
+    public void iniciarServidor() throws IOException 
     {
-        serverSocket = new ServerSocket(puerto);
+        serverSocket = new ServerSocket(this.puerto);
         System.out.println("Servidor iniciado en el puerto " + puerto);
         while (ejecutando) 
         {
@@ -88,18 +89,25 @@ public class Servidor {
 
     public synchronized String validarNickname(String nickname) {
         if(!clientes.contains(nickname))
+        {
+            sincronizador.sincronizarUsuarioRegistrado(nickname);
             return ESTADO_VERIFICADO;  
+        }
         else
             if(clientesActivos.containsKey(nickname))
                 return YA_EXISTE_UNA_SESION_ACTIVA_CON_ESE_NICKNAME;
             else
+            {
+                sincronizador.sincronizarUsuarioRegistrado(nickname);
                 return ESTADO_VERIFICADO; 
+            }
     }
     
     public synchronized void agregarClienteActivo(String nickname, HiloServidor hiloServidor) {
         // Agrega a la lista de todos los clientes si aún no está
         if (!clientes.contains(nickname)) {
             clientes.add(nickname);
+            sincronizador.sincronizarUsuarioActivo(nickname,true);
             System.out.println("Nuevo cliente registrado: "+nickname);
         }
         // Agrega como cliente activo
@@ -132,5 +140,15 @@ public class Servidor {
     
     public ArrayList<String> obtenerListaClientes() {
         return clientes;
+    }
+    
+    public String getIP()
+    {
+        return this.IP;
+    }
+    
+    public String getPuerto()
+    {
+        return String.valueOf(puerto);
     }
 }
