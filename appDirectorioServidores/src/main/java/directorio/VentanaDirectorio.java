@@ -17,6 +17,8 @@ public class VentanaDirectorio extends javax.swing.JFrame {
      */
     public VentanaDirectorio() {
         initComponents();
+        this.listaIp.setEditable(false);
+        this.setVisible(true);
     }
 
     /**
@@ -28,39 +30,78 @@ public class VentanaDirectorio extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jLabel1 = new javax.swing.JLabel();
+        jLabel5 = new javax.swing.JLabel();
+        jPanelNombre = new javax.swing.JPanel();
+        jLabel2 = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
+        jLabel4 = new javax.swing.JLabel();
+        jLabel6 = new javax.swing.JLabel();
+        jScrollPane2 = new javax.swing.JScrollPane();
         jPanel1 = new javax.swing.JPanel();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        listaServidoresActivos = new javax.swing.JList<>();
+        jScrollPane6 = new javax.swing.JScrollPane();
+        listaIp = new javax.swing.JTextPane();
+        jScrollPane7 = new javax.swing.JScrollPane();
+        listaPuerto = new javax.swing.JTextPane();
+        jScrollPane8 = new javax.swing.JScrollPane();
+        listaEstado = new javax.swing.JTextPane();
+        jScrollPane9 = new javax.swing.JScrollPane();
+        listaClientes = new javax.swing.JTextPane();
+
+        jLabel1.setText("jLabel1");
+
+        jLabel5.setText("jLabel5");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jPanel1.setBackground(new Color(47,52,52));
+        jPanelNombre.setMinimumSize(new java.awt.Dimension(100, 30));
+        jPanelNombre.setPreferredSize(new java.awt.Dimension(402, 30));
+        jPanelNombre.setLayout(new java.awt.GridLayout(1, 4, 0, 3));
 
-        listaServidoresActivos.setModel(new javax.swing.AbstractListModel<String>() {
-            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
-            public int getSize() { return strings.length; }
-            public String getElementAt(int i) { return strings[i]; }
-        });
-        jScrollPane1.setViewportView(listaServidoresActivos);
+        jLabel2.setText("IP");
+        jPanelNombre.add(jLabel2);
 
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(30, 30, 30)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 340, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(30, Short.MAX_VALUE))
-        );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(31, 31, 31)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 229, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(33, Short.MAX_VALUE))
-        );
+        jLabel3.setText("Puerto");
+        jPanelNombre.add(jLabel3);
 
-        getContentPane().add(jPanel1, java.awt.BorderLayout.CENTER);
+        jLabel4.setText("Estado");
+        jPanelNombre.add(jLabel4);
+
+        jLabel6.setText("Cantidad Clientes");
+        jPanelNombre.add(jLabel6);
+
+        getContentPane().add(jPanelNombre, java.awt.BorderLayout.PAGE_START);
+
+        jPanel1.setLayout(new java.awt.GridLayout(1, 4, 0, 3));
+
+        listaIp.setMaximumSize(new java.awt.Dimension(2147483647, 250));
+        listaIp.setPreferredSize(new java.awt.Dimension(120, 100));
+        jScrollPane6.setViewportView(listaIp);
+
+        jPanel1.add(jScrollPane6);
+
+        listaPuerto.setMaximumSize(new java.awt.Dimension(2147483647, 293));
+        listaPuerto.setName(""); // NOI18N
+        listaPuerto.setPreferredSize(new java.awt.Dimension(62, 50));
+        jScrollPane7.setViewportView(listaPuerto);
+
+        jPanel1.add(jScrollPane7);
+
+        listaEstado.setMaximumSize(new java.awt.Dimension(2147483647, 293));
+        listaEstado.setPreferredSize(new java.awt.Dimension(62, 50));
+        jScrollPane8.setViewportView(listaEstado);
+
+        jPanel1.add(jScrollPane8);
+
+        listaClientes.setMaximumSize(new java.awt.Dimension(2147483647, 293));
+        listaClientes.setPreferredSize(new java.awt.Dimension(62, 50));
+        jScrollPane9.setViewportView(listaClientes);
+
+        jPanel1.add(jScrollPane9);
+
+        jScrollPane2.setViewportView(jPanel1);
+
+        getContentPane().add(jScrollPane2, java.awt.BorderLayout.CENTER);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -101,8 +142,22 @@ public class VentanaDirectorio extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JList<String> listaServidoresActivos;
+    private javax.swing.JPanel jPanelNombre;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane6;
+    private javax.swing.JScrollPane jScrollPane7;
+    private javax.swing.JScrollPane jScrollPane8;
+    private javax.swing.JScrollPane jScrollPane9;
+    private javax.swing.JTextPane listaClientes;
+    private javax.swing.JTextPane listaEstado;
+    private javax.swing.JTextPane listaIp;
+    private javax.swing.JTextPane listaPuerto;
     // End of variables declaration//GEN-END:variables
 }

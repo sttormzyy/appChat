@@ -5,19 +5,37 @@
 package directorio;
 
 import java.awt.Color;
+import javax.swing.JTextField;
 
 /**
  *
  * @author Usuario
  */
-public class Configuracion extends javax.swing.JFrame {
+public class Configuracion extends javax.swing.JFrame implements IVistaDirectorio{
 
     /**
      * Creates new form Configuracion
      */
     public Configuracion() {
         initComponents();
+        this.iniciarDirectorioBoton.setActionCommand("INICIAR_SERVIDOR");
+        this.setVisible(true);
+        
     }
+
+    public int getPuertoServidoresTextField() {
+        return Integer.parseInt(puertoServidoresTextField.getText());
+    }
+
+    public String getDirectorioIpTextField() {
+        return directorioIpTextField.getText();
+    }
+
+    public int getPuertoClientesTextField() {
+        return Integer.parseInt(puertoClienteTextField.getText());
+    }
+    
+    
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -32,28 +50,36 @@ public class Configuracion extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
-        jTextField2 = new javax.swing.JTextField();
-        jTextField3 = new javax.swing.JTextField();
-        jButton1 = new javax.swing.JButton();
+        puertoServidoresTextField = new javax.swing.JTextField();
+        puertoClienteTextField = new javax.swing.JTextField();
+        directorioIpTextField = new javax.swing.JTextField();
+        iniciarDirectorioBoton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         jPanel1.setBackground(new Color(47,52,52));
 
+        jLabel1.setForeground(new java.awt.Color(255, 255, 255));
         jLabel1.setText("IP directorio:");
 
+        jLabel2.setForeground(new java.awt.Color(255, 255, 255));
         jLabel2.setText("Puerto para servidores:");
 
+        jLabel3.setForeground(new java.awt.Color(255, 255, 255));
         jLabel3.setText("Puerto para clientes:");
 
-        jTextField1.setText("jTextField1");
+        puertoServidoresTextField.setPreferredSize(new java.awt.Dimension(100, 22));
 
-        jTextField2.setText("jTextField1");
+        puertoClienteTextField.setPreferredSize(new java.awt.Dimension(100, 22));
+        puertoClienteTextField.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                puertoClienteTextFieldActionPerformed(evt);
+            }
+        });
 
-        jTextField3.setText("jTextField1");
+        directorioIpTextField.setPreferredSize(new java.awt.Dimension(100, 22));
 
-        jButton1.setText("Iniciar directorio");
+        iniciarDirectorioBoton.setText("Iniciar directorio");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -66,14 +92,14 @@ public class Configuracion extends javax.swing.JFrame {
                     .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel3, javax.swing.GroupLayout.Alignment.LEADING))
                 .addGap(38, 38, 38)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(46, Short.MAX_VALUE))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(puertoServidoresTextField, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(puertoClienteTextField, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(directorioIpTextField, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(20, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jButton1)
+                .addComponent(iniciarDirectorioBoton)
                 .addGap(96, 96, 96))
         );
         jPanel1Layout.setVerticalGroup(
@@ -82,17 +108,17 @@ public class Configuracion extends javax.swing.JFrame {
                 .addGap(42, 42, 42)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
-                    .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(directorioIpTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(puertoServidoresTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(19, 19, 19)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
-                    .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 38, Short.MAX_VALUE)
-                .addComponent(jButton1)
+                    .addComponent(puertoClienteTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 54, Short.MAX_VALUE)
+                .addComponent(iniciarDirectorioBoton)
                 .addContainerGap())
         );
 
@@ -100,6 +126,10 @@ public class Configuracion extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void puertoClienteTextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_puertoClienteTextFieldActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_puertoClienteTextFieldActionPerformed
 
     /**
      * @param args the command line arguments
@@ -131,19 +161,34 @@ public class Configuracion extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new Configuracion().setVisible(true);
+                new Configuracion();
             }
         });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
+    private javax.swing.JTextField directorioIpTextField;
+    private javax.swing.JButton iniciarDirectorioBoton;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField jTextField2;
-    private javax.swing.JTextField jTextField3;
+    private javax.swing.JTextField puertoClienteTextField;
+    private javax.swing.JTextField puertoServidoresTextField;
     // End of variables declaration//GEN-END:variables
+
+    @Override
+    public String getIpDirectorio() {
+        return this.getDirectorioIpTextField();
+    }
+
+    @Override
+    public int getPuertoServidores() {
+        return this.getPuertoServidoresTextField();
+    }
+
+    @Override
+    public int getPuertoClientes() {
+        return this.getPuertoClientesTextField();
+    }
 }
