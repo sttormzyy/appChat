@@ -4,7 +4,9 @@
  */
 package directorio;
 
-import java.awt.Color;
+import java.util.ArrayList;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.StyledDocument;
 
 /**
  *
@@ -19,6 +21,49 @@ public class VentanaDirectorio extends javax.swing.JFrame {
         initComponents();
         this.listaIp.setEditable(false);
         this.setVisible(true);
+    }
+    
+    public void agregarServidor(InfoServidor servidor)
+    {
+         try {
+            StyledDocument docIP = listaIp.getStyledDocument();
+            StyledDocument docEstado = listaEstado.getStyledDocument();
+            StyledDocument docPuerto = listaPuerto.getStyledDocument();
+            StyledDocument docClientes = listaClientes.getStyledDocument();
+
+            docIP.insertString(docIP.getLength(), servidor.getIP() + "\n", null);
+            docEstado.insertString(docEstado.getLength(), (servidor.estaListo() ? "Activo" : "Inactivo") + "\n", null);
+            docPuerto.insertString(docPuerto.getLength(), servidor.getPuertoCliente() + "\n", null);
+            docClientes.insertString(docClientes.getLength(), servidor.getCantidadUsuariosActivos()+ "\n", null);
+
+        } catch (BadLocationException e) {
+        e.printStackTrace();
+        }
+    }
+    
+    public void actualizarVista(ArrayList<InfoServidor> servidores) {
+        // Limpiar contenido de cada JTextPane
+        listaIp.setText("");
+        listaEstado.setText("");
+        listaPuerto.setText("");
+        listaClientes.setText("");
+
+        try {
+            StyledDocument docIP = listaIp.getStyledDocument();
+            StyledDocument docEstado = listaEstado.getStyledDocument();
+            StyledDocument docPuerto = listaPuerto.getStyledDocument();
+            StyledDocument docClientes = listaClientes.getStyledDocument();
+
+            for (InfoServidor servidor : servidores) {
+                docIP.insertString(docIP.getLength(), servidor.getIP() + "\n", null);
+                docEstado.insertString(docEstado.getLength(), (servidor.estaListo() ? "Activo" : "Inactivo") + "\n", null);
+                docPuerto.insertString(docPuerto.getLength(), servidor.getPuertoCliente() + "\n", null);
+                docClientes.insertString(docClientes.getLength(), servidor.getCantidadUsuariosActivos() + "\n", null);
+            }
+
+        } catch (BadLocationException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -53,33 +98,56 @@ public class VentanaDirectorio extends javax.swing.JFrame {
         jLabel5.setText("jLabel5");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Directorio de servidores");
 
+        jPanelNombre.setBackground(new java.awt.Color(47, 52, 52));
+        jPanelNombre.setForeground(new java.awt.Color(255, 255, 255));
         jPanelNombre.setMinimumSize(new java.awt.Dimension(100, 30));
         jPanelNombre.setPreferredSize(new java.awt.Dimension(402, 30));
         jPanelNombre.setLayout(new java.awt.GridLayout(1, 4, 0, 3));
 
+        jLabel2.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        jLabel2.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel2.setText("IP");
         jPanelNombre.add(jLabel2);
 
+        jLabel3.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        jLabel3.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel3.setText("Puerto");
         jPanelNombre.add(jLabel3);
 
+        jLabel4.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        jLabel4.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel4.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel4.setText("Estado");
         jPanelNombre.add(jLabel4);
 
+        jLabel6.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        jLabel6.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel6.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel6.setText("Cantidad Clientes");
         jPanelNombre.add(jLabel6);
 
         getContentPane().add(jPanelNombre, java.awt.BorderLayout.PAGE_START);
 
+        jScrollPane2.setBackground(new java.awt.Color(47, 52, 52));
+
         jPanel1.setLayout(new java.awt.GridLayout(1, 4, 0, 3));
 
+        jScrollPane6.setBackground(new java.awt.Color(47, 52, 52));
+
+        listaIp.setFocusable(false);
         listaIp.setMaximumSize(new java.awt.Dimension(2147483647, 250));
         listaIp.setPreferredSize(new java.awt.Dimension(120, 100));
         jScrollPane6.setViewportView(listaIp);
 
         jPanel1.add(jScrollPane6);
 
+        jScrollPane7.setBackground(new java.awt.Color(47, 52, 52));
+
+        listaPuerto.setFocusable(false);
         listaPuerto.setMaximumSize(new java.awt.Dimension(2147483647, 293));
         listaPuerto.setName(""); // NOI18N
         listaPuerto.setPreferredSize(new java.awt.Dimension(62, 50));
@@ -87,12 +155,18 @@ public class VentanaDirectorio extends javax.swing.JFrame {
 
         jPanel1.add(jScrollPane7);
 
+        jScrollPane8.setBackground(new java.awt.Color(47, 52, 52));
+
+        listaEstado.setFocusable(false);
         listaEstado.setMaximumSize(new java.awt.Dimension(2147483647, 293));
         listaEstado.setPreferredSize(new java.awt.Dimension(62, 50));
         jScrollPane8.setViewportView(listaEstado);
 
         jPanel1.add(jScrollPane8);
 
+        jScrollPane9.setBackground(new java.awt.Color(47, 52, 52));
+
+        listaClientes.setFocusable(false);
         listaClientes.setMaximumSize(new java.awt.Dimension(2147483647, 293));
         listaClientes.setPreferredSize(new java.awt.Dimension(62, 50));
         jScrollPane9.setViewportView(listaClientes);

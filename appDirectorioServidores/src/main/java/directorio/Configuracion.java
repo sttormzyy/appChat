@@ -5,6 +5,7 @@
 package directorio;
 
 import java.awt.Color;
+import java.awt.event.ActionListener;
 import javax.swing.JTextField;
 
 /**
@@ -18,11 +19,14 @@ public class Configuracion extends javax.swing.JFrame implements IVistaDirectori
      */
     public Configuracion() {
         initComponents();
-        this.iniciarDirectorioBoton.setActionCommand("INICIAR_SERVIDOR");
         this.setVisible(true);
-        
     }
 
+    public void setActionListener(ActionListener controlador)
+    {
+        this.iniciarDirectorioBoton.addActionListener(controlador);
+    }
+    
     public int getPuertoServidoresTextField() {
         return Integer.parseInt(puertoServidoresTextField.getText());
     }
@@ -56,6 +60,7 @@ public class Configuracion extends javax.swing.JFrame implements IVistaDirectori
         iniciarDirectorioBoton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Directorio de servidores - Configuracion");
 
         jPanel1.setBackground(new Color(47,52,52));
 
@@ -71,15 +76,13 @@ public class Configuracion extends javax.swing.JFrame implements IVistaDirectori
         puertoServidoresTextField.setPreferredSize(new java.awt.Dimension(100, 22));
 
         puertoClienteTextField.setPreferredSize(new java.awt.Dimension(100, 22));
-        puertoClienteTextField.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                puertoClienteTextFieldActionPerformed(evt);
-            }
-        });
 
         directorioIpTextField.setPreferredSize(new java.awt.Dimension(100, 22));
 
+        iniciarDirectorioBoton.setBackground(new java.awt.Color(47, 52, 52));
+        iniciarDirectorioBoton.setForeground(new java.awt.Color(255, 255, 255));
         iniciarDirectorioBoton.setText("Iniciar directorio");
+        iniciarDirectorioBoton.setActionCommand("INICIAR DIRECTORIO");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -126,10 +129,6 @@ public class Configuracion extends javax.swing.JFrame implements IVistaDirectori
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
-    private void puertoClienteTextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_puertoClienteTextFieldActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_puertoClienteTextFieldActionPerformed
 
     /**
      * @param args the command line arguments

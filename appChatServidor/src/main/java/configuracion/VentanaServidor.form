@@ -75,6 +75,7 @@
               <Color blue="ff" green="ff" red="ff" type="rgb"/>
             </Property>
             <Property name="text" type="java.lang.String" value="Apagar servidor"/>
+            <Property name="actionCommand" type="java.lang.String" value="APAGAR SERVIDOR"/>
           </Properties>
         </Component>
         <Container class="javax.swing.JScrollPane" name="jScrollPane2">

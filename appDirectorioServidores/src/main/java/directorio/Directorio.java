@@ -13,102 +13,93 @@ import java.util.ArrayList;
  * @author Usuario
  */
 public class Directorio implements ActionListener{
-/* 
-    
-    
-    public void agregarServidor(s)
-    {
-    
-       añade a la venetana el servidor
-    }
-        
-    public void eliminarServidor(s)
-    {
-    
-       elimina de la venetana el servidor
-    }           
-                
-    */
-    private ArrayList<Server> servidores;
-    private IVistaDirectorio vista;
-    private Monitor serverServidores;
-    private ServerParaClientes serverClientes;
+    private ArrayList<InfoServidor> servidores;
+    private Configuracion configuracion;
+    private VentanaDirectorio ventana;
     private Monitor monitor;
+    private ComunicacionClientes serverClientes;
+ 
     
-    public Directorio(IVistaDirectorio vista){
+    public Directorio(Configuracion vista){
         servidores = new ArrayList();
-        this.vista = vista;
+        this.configuracion = vista;
+        this.configuracion.setActionListener(this);
     }
     
-    public void setVista(IVistaDirectorio vista){
-        this.vista = vista;
+    public void setVista(Configuracion vista){
+        this.configuracion = vista;
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        if(e.getActionCommand().equals("INICIAR_DIRECTORIO")){
-            String ipDirectorio = vista.getIpDirectorio();
-            int puertoServidores = vista.getPuertoServidores();
-            int puertoClientes = vista.getPuertoClientes();
+        if(e.getActionCommand().equals("INICIAR DIRECTORIO"))
+        {
+            String ipDirectorio = configuracion.getIpDirectorio();
+            int puertoServidores = configuracion.getPuertoServidores();
+            int puertoClientes = configuracion.getPuertoClientes();
+            configuracion.dispose();
             
-            this.serverServidores = new Monitor(this,puertoServidores);
-            new Thread (serverServidores).start();
+            this.monitor = new Monitor(this,puertoServidores);
+            new Thread (monitor).start();
             
-            this.serverClientes = new ServerParaClientes(this,puertoClientes);
+            this.serverClientes = new ComunicacionClientes(this,puertoClientes);
             new Thread (serverClientes).start();
             
-            // this.vista.cerrar();
-            // this.vista.abrirVentanaDirectorio();
+            this.ventana = new VentanaDirectorio();
+            ventana.setVisible(true);
         }
     }
     
-    public Server getServidorConMenosCarga(){
-        Server servidor = null;
+    public InfoServidor getServidorConMenosCarga(){
+        InfoServidor servidor = null;
         int i = 0;
         int actMin = 99999;
         while(i<this.servidores.size()){
-            if(actMin>this.servidores.get(i).getContador() && this.servidores.get(i).isEstado()){
+            if(actMin>this.servidores.get(i).getCantidadUsuariosActivos() && this.servidores.get(i).estaListo()){
                 servidor = this.servidores.get(i);
-                actMin = servidor.getContador();
+                actMin = servidor.getCantidadUsuariosActivos();
             }
             i++;
         }
         if (servidor != null)
-            servidor.setContador(servidor.getContador()+1);
+            servidor.agregarUsuarioActivo();
         return servidor;
     }
 
-    public ArrayList<Server> getServidores() {
+    public ArrayList<InfoServidor> getServidores() {
         return this.servidores;
     }
 
-    public synchronized void agregarServidor(String ip, int puerto) {
-        Server server = new Server(ip,puerto);
+    public synchronized void agregarServidor(String ip, int puertoClientes, int puertoSincro, int puertoMonitoreo) 
+    {
+        InfoServidor servidor;
         if(this.servidores.isEmpty())
-            server.setEstado(true);
-        this.servidores.add(server);
-     // this.actualizarVista(this.servidores);
+            servidor = new InfoServidor(ip,puertoClientes, puertoClientes,puertoMonitoreo, true);
+        else
+            servidor = new InfoServidor(ip,puertoClientes, puertoClientes,puertoMonitoreo, false);
+        this.servidores.add(servidor);
+        this.ventana.agregarServidor(servidor);
     }
     
-    public synchronized void eliminarServidores(ArrayList<Server> servidores) {
-        for (Server servidor: servidores)
+    public synchronized void eliminarServidores(ArrayList<InfoServidor> servidores) {
+        for (InfoServidor servidor: servidores)
             this.servidores.remove(servidor);
         
-        // this.actualizarVista(this.servidores);
+        this.ventana.actualizarVista(this.servidores);
     }
     
     public synchronized void disminuirContadorEnUno(String ip, int puerto) {
-        Server servidor = buscarServidor(ip, puerto);
-        servidor.setContador(servidor.getContador() - 1);
+        InfoServidor servidor = buscarServidor(ip, puerto);
+        servidor.eliminarUsuarioActivo();
     }
     
     public void servidorListo(String ip, int puerto){
         this.buscarServidor(ip, puerto).setEstado(true);
     }
     
-    public Server buscarServidor(String ip, int puerto){
+    public InfoServidor buscarServidor(String ip, int puerto){
         int i=0;
-        while(i<this.servidores.size() && !this.servidores.get(i).getIp().equalsIgnoreCase(ip) && this.servidores.get(i).getPuerto()!= puerto){
+        while(i<this.servidores.size() && !this.servidores.get(i).getIP().equalsIgnoreCase(ip) && this.servidores.get(i).getPuertoCliente()!= puerto){
          i++;    
         }
         if(i<this.servidores.size())

@@ -5,6 +5,7 @@
 package configuracion;
 
 import java.awt.Color;
+import java.awt.event.ActionListener;
 import servidor.Constantes;
 
 /**
@@ -16,8 +17,9 @@ public class VentanaServidor extends javax.swing.JFrame {
     /**
      * Creates new form VentanaServidor
      */
-    public VentanaServidor() {
+    public VentanaServidor(ActionListener controlador) {
         initComponents();
+        this.apagarServidorButton.addActionListener(controlador);
     }
 
     /**
@@ -44,6 +46,7 @@ public class VentanaServidor extends javax.swing.JFrame {
         apagarServidorButton.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         apagarServidorButton.setForeground(new java.awt.Color(255, 255, 255));
         apagarServidorButton.setText("Apagar servidor");
+        apagarServidorButton.setActionCommand("APAGAR SERVIDOR");
 
         infoTextArea.setEditable(false);
         infoTextArea.setColumns(20);
@@ -110,7 +113,7 @@ public class VentanaServidor extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new VentanaServidor().setVisible(true);
+                new VentanaServidor(null).setVisible(true);
             }
         });
     }

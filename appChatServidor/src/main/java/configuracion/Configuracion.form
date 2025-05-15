@@ -176,6 +176,7 @@
               <Color blue="ff" green="ff" red="ff" type="rgb"/>
             </Property>
             <Property name="text" type="java.lang.String" value="Iniciar servidor"/>
+            <Property name="actionCommand" type="java.lang.String" value="INICIAR SERVIDOR"/>
           </Properties>
           <AuxValues>
             <AuxValue name="JavaCodeGenerator_InitCodePre" type="java.lang.String" value="botonIniciarServidor.setBackground(new Color(47,52,52));"/>

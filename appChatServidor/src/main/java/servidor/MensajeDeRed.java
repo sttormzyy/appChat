@@ -4,7 +4,9 @@
  */
 package servidor;
 
-public class MensajeDeRed {
+import java.io.Serializable;
+
+public class MensajeDeRed implements Serializable{
    private String nicknameOrigen;
    private String nicknameDestino;
    private String contenido;

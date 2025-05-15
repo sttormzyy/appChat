@@ -17,8 +17,7 @@ import java.util.logging.Logger;
  *
  * @author Usuario
  */
-public class Ping implements Runnable{
-    
+public class Ping implements Runnable{   
     private Directorio directorio;
     private Monitor monitor;
     
@@ -27,22 +26,21 @@ public class Ping implements Runnable{
         this.monitor = monitor;
     }
     
-
     @Override
     public void run() {
         while(true){
-            ArrayList<Server> servidores = directorio.getServidores();
-            ArrayList<Server> caidos = new ArrayList();
+            ArrayList<InfoServidor> servidores = directorio.getServidores();
+            ArrayList<InfoServidor> caidos = new ArrayList();
             for(int i=0;i<servidores.size();i++){
-                Server servidor = servidores.get(i);
-                if(servidor.isEstado()){
+                InfoServidor servidor = servidores.get(i);
+                if(servidor.estaListo()){
                     try {
-                        Socket socket = new Socket(servidor.getIp(),servidor.getPuerto());
+                        Socket socket = new Socket(servidor.getIP(),servidor.getPuertoMonitoreo());
                         BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));;
                         PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
                         
                         out.print("PING");
-                        if(!in.readLine().equalsIgnoreCase("PING"))
+                        if(!in.readLine().equalsIgnoreCase("ECHO"))
                             caidos.add(servidor);
                     } catch (IOException ex) {
                         caidos.add(servidor);

@@ -7,17 +7,17 @@ package servidor;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import static servidor.Constantes.ENVIAR_MENSAJE;
-import static servidor.Constantes.ESTADO_VERIFICADO;
-import static servidor.Constantes.RECIBIR_CLIENTES;
-import static servidor.Constantes.RECIBIR_MENSAJES_PENDIENTES;
+
 
 
 /**
@@ -25,23 +25,20 @@ import static servidor.Constantes.RECIBIR_MENSAJES_PENDIENTES;
  * @author Usuario
  */
 public class Sincronizador implements Runnable{
-    private Socket socket;
-    
-    private BufferedReader in;
-    private PrintWriter out;
-    
+    private int puertoSincronizacion;
     private Servidor servidor;
     private ArrayList<InfoServidor> servidores;
+    private BufferedReader in;
+    private PrintWriter out;   
     
-    public Sincronizador(Socket socket, Servidor servidor)
+    public Sincronizador(int puertoSincronizacion)
     {
-        this.socket = socket;
+        this.puertoSincronizacion = puertoSincronizacion;
+    }
+    
+    public void setServidor(Servidor servidor)
+    {
         this.servidor = servidor;
-        try{
-            this.in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            this.out = new PrintWriter(socket.getOutputStream(), true);
-        } catch (IOException e)
-        { }
     }
     
     // ENVIO DE INFORMACION A SERVIDORES
@@ -59,7 +56,7 @@ public class Sincronizador implements Runnable{
                     OutputStream os = socket.getOutputStream();
                     PrintWriter writer = new PrintWriter(os, true)) {
 
-                    writer.println("SINCRONIZAR_MENSAJE");
+                    writer.println("SINCRONIZAR MENSAJE");
                     writer.println(mensaje.getNicknameOrigen());
                     writer.println(mensaje.getNicknameDestino());
                     writer.println(mensaje.getContenido());
@@ -83,7 +80,7 @@ public class Sincronizador implements Runnable{
                     OutputStream os = socket.getOutputStream();
                     PrintWriter writer = new PrintWriter(os, true)) {
 
-                    writer.println("SINCRONIZAR_MENSAJE_PENDIENTE");
+                    writer.println("SINCRONIZAR MENSAJE PENDIENTE");
                     writer.println(mensaje.getNicknameOrigen());
                     writer.println(mensaje.getNicknameDestino());
                     writer.println(mensaje.getContenido());
@@ -105,9 +102,9 @@ public class Sincronizador implements Runnable{
                     OutputStream os = socket.getOutputStream();
                     PrintWriter writer = new PrintWriter(os, true)) {
 
-                    writer.println("SINCRONIZAR_USUARIO_REGISTRADO");
+                    writer.println("SINCRONIZAR USUARIO REGISTRADO");
                     writer.println(nickname);
-                    
+                    writer.println(servidor.getPuertoSincronizacion());
                     socket.close();
             } catch (Exception e) {
                 e.printStackTrace();
@@ -124,9 +121,8 @@ public class Sincronizador implements Runnable{
                     OutputStream os = socket.getOutputStream();
                     PrintWriter writer = new PrintWriter(os, true)) {
 
-                    writer.println("SINCRONIZAR_USUARIO_ACTIVO");
+                    writer.println("SINCRONIZAR USUARIO ACTIVO");
                     writer.println(nickname);
-                    writer.println(conectado);
                     
                     socket.close();
             } catch (Exception e) {
@@ -136,37 +132,35 @@ public class Sincronizador implements Runnable{
         
     }
     
-    public void sincronizarTodo(InfoServidor servidor)
-    {
-        // envia por sockets el directorio registrados, activos globales y mensajes pendientes
-        
-        try (Socket socket = new Socket(servidor.getIP(), servidor.getPuertoSincronizacion());
-            OutputStream os = socket.getOutputStream();
-            PrintWriter writer = new PrintWriter(os, true)) {
+    public void sincronizarTodo(InfoServidor servidorNoSincronizado) {
+      try (Socket socket = new Socket(servidorNoSincronizado.getIP(), servidorNoSincronizado.getPuertoSincronizacion());
+          PrintWriter writer = new PrintWriter(socket.getOutputStream(), true)) {
+          // 1. Enviar el comando como texto
+          writer.println("SINCRONIZAR TODO");
 
-            writer.println("SINCRONIZAR_TODO");
-            // LISTA MENSAJES PENDIENTES + CANTIDAD 
-            // LISTA CLIENTES REGISTRADOS + CANTIDAD 
-            // LISTA CLIENTES ACTIVOS + CANTIDAD 
-            // LISTA SERVIDORES CON LA INFO DE CADA UNO (CLIENTES ACTIVOS CONECTADOS A ELLOS) + CANTIDAD 
+          // 3. Enviar los objetos con ObjectOutputStream
+          ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
 
-            socket.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        
-    }
+          out.writeObject(this.servidor.getClientesRegistrados());
+          out.writeObject(this.servidor.getClientesActivosGlobales());
+          out.writeObject(this.servidor.getMensajesPendientes());
+          out.writeObject(servidores);
+
+          out.flush();
+      } catch (IOException e) {
+          e.printStackTrace();
+      }
+  }
+
     
-    // RECEPCION DE INFORMACION DE SERVIDORES
-    private void recibirMensaje() throws IOException
+    // RECEPCION DE INFORMACION DE OTROS SINCRONIZADORES
+    private void enviarMensaje() throws IOException
     {
         String nicknameOrigen = in.readLine();
         String nicknameDestino = in.readLine();
         String contenido = in.readLine();
-        String horaEnvio = in.readLine();
-        
-        MensajeDeRed mensaje = new MensajeDeRed(nicknameOrigen, nicknameDestino, contenido, horaEnvio);
-        
+        String horaEnvio = in.readLine();     
+        MensajeDeRed mensaje = new MensajeDeRed(nicknameOrigen, nicknameDestino, contenido, horaEnvio); 
         servidor.enviarMensaje(mensaje);
     }
     
@@ -175,39 +169,41 @@ public class Sincronizador implements Runnable{
         String nicknameOrigen = in.readLine();
         String nicknameDestino = in.readLine();
         String contenido = in.readLine();
-        String horaEnvio = in.readLine();
-        
+        String horaEnvio = in.readLine(); 
         MensajeDeRed mensaje = new MensajeDeRed(nicknameOrigen, nicknameDestino, contenido, horaEnvio);
         
-        servidor.enviarMensaje(mensaje);
+        servidor.agregarMensajePendiente(nicknameDestino,mensaje);
     }
      
     private void recibirUsuarioRegistrado() throws IOException
     {
-        String nickname = in.readLine();
-        
-        servidor.agregarClienteActivo(nickname);
+        String nickname = in.readLine();     
+        int puertoSincronizacion = Integer.parseInt(in.readLine());
+        servidor.agregarClienteRegistrado(nickname,puertoSincronizacion);
     }
     
     private void recibirUsuarioActivo() throws IOException
     {
         String nickname = in.readLine();
+        int puertoSincronizacion = Integer.parseInt(in.readLine());
         boolean activo = Boolean.getBoolean(in.readLine());
         
         if (activo) {
-            servidor.agregarClienteActivo(nickname);
+            servidor.agregarClienteActivoGlobal(nickname,puertoSincronizacion);
         } else {
             servidor.eliminarClienteActivo(nickname);
         }
     }
     
-    private void recibirTodo()
-    {
-        // RECIBIR LISTA MENSAJES PENDIENTES + CANTIDAD 
-        // RECIBIR LISTA CLIENTES REGISTRADOS + CANTIDAD 
-        // RECIBIR LISTA CLIENTES ACTIVOS + CANTIDAD 
-        // RECIBIR LISTA SERVIDORES CON LA INFO DE CADA UNO (CLIENTES ACTIVOS CONECTADOS A ELLOS) + CANTIDAD 
+    private void recibirTodo(ObjectInputStream in) throws IOException, ClassNotFoundException {
+        HashMap<String, Integer> clientesRegistrados = (HashMap<String, Integer>) in.readObject();
+        HashMap<String, Integer> clientesActivosGlobales = (HashMap<String, Integer>) in.readObject();
+        HashMap<String,ArrayList<MensajeDeRed>>mensajesPendientes = (HashMap<String,ArrayList<MensajeDeRed>>) in.readObject();
+        ArrayList<InfoServidor> servidores = (ArrayList<InfoServidor>) in.readObject();
+        this.servidores = servidores;
+        servidor.sincronizarTodo(clientesRegistrados, clientesActivosGlobales, mensajesPendientes);
     }
+
     
     // RELACIONADO CON COMUNICACION DIRECTORIO
     
@@ -218,72 +214,68 @@ public class Sincronizador implements Runnable{
     
     public void eliminarServidor(InfoServidor servidor)
     {
-        int index = 0;
+        int i = 0;
         boolean encontrado = false;
-        
         String servidorIP = servidor.getIP();
         int servidorPuertoSincronizacion = servidor.getPuertoSincronizacion();
         
-        while(index < servidores.size() && !encontrado) {
-            InfoServidor srv = servidores.get(index);
+        while(i < servidores.size() && !encontrado) {
+            InfoServidor srv = servidores.get(i);
+            i += 1;
             if (srv.getIP().equals(servidorIP) && srv.getPuertoSincronizacion() == servidorPuertoSincronizacion) {
-                servidores.remove(index);
+                servidores.remove(i);
                 encontrado = true;
             }
         }
     }
     
-    // METODO RUN PARA ESCUCHAR CONSTANTEMENTE
-    
+
     @Override
     public void run() {
-        try {
-            while(true){
-                String comando = in.readLine();
-                switch (comando) {
-                    case "SINCRONIZAR_MENSAJE":
-                        recibirMensaje();
-                        break;
-                    case "SINCRONIZAR_MENSAJE_PENDIENTE":                     
-                        recibirMensajePendiente();
-                        break;
-                    case "SINCRONIZAR_USUARIO_REGISTRADO":                     
-                        recibirUsuarioRegistrado();
-                        break;
-                    case "SINCRONIZAR_USUARIO_ACTIVO":
-                        recibirUsuarioActivo();
-                        break;
-                    case "SINCRONIZAR_TODO":
-                        recibirTodo();
-                        break;
-                }
+        try (ServerSocket sincronizadorSocket = new ServerSocket(this.puertoSincronizacion)) {
+            System.out.println("Sincronizador activo en "+puertoSincronizacion);
+            while (true) {
+                Socket clienteSocket = sincronizadorSocket.accept();
+                try {
+                    BufferedReader in = new BufferedReader(new InputStreamReader(clienteSocket.getInputStream()));
+                    String comando = in.readLine();
 
+                    if ("SINCRONIZAR TODO".equals(comando)) {
+                        // Paso 2: si es SINCRONIZAR_TODO, pasamos a lectura binaria
+                        ObjectInputStream objectIn = new ObjectInputStream(clienteSocket.getInputStream());
+                        recibirTodo(objectIn);
+                    } else {
+                        // Para los demás comandos, usamos el BufferedReader normalmente
+                        this.in = in;
+                        this.out = new PrintWriter(clienteSocket.getOutputStream(), true);
+
+                        switch (comando) {
+                            case "SINCRONIZAR MENSAJE":
+                                enviarMensaje();
+                                break;
+                            case "SINCRONIZAR MENSAJE PENDIENTE":
+                                recibirMensajePendiente();
+                                break;
+                            case "SINCRONIZAR USUARIO REGISTRADO":
+                                recibirUsuarioRegistrado();
+                                break;
+                            case "SINCRONIZAR USUARIO ACTIVO":
+                                recibirUsuarioActivo();
+                                break;
+                            default:
+                                System.out.println("Comando no reconocido: " + comando);
+                        }
+                    }
+
+                    clienteSocket.close();
+                } catch (IOException | ClassNotFoundException e) {
+                    Logger.getLogger(Sincronizador.class.getName()).log(Level.WARNING, "Error procesando cliente", e);
+                }
             }
-        } catch(IOException e){
-           
-        }finally{
-            try {
-                socket.close();
-            } catch (IOException ex) {
-                Logger.getLogger(Sincronizador.class.getName()).log(Level.SEVERE, null, ex);
-            }
+        } catch (IOException e) {
+            Logger.getLogger(Sincronizador.class.getName()).log(Level.SEVERE, "Error al iniciar el socket del servidor", e);
         }
     }
-    
-    // ANALISIS DE IMPLEMENTACIONES DE LA CLASE
-    while(true)
-    {
-        lee del socket
-        switch(comando)
-            case sincronizarUsuario
-                    actualiza en servidor la info
-            case sincronizarMensaje
-                    actualiza en servidor la info
-            case sincronizarMensajePendiente
-                    actualiza en servidor la info
-            case sincronizarTodo
-                    actualiza en servidor la info
-                    servidor.avisarDirectorioEstoyListo()
-    }
-    
+
+
 }

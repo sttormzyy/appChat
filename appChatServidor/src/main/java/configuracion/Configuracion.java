@@ -25,11 +25,20 @@ public class Configuracion extends javax.swing.JFrame {
         return ipTextField.getText();
     }
     
-    public int getPuerto()
+    public int getPuertoCliente()
     {
         return Integer.parseInt(puertoClienteTextField.getText());
     }
     
+    public int getPuertoSincronizacion()
+    {
+        return  Integer.parseInt(puertoSincroTextField.getText());
+    }
+        
+    public int getPuertoMonitoreo()
+    {
+        return  Integer.parseInt(puertoMonitoreoTextField.getText());
+    }
     public String getIPDirectorio()
     {
         return ipDirectorioTextField.getText();
@@ -89,6 +98,7 @@ public class Configuracion extends javax.swing.JFrame {
         botonIniciarServidor.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         botonIniciarServidor.setForeground(new java.awt.Color(255, 255, 255));
         botonIniciarServidor.setText("Iniciar servidor");
+        botonIniciarServidor.setActionCommand("INICIAR SERVIDOR");
 
         puertoDirectorioTextField.setMinimumSize(new java.awt.Dimension(68, 26));
 

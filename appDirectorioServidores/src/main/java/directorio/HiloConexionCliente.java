@@ -16,8 +16,7 @@ import java.util.logging.Logger;
  *
  * @author Usuario
  */
-public class HiloConexionCliente implements Runnable{
-    
+public class HiloConexionCliente implements Runnable{    
     private Socket socket;
     private Directorio directorio;
     private BufferedReader in;
@@ -34,10 +33,10 @@ public class HiloConexionCliente implements Runnable{
     }
     
     private void conexion(){
-        Server servidor = directorio.getServidorConMenosCarga();
+        InfoServidor servidor = directorio.getServidorConMenosCarga();
         if(servidor != null){
-            out.print(servidor.getIp());
-            out.print(servidor.getPuerto());
+            out.print(servidor.getIP());
+            out.print(servidor.getPuertoCliente());
         }else{
             out.print("");
             out.print("");

@@ -12,8 +12,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.Map;
 
 /**
  *
@@ -23,7 +22,7 @@ public class Monitor implements Runnable{
     private ServerSocket monitor;
     private int puerto;
     private Directorio directorio;
-    private HashMap<Server,Socket> conexiones = new HashMap();
+    private HashMap<InfoServidor,Socket> conexiones = new HashMap();
     
     private class HiloConexionServidor implements Runnable {
         private Socket socket;
@@ -46,7 +45,7 @@ public class Monitor implements Runnable{
                 while(true){
                     String comando = in.readLine();
                     switch (comando){
-                        case "ELIMINAR CLIENTE":
+                        case "USUARIO DESCONECTADO":
                             ip = in.readLine();
                             puerto = Integer.parseInt(in.readLine());
                             directorio.disminuirContadorEnUno(ip,puerto);
@@ -71,7 +70,7 @@ public class Monitor implements Runnable{
     
     public void iniciarMonitor(){
         try{
-        new Thread(new Ping(directorio, this)).start();
+        //new Thread(new Ping(directorio, this)).start();
         monitor = new ServerSocket(this.puerto);
         BufferedReader in;
         System.out.println("Monitor iniciado en el puerto " + puerto);
@@ -82,26 +81,28 @@ public class Monitor implements Runnable{
                 in = new BufferedReader(new InputStreamReader(servidorSocket.getInputStream()));
                 System.out.println("Cliente conectado desde: " + servidorSocket.getInetAddress());
                 String ipServidor;
-                int puertoServidor;
-                int puertoSincronizacion;
+                int puertoServidorParaClientes,puertoSincronizacion, puertoMonitoreo ;
+               
                 String comando = in.readLine();
                 switch (comando){
                     case "REGISTRO":
                         ipServidor = in.readLine();
-                        puertoServidor = Integer.parseInt(in.readLine());
+                        puertoServidorParaClientes = Integer.parseInt(in.readLine());
                         puertoSincronizacion = Integer.parseInt(in.readLine());
-                        // sync inicial
+                        puertoMonitoreo = Integer.parseInt(in.readLine());
+
                         if (directorio.getServidores().size() > 1) {
                             sincronizacionTotal(ipServidor, puertoSincronizacion);
                         } else {
-                            enlistarServidor(servidorSocket, ipServidor, puertoServidor, puertoSincronizacion);
+                            enlistarServidor(servidorSocket, ipServidor, puertoServidorParaClientes, puertoSincronizacion, puertoMonitoreo);
                         }
                         break;
                     case "LISTO":
                         ipServidor = in.readLine();
-                        puertoServidor = Integer.parseInt(in.readLine());                
-                        puertoSincronizacion = Integer.parseInt(in.readLine());  
-                        enlistarServidor(servidorSocket, ipServidor, puertoServidor, puertoSincronizacion);
+                        puertoServidorParaClientes = Integer.parseInt(in.readLine());                
+                        puertoSincronizacion = Integer.parseInt(in.readLine());
+                        puertoMonitoreo = Integer.parseInt(in.readLine());
+                        enlistarServidor(servidorSocket, ipServidor, puertoServidorParaClientes, puertoSincronizacion, puertoMonitoreo);
                         break;
                 }
             } catch (IOException e)
@@ -125,10 +126,9 @@ public class Monitor implements Runnable{
         { }
     }
     
-    private void enlistarServidor(Socket servidorSocket, String ipServidor, int puertoServidor, int puertoSincronizacion) {
-        // COLIMBA
-        agregarConexion(new Server(ipServidor, puertoServidor), servidorSocket);
-        directorio.agregarServidor(ipServidor,puertoServidor);
+    private void enlistarServidor(Socket servidorSocket, String ipServidor, int puertoServidor, int puertoSincronizacion, int puertoMonitoreo) {
+        agregarConexion(new InfoServidor(ipServidor, puertoServidor, puertoSincronizacion, puertoMonitoreo, true), servidorSocket);
+        directorio.agregarServidor(ipServidor,puertoServidor,puertoSincronizacion, puertoMonitoreo);
         directorio.servidorListo(ipServidor,puertoServidor);
         enviarNuevoServidor(ipServidor, puertoSincronizacion);
         new Thread(new HiloConexionServidor(servidorSocket)).start();
@@ -136,10 +136,10 @@ public class Monitor implements Runnable{
     
     private void enviarNuevoServidor(String ipServidorNuevo, int puertoSincronizacionNuevo){
         PrintWriter out;
-        ArrayList<Server> servidores = directorio.getServidores();
-        for(Server servidor : servidores){
+        ArrayList<InfoServidor> servidores = directorio.getServidores();
+        for(InfoServidor servidor : servidores){
             try{
-                Socket servidorSocket = conexiones.get(servidor);
+                Socket servidorSocket = this.buscarConexionPorIpYPuerto(servidor.getIP(), servidor.getPuertoCliente());
                 out = new PrintWriter(servidorSocket.getOutputStream(), true);
                 out.print("AGREGAR SERVIDOR");
                 out.print(ipServidorNuevo);
@@ -149,15 +149,27 @@ public class Monitor implements Runnable{
         }
     }
     
-    private synchronized void agregarConexion(Server servidor, Socket socket) {
+    private synchronized void agregarConexion(InfoServidor servidor, Socket socket) {
         conexiones.put(servidor, socket);
     }
     
     
-    public synchronized void eliminarConexiones(ArrayList<Server> servidores) {
-        for (Server servidor: servidores)
+    public synchronized void eliminarConexiones(ArrayList<InfoServidor> servidores) {
+        for (InfoServidor servidor: servidores)
             conexiones.remove(servidor);
     }
+    
+    
+    public Socket buscarConexionPorIpYPuerto(String ip, int puertoCliente) {
+    for (Map.Entry<InfoServidor, Socket> entry : conexiones.entrySet()) {
+        InfoServidor info = entry.getKey();
+        if (info.getIP().equals(ip) && info.getPuertoCliente() == puertoCliente) {
+            return entry.getValue();
+        }
+    }
+    return null; // No se encontró ninguna coincidencia
+}
+
     
     @Override
     public void run() {

@@ -2,9 +2,8 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package servidor;
+package directorio;
 
-import java.util.ArrayList;
 
 /**
  *
@@ -14,20 +13,10 @@ public class InfoServidor {
     private String IP;
     private int puertoCliente;
     private int puertoSincronizacion;
+    private int puertoMonitoreo;
+    private int cantUsuariosActivos = 0;
+    private boolean estaListo = true;
     
-    private ArrayList<String> clientesConectados;
-    
-    public void agregarClienteConectado(String cliente) {
-        this.clientesConectados.add(cliente);
-    }
-    
-    public void eliminarClienteConectado(String cliente) {
-        this.clientesConectados.remove(cliente);
-    }
-    
-    public boolean consultarCliente(String cliente) {
-        return this.clientesConectados.contains(cliente);
-    } 
     
     public String getIP() {
         return IP;
@@ -53,10 +42,46 @@ public class InfoServidor {
         this.puertoSincronizacion = puertoSincronizacion;
     }
 
-    public InfoServidor(String IP, int puertoCliente, int puertoSincronizacion) {
+    
+    public int getPuertoMonitoreo() {
+        return puertoMonitoreo;
+    }
+
+    public void setPuertoMonitoreo(int puerto) {
+        this.puertoMonitoreo = puerto;
+    }
+    
+    public void agregarUsuarioActivo()
+    {
+        this.cantUsuariosActivos += 1;
+    }
+    
+    public void eliminarUsuarioActivo()
+    {
+        cantUsuariosActivos -= 1;
+    }
+    
+    public int getCantidadUsuariosActivos()
+    {
+        return this.cantUsuariosActivos;
+    }
+    
+    public boolean estaListo()
+    {
+        return estaListo;
+    }
+    
+    public void setEstado(boolean estado)
+    {
+        this.estaListo = estado;
+    }
+
+    public InfoServidor(String IP, int puertoCliente, int puertoSincronizacion,int puertoMonitoreo, boolean estado) 
+    {
         this.IP = IP;
         this.puertoCliente = puertoCliente;
         this.puertoSincronizacion = puertoSincronizacion;
-        this.clientesConectados = new ArrayList<>();
+        this.puertoMonitoreo = puertoMonitoreo;
+        this.estaListo = estado;
     }  
 }

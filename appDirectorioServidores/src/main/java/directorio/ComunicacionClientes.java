@@ -14,12 +14,12 @@ import java.util.logging.Logger;
  *
  * @author Usuario
  */
-public class ServerParaClientes implements Runnable{
+public class ComunicacionClientes implements Runnable{
     private Directorio directorio;
     private ServerSocket servidor;
     private int puerto;
     
-    public ServerParaClientes(Directorio direct,int puerto){
+    public ComunicacionClientes(Directorio direct,int puerto){
         this.puerto = puerto;
         this.directorio = direct;
     }
@@ -27,7 +27,7 @@ public class ServerParaClientes implements Runnable{
     public void iniciarServidor(){
         try{
         servidor = new ServerSocket(this.puerto);
-        System.out.println("Servidor iniciado en el puerto " + puerto);
+        System.out.println("Servidor para clientes iniciado en el puerto " + puerto);
         while (true) 
         {
             Socket clienteSocket = servidor.accept();

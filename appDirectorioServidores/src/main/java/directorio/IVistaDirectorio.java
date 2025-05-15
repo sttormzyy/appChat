@@ -4,6 +4,8 @@
  */
 package directorio;
 
+import java.awt.event.ActionListener;
+
 /**
  *
  * @author Usuario
@@ -12,4 +14,5 @@ public interface IVistaDirectorio {
     public String getIpDirectorio();
     public int getPuertoServidores();
     public int getPuertoClientes();
+    public void setActionListener(ActionListener c);
 }
