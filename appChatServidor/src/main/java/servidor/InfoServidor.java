@@ -4,6 +4,8 @@
  */
 package servidor;
 
+import java.util.ArrayList;
+
 /**
  *
  * @author Usuario
@@ -13,7 +15,21 @@ public class InfoServidor {
     private int puertoCliente;
     private int puertoSincronizacion;
     private int puertoMonitoreo;
-
+    
+    private ArrayList<String> clientesConectados;
+    
+    public void agregarClienteConectado(String cliente) {
+        this.clientesConectados.add(cliente);
+    }
+    
+    public void eliminarClienteConectado(String cliente) {
+        this.clientesConectados.remove(cliente);
+    }
+    
+    public boolean consultarCliente(String cliente) {
+        return this.clientesConectados.contains(cliente);
+    } 
+    
     public String getIP() {
         return IP;
     }
@@ -51,5 +67,6 @@ public class InfoServidor {
         this.puertoCliente = puertoCliente;
         this.puertoSincronizacion = puertoSincronizacion;
         this.puertoMonitoreo = puertoMonitoreo;
+        this.clientesConectados = new ArrayList<>();
     }  
 }
