@@ -177,6 +177,7 @@ public class Control implements ActionListener,IReceptor{
                 break;
                 
             case "CIERRE":
+                System.out.println("SALGO POR ACA TMB");
                 emisor.detener();
         }
     }
@@ -288,8 +289,7 @@ public class Control implements ActionListener,IReceptor{
     public void detener()
     {
         VentanaError v = new VentanaError(null,true,"Sistema caido, reinicie aplicacion");
-        vista.hacerVisible(false);
-        emisor.detener();     
+        vista.cerrarVentana();  
     }
     
     private boolean sePuedeEnviarMensaje(String mensaje)

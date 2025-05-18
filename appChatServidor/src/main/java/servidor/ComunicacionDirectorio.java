@@ -184,6 +184,7 @@ public class ComunicacionDirectorio implements Runnable{
                 
             }finally{
                 try {
+                    socketParaDirectorio.close();
                     socket.close();
                 } catch (IOException ex) {
                     Logger.getLogger(Sincronizador.class.getName()).log(Level.SEVERE, null, ex);

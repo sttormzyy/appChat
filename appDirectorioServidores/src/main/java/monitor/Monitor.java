@@ -208,6 +208,12 @@ public class Monitor implements Runnable{
     public synchronized void eliminarConexiones(ArrayList<InfoServidor> servidores) {
         for (InfoServidor servidor: servidores)
         {
+            Socket socketServidor = this.buscarConexionPorIpYPuerto(servidor.getIP(), servidor.getPuertoParaDirectorio());
+            try {
+                socketServidor.close();
+            } catch (IOException ex) {
+                Logger.getLogger(Monitor.class.getName()).log(Level.SEVERE, null, ex);
+            }
             conexiones.remove(servidor);
             avisarServidorCaido(servidor);
         }

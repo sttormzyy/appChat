@@ -37,6 +37,7 @@ public class ComunicacionServidor implements Runnable, IEmisor {
             String respuesta = in.readLine();
             out.println("RECIBIDO");
             System.out.println(respuesta);
+            
             return (respuesta == null || respuesta.equals("NO HAY SERVIDORES")) ? null : respuesta;
 
         } catch (Exception ex) {
@@ -85,7 +86,7 @@ public class ComunicacionServidor implements Runnable, IEmisor {
                             break;
                     }
                 }
-            } catch (IOException e) {
+            } catch (Exception e) {
                 if (enEjecucion) {
                     System.out.println("Conexión interrumpida inesperadamente");
                 } else {
@@ -94,8 +95,10 @@ public class ComunicacionServidor implements Runnable, IEmisor {
             }
         }
         else
+        {
             this.detener();
             return;
+        }
 }
 
 
@@ -155,7 +158,11 @@ public class ComunicacionServidor implements Runnable, IEmisor {
                     iPyPuerto = obtenerServidor();
                     //new VentanaError(null,true,"Reconectando");
                 }else
+                {
+                    System.out.println("SALI X ACA LA CONCHA DE MI AMDRE");
                     receptor.detener();
+                    this.detener();
+                }
             }
         }
 

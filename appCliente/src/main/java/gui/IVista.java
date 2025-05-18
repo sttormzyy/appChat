@@ -10,6 +10,7 @@ import gui.VentanaPrincipal.SideBar;
 
 public interface IVista extends IVistaFormulario, IGestorConversacion, IGestorContacto{
    public void hacerVisible(boolean b); 
+   public void cerrarVentana();
    public String getMensaje();
    public String getNicknameRealActivo();
    public void setNicknameUsuario(String nickname);

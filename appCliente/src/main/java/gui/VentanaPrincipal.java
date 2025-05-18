@@ -68,7 +68,10 @@ public class VentanaPrincipal extends javax.swing.JFrame implements IVista{
         if(mensajes != null)
             for(Mensaje mensaje: mensajes)
             {
-                hora = mensaje.getFechaHora().substring(11,16);
+                hora = mensaje.getFechaHora();
+                if (hora.length() >= 16) {
+                    hora = hora.substring(11,16);
+                }
                 if(mensaje.esMio())
                     this.agregarMensaje(mensaje.getContenido(),true,hora);
                 else
@@ -627,6 +630,11 @@ public class VentanaPrincipal extends javax.swing.JFrame implements IVista{
     public String getNicknameConversacion() 
     {
       return this.agregarConversacion.getNickname();
+    }
+    
+    public void cerrarVentana()
+    {
+        this.dispose();
     }
     
     public void disableBotonAgregarContacto()
