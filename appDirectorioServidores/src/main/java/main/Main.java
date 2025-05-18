@@ -4,8 +4,10 @@
  */
 package main;
 
-import directorio.Configuracion;
+import gui.Configuracion;
 import directorio.Directorio;
+import directorio.IDirectorioListener;
+import gui.VentanaDirectorio;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
@@ -23,8 +25,10 @@ public class Main{
          } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e) {
  
         }
-        Configuracion config = new Configuracion();
-        Directorio direct = new Directorio(config);
-      
+        Configuracion configuracion = new Configuracion();
+        Directorio directorio = new Directorio();
+        configuracion.agregarConfiguracionListener(directorio);
+        IDirectorioListener ventana = new VentanaDirectorio();  
+        directorio.agregarObservador(ventana);
     }
 }

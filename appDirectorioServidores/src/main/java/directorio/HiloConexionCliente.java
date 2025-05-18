@@ -12,6 +12,7 @@ import java.net.Socket;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+
 /**
  *
  * @author Usuario
@@ -34,18 +35,22 @@ public class HiloConexionCliente implements Runnable{
     
     private void conexion(){
         InfoServidor servidor = directorio.getServidorConMenosCarga();
+        String clienteYaRecibio;
         if(servidor != null){
-            out.print(servidor.getIP());
-            out.print(servidor.getPuertoCliente());
+            System.out.println("SERVER DEVUELTO "+servidor.getIP()+" "+servidor.getPuertoCliente());
+            out.println(servidor.getIP()+":"+servidor.getPuertoCliente());
+            try {
+                clienteYaRecibio = in.readLine();
+                socket.close();
+                out.close();
+                in.close();
+              
+            } catch (IOException ex) {
+                Logger.getLogger(HiloConexionCliente.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }else{
-            out.print("");
-            out.print("");
+            out.println("NO HAY SERVIDORES");
         }    
-        try {
-            socket.close();
-        } catch (IOException ex) {
-            Logger.getLogger(HiloConexionCliente.class.getName()).log(Level.SEVERE, null, ex);
-        }
     }
     
     @Override

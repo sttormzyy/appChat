@@ -20,6 +20,8 @@ public interface IVistaFormulario {
    public void cerrarFormularioAgregarContacto();
    public void cerrarFormularioEditarContacto();
    public String getNicknameRegistro();
+   public String getIPRegistro();
+   public int getPuertoRegistro();
    public String getNicknameContacto();
    public String getNicknameContactoEditado();
    public String getNicknameContactoActual();

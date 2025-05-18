@@ -12,5 +12,6 @@ public interface IEmisor {
     public void pedirMensajesPendientes();
     public void pedirListaClientes();
     public boolean enviarMensaje(MensajeDeRed msj);
+    public void detener();
     public String getEstado();
 }

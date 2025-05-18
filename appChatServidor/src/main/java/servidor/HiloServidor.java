@@ -10,6 +10,8 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import static servidor.Constantes.*;
 
 
@@ -24,6 +26,7 @@ public class HiloServidor implements Runnable{
     private BufferedReader in;
     private PrintWriter out;
     private String estado;
+    private boolean enEjecucion = true;
     
     public HiloServidor(Socket socket, Servidor servidor) {
         this.socket = socket;
@@ -35,6 +38,19 @@ public class HiloServidor implements Runnable{
         { }
     }
     
+    public void detenerHilo()
+    {
+        enEjecucion = false;
+        try {
+            socket.close();
+            in.close();
+            out.close();
+        } catch (IOException ex) {
+            Logger.getLogger(HiloServidor.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+    }
+    
     public void conectar() 
     {
         try
@@ -43,9 +59,10 @@ public class HiloServidor implements Runnable{
             estado = servidor.validarNickname(nickname);
             if (estado.equals(ESTADO_VERIFICADO)) 
             {
+                System.out.println("estado "+estado);
             	out.println(ESTADO_VERIFICADO);
                 servidor.agregarClienteActivo(nickname, this);
-                while(true){
+                while(enEjecucion){
                     String comando = in.readLine();
                     switch (comando) {
                         case ENVIAR_MENSAJE:
@@ -74,7 +91,7 @@ public class HiloServidor implements Runnable{
         }finally{
             try {
                 socket.close();
-                if(estado.equals(ESTADO_VERIFICADO)){
+                if(estado != null && estado.equals(ESTADO_VERIFICADO)){
                    servidor.eliminarClienteActivo(nickname);}
             } catch (IOException e) {
                 e.printStackTrace();

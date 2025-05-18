@@ -11,4 +11,25 @@
         <maven.compiler.target>23</maven.compiler.target>
         <exec.mainClass>grupo2.appchatdirectorioservidores.AppChatDirectorioServidores</exec.mainClass>
     </properties>
+       <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>3.2.0</version>
+                <configuration>
+                    <archive>
+                        <index>
+                            true
+                        </index>
+                        <manifest>
+                            <mainClass>
+                                main.Main
+                            </mainClass>
+                        </manifest>
+                    </archive>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 </project>

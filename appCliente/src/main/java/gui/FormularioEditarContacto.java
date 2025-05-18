@@ -130,4 +130,14 @@ public class FormularioEditarContacto extends javax.swing.JDialog implements IFo
     @Override
     public void abrirFormulario(ArrayList<String> contactos) {
     }
+
+    @Override
+    public int getPuerto() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public String getIP() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
 }

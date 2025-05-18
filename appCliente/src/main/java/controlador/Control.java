@@ -56,14 +56,16 @@ public class Control implements ActionListener,IReceptor{
      */
     @Override
     public void actionPerformed(ActionEvent evento) {
-        String nickname;
+        String nickname, ip;
         Conversacion conversacion;
+        int puerto;
         
         switch(evento.getActionCommand()) {
             case "REGISTRO":
                 nickname = vista.getNicknameRegistro();
-                this.registrar(nickname,"localhost",777); // puerto e ip no tienen impacto en nada se hardcodean
-                emisor.pedirMensajesPendientes();
+                ip = vista.getIPRegistro();
+                puerto = vista.getPuertoRegistro();
+                this.registrar(nickname, ip, puerto);    
                 break;
                 
             case "ENVIAR MENSAJE":
@@ -172,6 +174,10 @@ public class Control implements ActionListener,IReceptor{
                 conversacion.setNotificacion(false);
                 contacto = conversacion.getContacto();
                 vista.mostrarConversacion(conversacion.getMensajes(), contacto.getNicknameAgendado());  
+                break;
+                
+            case "CIERRE":
+                emisor.detener();
         }
     }
     
@@ -181,26 +187,30 @@ public class Control implements ActionListener,IReceptor{
      * @param ip
      * @param puerto 
      */
-    private void registrar(String nickname, String ip, int puerto){
-    	String estado = this.iniciarEmisor(nickname);
+    private void registrar(String nickname, String ipDirectorio, int puertoDirectorio){
+    	String estado = this.iniciarEmisor(nickname, ipDirectorio, puertoDirectorio);
         if (estado.equals(ESTADO_VERIFICADO))
         {
-            usuario = new Usuario(nickname,ip,puerto);
+            usuario = new Usuario(nickname,ipDirectorio,puertoDirectorio);
+            emisor.pedirMensajesPendientes();
             vista.cerrarFormularioRegistro();
             vista.setNicknameUsuario(nickname);
             vista.hacerVisible(true);
         }
         else{
-            VentanaError error = new VentanaError((JFrame)vista,true,estado);
-        }
+            if(estado.equals(YA_EXISTE_UNA_SESION_ACTIVA_CON_ESE_NICKNAME))
+            {
+                VentanaError error = new VentanaError((JFrame)vista,true,estado);
+            }
+         }
     }
     
     /**
      * Inicia el componente de red, en caso de error informa.
      * @return 
      */
-    private String iniciarEmisor(String nickname){
-        this.emisor= new Cliente(nickname,this);
+    private String iniciarEmisor(String nickname, String ipDirectorio, int puertoDirectorio){
+        this.emisor= new ComunicacionServidor(nickname, this, ipDirectorio, puertoDirectorio);
         Thread hilo = new Thread((Runnable)emisor);
         hilo.start();
         try {
@@ -231,7 +241,13 @@ public class Control implements ActionListener,IReceptor{
         String nicknameConversacionActiva = vista.getNicknameRealActivo();
         String nicknameNuevoContacto = mensaje.getNicknameOrigen();
         Contacto contacto;
-        String hora = mensaje.getHoraEnvio().substring(11,16);
+        String hora = "";
+        String horaEnvio = mensaje.getHoraEnvio();
+
+        if (horaEnvio != null && horaEnvio.length() >= 16) {
+            hora = horaEnvio.substring(11, 16);
+        }
+
         
         if( conversacion == null)
         {
@@ -267,6 +283,13 @@ public class Control implements ActionListener,IReceptor{
     {
         clientesServidor.remove(usuario.getNickname());
         vista.abrirFormularioAgregarContacto(clientesServidor);
+    }
+    
+    public void detener()
+    {
+        VentanaError v = new VentanaError(null,true,"Sistema caido, reinicie aplicacion");
+        vista.hacerVisible(false);
+        emisor.detener();     
     }
     
     private boolean sePuedeEnviarMensaje(String mensaje)

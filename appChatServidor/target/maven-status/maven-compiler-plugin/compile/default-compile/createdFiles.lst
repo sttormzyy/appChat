@@ -1,5 +1,6 @@
 configuracion\Configuracion.class
 servidor\InfoServidor.class
+configuracion\IServidorListener.class
 servidor\MensajeDeRed.class
 main\Main.class
 configuracion\Controlador.class

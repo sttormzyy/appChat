@@ -261,6 +261,11 @@ public class VentanaPrincipal extends javax.swing.JFrame implements IVista{
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Messenger - Ventana Principal");
         setMinimumSize(new java.awt.Dimension(1000, 650));
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosed(java.awt.event.WindowEvent evt) {
+                formWindowClosed(evt);
+            }
+        });
 
         barra.setBackground(Constantes.COLOR_BASE);
 
@@ -555,10 +560,21 @@ public class VentanaPrincipal extends javax.swing.JFrame implements IVista{
         registro = new FormularioRegistro(controlador);
         registro.abrirFormulario();
     }
+    
     public String getNicknameRegistro() {
        return registro.getNickname();
     }
-
+    
+    public String getIPRegistro()
+    {
+        return registro.getIP();
+    }
+    
+    public int getPuertoRegistro()
+    {
+        return registro.getPuerto();
+    }
+    
     public void abrirFormularioAgregarContacto(ArrayList<String> contactos) 
     {
         this.agregarContacto = new FormularioAgregar(this,true,controlador, "AGENDAR CONTACTO", "Agendar contacto");
@@ -666,6 +682,11 @@ public class VentanaPrincipal extends javax.swing.JFrame implements IVista{
     private void botonEnviarMensajeMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_botonEnviarMensajeMouseExited
         botonEnviarMensaje.setBorder(BorderFactory.createEmptyBorder());
     }//GEN-LAST:event_botonEnviarMensajeMouseExited
+
+    private void formWindowClosed(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosed
+       ActionEvent evento = new ActionEvent(this, ActionEvent.ACTION_PERFORMED, "CIERRE");
+       controlador.actionPerformed(evento);
+    }//GEN-LAST:event_formWindowClosed
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JScrollPane ScrollPaneMensaje;

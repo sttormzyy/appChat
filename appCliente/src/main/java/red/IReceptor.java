@@ -12,5 +12,6 @@ import java.util.ArrayList;
  */
 public interface IReceptor {
     void recibirMensaje(MensajeDeRed mensaje);
-    void recibirListaClientes(ArrayList<String> clientes);    
+    void recibirListaClientes(ArrayList<String> clientes);   
+    public void detener();
 }

@@ -3,15 +3,16 @@ gui\ModernScrollBarUI.class
 modelo\Mensaje.class
 gui\FormularioItemList.class
 gui\VentanaError.class
+gui\VentanaPrincipal$5.class
 red\IReceptor.class
 gui\MenuItemList.class
 gui\MenuItemList$1.class
 gui\IVista.class
+gui\FormularioRegistro$2.class
 gui\ModernScrollBarUI$InvisibleScrollBarButton.class
 gui\FormularioAgregar.class
 gui\FormularioItemList$1.class
 gui\FormularioRegistro.class
-red\Cliente.class
 gui\IGestorConversacion.class
 resources\Constantes.class
 gui\ContactoItemList$2.class
@@ -23,6 +24,7 @@ gui\ConversacionItemList$1.class
 gui\VentanaPrincipal.class
 gui\VentanaPrincipal$2.class
 gui\IVistaFormulario.class
+gui\FormularioRegistro$3.class
 gui\ContactoItemList.class
 gui\IFormulario.class
 gui\VentanaError$1.class
@@ -30,6 +32,7 @@ modelo\Contacto.class
 gui\ContactoItemList$3.class
 gui\MensajeVista.class
 gui\VentanaPrincipal$4.class
+red\ComunicacionServidor.class
 red\MensajeDeRed.class
 modelo\Agenda.class
 gui\FormularioRegistro$1.class

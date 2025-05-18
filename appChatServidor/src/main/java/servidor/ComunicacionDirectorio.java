@@ -8,6 +8,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -19,17 +20,21 @@ import java.util.logging.Logger;
 public class ComunicacionDirectorio implements Runnable{
     private String IPDirectorio;
     private int puertoDirectorio;
-    private int puertoMonitoreo;
+    private int puertoParaDirectorio;
+    private int puertoPing;    
     private Socket socket;
+    private ServerSocket socketParaDirectorio;
     private BufferedReader in;
     private PrintWriter out;     
     private Sincronizador sincronizador;
     private Servidor servidor;
+    private boolean enEjecucion = true;
 
-    public ComunicacionDirectorio(String IPDirectorio, int puertoDirectorio, int puertoMonitoreo) {
+    public ComunicacionDirectorio(String IPDirectorio, int puertoDirectorio, int puertoParaDirectorio, int puertoPing) {
         this.IPDirectorio = IPDirectorio;
         this.puertoDirectorio = puertoDirectorio;
-        this.puertoMonitoreo = puertoMonitoreo;
+        this.puertoParaDirectorio = puertoParaDirectorio;
+        this.puertoPing = puertoPing;
     }
     
     public void setSincronizador(Sincronizador sincronizador)
@@ -37,34 +42,53 @@ public class ComunicacionDirectorio implements Runnable{
         this.sincronizador = sincronizador;
     }
     
+    public void setServidor(Servidor servidor)
+    {
+        this.servidor = servidor;
+    }
+   
+     
+    public void detener() {
+        enEjecucion = false;
+        try {
+            if (socketParaDirectorio != null && !socketParaDirectorio.isClosed()) {
+                socketParaDirectorio.close();  // esto fuerza que el accept() lance una excepción
+                out.close();
+                in.close();
+                socket.close();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+        
     public boolean registrarServidorEnDirectorio(String IPDirectorio, int puertoDirectorio, InfoServidor servidor) {
-        Socket socket = null;
-        PrintWriter out = null;
-        BufferedReader in = null;
+        String soyPrimero;
         System.out.println("Intentando registrar servidor");
         try {
-            socket = new Socket(IPDirectorio, puertoDirectorio);
-            out = new PrintWriter(socket.getOutputStream(), true);
-            in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            this.socket = new Socket(IPDirectorio, puertoDirectorio);
+            this.out = new PrintWriter(socket.getOutputStream(), true);
+            this.in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
  
             out.println("REGISTRO");
             out.println(servidor.getIP());
             out.println(servidor.getPuertoCliente());
             out.println(servidor.getPuertoSincronizacion());
-            out.println(this.puertoMonitoreo);
+            out.println(puertoParaDirectorio);
+            out.println(puertoPing);
+            soyPrimero = in.readLine();
+            if(soyPrimero.equals("FRANCIA"))
+            {
+                if (in != null) in.close();
+                if (out != null) out.close();
+                if (socket != null && !socket.isClosed()) socket.close();
+            }
+            else
+                sincronizador.agregarServidor(servidor);
             return true;
         } catch (IOException ex) {
             Logger.getLogger(ComunicacionDirectorio.class.getName()).log(Level.SEVERE, null, ex);
             return false;
-        } finally {
-            // Cerramos recursos manualmente
-            try {
-                if (in != null) in.close();
-                if (out != null) out.close();
-                if (socket != null && !socket.isClosed()) socket.close();
-            } catch (IOException e) {
-                Logger.getLogger(ComunicacionDirectorio.class.getName()).log(Level.WARNING, "Error al cerrar el socket", e);
-            }
         }
     }
 
@@ -79,37 +103,57 @@ public class ComunicacionDirectorio implements Runnable{
             Logger.getLogger(ComunicacionDirectorio.class.getName()).log(Level.SEVERE, null, ex);
         }
         out.println("LISTO");
-        new Thread(this).start();
+        out.println(servidor.getIP());
+        out.println(servidor.getPuertoCliente());
+        out.println(servidor.getPuertoSincronizacion());
+        out.println(puertoParaDirectorio);
+        out.println(puertoPing);
+
     }
     
-    public void avisarUsuarioDesconectado(int puertoCliente) {
+    public synchronized void avisarUsuarioDesconectado(String ipServidor,int puertoCliente) 
+    {
         out.println("USUARIO DESCONECTADO");
+        out.println(ipServidor);        
+        out.println(puertoCliente);
+    }
+    
+    public synchronized void avisarUsuarioConectado(String ipServidor,int puertoCliente) 
+    {
+        out.println("USUARIO CONECTADO");
+        out.println(ipServidor);        
         out.println(puertoCliente);
     }
      
     // RECIBEN INFORMACION DEL DIRECTORIO, SE DISPARAN POR RECEPCION
-    private void agregarServidor() throws IOException{
+    private void agregarServidor(BufferedReader in) throws IOException{
         String ip = in.readLine();
         int puertoCliente = Integer.parseInt(in.readLine());
         int puertoSincronizacion = Integer.parseInt(in.readLine());
-        InfoServidor servidor = new InfoServidor(ip, puertoCliente, puertoSincronizacion);
+        int puertoParaDirectorio = Integer.parseInt(in.readLine());
+        int puertoPing = Integer.parseInt(in.readLine());
+        InfoServidor servidor = new InfoServidor(ip, puertoCliente, puertoSincronizacion, puertoParaDirectorio, puertoPing);
+        System.out.println("DIRECTORIO ME DIJOQ  AGREGURE A "+puertoSincronizacion);
         this.sincronizador.agregarServidor(servidor);
     }
     
-    private void eliminarServidor() throws IOException{
+    private void eliminarServidor(BufferedReader in) throws IOException{
         String ip = in.readLine();
         int puertoCliente = Integer.parseInt(in.readLine());
-        int puertoMonitoreo = Integer.parseInt(in.readLine());
         int puertoSincronizacion = Integer.parseInt(in.readLine());
-        InfoServidor servidor = new InfoServidor(ip, puertoCliente, puertoSincronizacion);
+        int puertoParaDirectorio = Integer.parseInt(in.readLine());
+        int puertoPing = Integer.parseInt(in.readLine());
+        InfoServidor servidor = new InfoServidor(ip, puertoCliente, puertoSincronizacion, puertoParaDirectorio, puertoPing);
         this.sincronizador.eliminarServidor(servidor);
     }
     
-    private void sincronizarCompletamenteOtro() throws IOException{
+    private void sincronizarCompletamenteOtro(BufferedReader in) throws IOException{
         String ip = in.readLine();
         int puertoCliente = Integer.parseInt(in.readLine());
         int puertoSincronizacion = Integer.parseInt(in.readLine());
-        InfoServidor servidorNoSincronizado = new InfoServidor(ip, puertoCliente, puertoSincronizacion);
+        int puertoParaDirectorio = Integer.parseInt(in.readLine());
+        int puertoPing = Integer.parseInt(in.readLine());
+        InfoServidor servidorNoSincronizado = new InfoServidor(ip, puertoCliente, puertoSincronizacion, puertoParaDirectorio, puertoPing);
         this.sincronizador.sincronizarTodo(servidorNoSincronizado);
     }
 
@@ -117,28 +161,37 @@ public class ComunicacionDirectorio implements Runnable{
     @Override
     public void run() {
         try {
-            while(true){
-                String comando = in.readLine();
-                switch (comando) {
-                    case "AGREGAR SERVIDOR":
-                        agregarServidor();
-                        break;
-                    case "ELIMINAR SERVIDOR":                     
-                        eliminarServidor();
-                        break;
-                    case "SINCRONIZAR SERVIDOR":
-                        sincronizarCompletamenteOtro();
-                        break;
+            this.socketParaDirectorio = new ServerSocket(puertoParaDirectorio);
+            Socket socketDirectorio = socketParaDirectorio.accept();
+            BufferedReader in = new BufferedReader(new InputStreamReader(socketDirectorio.getInputStream()));
+            try {
+                while(enEjecucion){
+                    String comando = in.readLine();
+                    switch (comando) {
+                        case "AGREGAR SERVIDOR":
+                            agregarServidor(in);
+                            break;
+                        case "ELIMINAR SERVIDOR":
+                            eliminarServidor(in);
+                            break;
+                        case "SINCRONIZAR SERVIDOR":
+                            System.out.println("sincronizar compeltamtne a otro");
+                            sincronizarCompletamenteOtro(in);
+                            break;
+                    }
+                }
+            } catch(IOException e){
+                
+            }finally{
+                try {
+                    socket.close();
+                } catch (IOException ex) {
+                    Logger.getLogger(Sincronizador.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
-        } catch(IOException e){
+        } catch(IOException ex){
+            Logger.getLogger(ComunicacionDirectorio.class.getName()).log(Level.SEVERE, null, ex);
            
-        }finally{
-            try {
-                socket.close();
-            } catch (IOException ex) {
-                Logger.getLogger(Sincronizador.class.getName()).log(Level.SEVERE, null, ex);
-            }
         }
     }      
 }

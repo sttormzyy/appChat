@@ -6,22 +6,27 @@ package configuracion;
 
 import java.awt.Color;
 import java.awt.event.ActionListener;
-import servidor.Constantes;
 
 /**
  *
  * @author Usuario
  */
-public class VentanaServidor extends javax.swing.JFrame {
+public class VentanaServidor extends javax.swing.JFrame implements IServidorListener{
 
     /**
      * Creates new form VentanaServidor
      */
     public VentanaServidor(ActionListener controlador) {
         initComponents();
+        this.setLocationRelativeTo(null);
         this.apagarServidorButton.addActionListener(controlador);
     }
 
+    public void informar(String mensaje) {
+        System.out.println("infomrar");
+        infoTextArea.append(mensaje + "\n");
+    }
+        
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -48,10 +53,14 @@ public class VentanaServidor extends javax.swing.JFrame {
         apagarServidorButton.setText("Apagar servidor");
         apagarServidorButton.setActionCommand("APAGAR SERVIDOR");
 
+        jScrollPane2.setBorder(null);
+
+        infoTextArea.setBackground(new Color(40,40,40));
         infoTextArea.setEditable(false);
+        infoTextArea.setBorder(null);
         infoTextArea.setColumns(20);
+        infoTextArea.setForeground(new java.awt.Color(255, 255, 255));
         infoTextArea.setRows(5);
-        infoTextArea.setEnabled(false);
         infoTextArea.setFocusable(false);
         jScrollPane2.setViewportView(infoTextArea);
 

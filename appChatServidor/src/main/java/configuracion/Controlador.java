@@ -4,10 +4,10 @@
  */
 package configuracion;
 
-import configuracion.Configuracion;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import servidor.ComunicacionDirectorio;
+import servidor.Echo;
 import servidor.InfoServidor;
 import servidor.Servidor;
 import servidor.Sincronizador;
@@ -20,6 +20,9 @@ public class Controlador implements ActionListener{
     private Configuracion configuracion;
     private VentanaServidor ventanaServidor;
     private Servidor servidor;
+    private Sincronizador sincronizador;
+    private ComunicacionDirectorio comunicacionDirectorio;
+    private Echo echo;
     
     public void Controlador(){}
     
@@ -38,6 +41,9 @@ public class Controlador implements ActionListener{
                 break;
             case "APAGAR SERVIDOR":
                 servidor.detenerServidor();
+                sincronizador.detener();
+                comunicacionDirectorio.detener();
+                echo.detener();
                 ventanaServidor.dispose();
                 break;
             default:
@@ -48,34 +54,45 @@ public class Controlador implements ActionListener{
 
     public void iniciarServidor() {
         String ip, ipDirectorio;
-        int puertoCliente,puertoSincronizacion, puertoMonitoreo, puertoDirectorio;
+        int puertoCliente,puertoSincronizacion, puertoParaDirectorio, puertoDirectorio, puertoPing;
         
         ip = configuracion.getIP();
         puertoCliente = configuracion.getPuertoCliente();
         puertoSincronizacion = configuracion.getPuertoSincronizacion();
-        puertoMonitoreo = configuracion.getPuertoMonitoreo();
+        puertoParaDirectorio = configuracion.getPuertoParaDirectorio();
+        puertoPing = configuracion.getPuertoPing();
         ipDirectorio = configuracion.getIPDirectorio();
         puertoDirectorio = configuracion.getPuertoDirectorio();
+        
         configuracion.dispose();
         
-        InfoServidor infoServidor = new InfoServidor(ip, puertoCliente, puertoSincronizacion);
-        Sincronizador sincronizador = new Sincronizador(puertoSincronizacion);
-        ComunicacionDirectorio comunicacionDirectorio = new ComunicacionDirectorio(ipDirectorio, puertoDirectorio, puertoMonitoreo);
-        this.servidor = new Servidor(infoServidor, sincronizador, comunicacionDirectorio);
+        InfoServidor infoServidor = new InfoServidor(ip, puertoCliente, puertoSincronizacion, puertoParaDirectorio, puertoPing);
+        sincronizador = new Sincronizador(puertoSincronizacion);
+        comunicacionDirectorio = new ComunicacionDirectorio(ipDirectorio, puertoDirectorio, puertoParaDirectorio, puertoPing);
+        servidor = new Servidor(infoServidor, sincronizador, comunicacionDirectorio);
+        echo = new Echo(puertoPing);
         
+        new Thread(comunicacionDirectorio).start();
         new Thread(sincronizador).start();
         new Thread(servidor).start();
+        new Thread(echo).start();
+        sincronizador.setServidor(servidor);
+        
         comunicacionDirectorio.setSincronizador(sincronizador);
+        comunicacionDirectorio.setServidor(servidor);
 
         if(comunicacionDirectorio.registrarServidorEnDirectorio(ipDirectorio, puertoDirectorio, infoServidor))
         {
             ventanaServidor = new VentanaServidor(this);
             ventanaServidor.setVisible(true);
+            servidor.setGui(ventanaServidor);
         }
         else
         {
-            // no se pudo registrar en directorio
             servidor.detenerServidor();
+            sincronizador.detener();
+            comunicacionDirectorio.detener();
+            echo.detener();
         };
     }
 }

@@ -175,4 +175,14 @@ public class FormularioAgregar extends javax.swing.JDialog implements IFormulari
     public void abrirFormulario() {
     }
 
+    @Override
+    public int getPuerto() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public String getIP() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
 }

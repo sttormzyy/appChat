@@ -4,51 +4,36 @@
  */
 package directorio;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import monitor.Monitor;
+import gui.IConfiguracionListener;
 import java.util.ArrayList;
 
 /**
  *
  * @author Usuario
  */
-public class Directorio implements ActionListener{
+public class Directorio implements IConfiguracionListener {
     private ArrayList<InfoServidor> servidores;
-    private Configuracion configuracion;
-    private VentanaDirectorio ventana;
+    public ArrayList<IDirectorioListener> observadores;
     private Monitor monitor;
-    private ComunicacionClientes serverClientes;
- 
+    private ComunicacionClientes comunicacionClientes;
     
-    public Directorio(Configuracion vista){
+    public Directorio(){
         servidores = new ArrayList();
-        this.configuracion = vista;
-        this.configuracion.setActionListener(this);
+        observadores = new ArrayList();
     }
     
-    public void setVista(Configuracion vista){
-        this.configuracion = vista;
-    }
-
     @Override
-    public void actionPerformed(ActionEvent e) {
-        if(e.getActionCommand().equals("INICIAR DIRECTORIO"))
-        {
-            String ipDirectorio = configuracion.getIpDirectorio();
-            int puertoServidores = configuracion.getPuertoServidores();
-            int puertoClientes = configuracion.getPuertoClientes();
-            configuracion.dispose();
+    public void configuracionLista(String IPDirectorio, int puertoParaServidores, int puertoParaClientes){
+        this.monitor = new Monitor(this,puertoParaServidores);
+        new Thread (monitor).start();
             
-            this.monitor = new Monitor(this,puertoServidores);
-            new Thread (monitor).start();
-            
-            this.serverClientes = new ComunicacionClientes(this,puertoClientes);
-            new Thread (serverClientes).start();
-            
-            this.ventana = new VentanaDirectorio();
-            ventana.setVisible(true);
-        }
+        this.comunicacionClientes = new ComunicacionClientes(this,puertoParaClientes);
+        new Thread (comunicacionClientes).start();
+        
+        notificarObservadoresListo();
     }
+    
     
     public InfoServidor getServidorConMenosCarga(){
         InfoServidor servidor = null;
@@ -61,8 +46,6 @@ public class Directorio implements ActionListener{
             }
             i++;
         }
-        if (servidor != null)
-            servidor.agregarUsuarioActivo();
         return servidor;
     }
 
@@ -70,42 +53,68 @@ public class Directorio implements ActionListener{
         return this.servidores;
     }
 
-    public synchronized void agregarServidor(String ip, int puertoClientes, int puertoSincro, int puertoMonitoreo) 
+    public synchronized void agregarServidor(InfoServidor servidor) 
     {
-        InfoServidor servidor;
-        if(this.servidores.isEmpty())
-            servidor = new InfoServidor(ip,puertoClientes, puertoClientes,puertoMonitoreo, true);
-        else
-            servidor = new InfoServidor(ip,puertoClientes, puertoClientes,puertoMonitoreo, false);
         this.servidores.add(servidor);
-        this.ventana.agregarServidor(servidor);
+        System.out.println("agregue a "+servidor.getPuertoCliente());
+        notificarObservadores();
     }
     
     public synchronized void eliminarServidores(ArrayList<InfoServidor> servidores) {
         for (InfoServidor servidor: servidores)
-            this.servidores.remove(servidor);
-        
-        this.ventana.actualizarVista(this.servidores);
+            this.servidores.remove(servidor);      
+        notificarObservadores();
     }
     
     public synchronized void disminuirContadorEnUno(String ip, int puerto) {
         InfoServidor servidor = buscarServidor(ip, puerto);
         servidor.eliminarUsuarioActivo();
+        notificarObservadores();
+    }
+    
+    public synchronized void incrementarContadorEnUno(String ip, int puerto) {
+        InfoServidor servidor = buscarServidor(ip, puerto);
+        servidor.agregarUsuarioActivo();
+        notificarObservadores();
     }
     
     public void servidorListo(String ip, int puerto){
         this.buscarServidor(ip, puerto).setEstado(true);
     }
     
-    public InfoServidor buscarServidor(String ip, int puerto){
-        int i=0;
-        while(i<this.servidores.size() && !this.servidores.get(i).getIP().equalsIgnoreCase(ip) && this.servidores.get(i).getPuertoCliente()!= puerto){
-         i++;    
+    public InfoServidor buscarServidor(String ip, int puerto) {
+        int i = 0;
+        while (i < this.servidores.size() && 
+               (!this.servidores.get(i).getIP().equalsIgnoreCase(ip) || 
+                this.servidores.get(i).getPuertoCliente() != puerto)) {
+            i++;
         }
-        if(i<this.servidores.size())
+
+        if (i < this.servidores.size())
             return this.servidores.get(i);
         else
             return null;
     }
+
     
+    public void agregarObservador(IDirectorioListener observador)
+    {
+        this.observadores.add(observador);
+    }
+    
+    private void notificarObservadores()
+    {
+        for(IDirectorioListener observador: observadores)
+        {
+            observador.actualizarEstado(servidores);
+        }
+    }
+    
+    private void notificarObservadoresListo()
+    {
+        for(IDirectorioListener observador: observadores)
+        {
+            observador.directorioListo();
+        }  
+    }
 }

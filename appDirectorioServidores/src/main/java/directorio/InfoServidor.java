@@ -13,7 +13,8 @@ public class InfoServidor {
     private String IP;
     private int puertoCliente;
     private int puertoSincronizacion;
-    private int puertoMonitoreo;
+    private int puertoParaDirectorio;
+    private int puertoPing;
     private int cantUsuariosActivos = 0;
     private boolean estaListo = true;
     
@@ -42,13 +43,20 @@ public class InfoServidor {
         this.puertoSincronizacion = puertoSincronizacion;
     }
 
-    
-    public int getPuertoMonitoreo() {
-        return puertoMonitoreo;
+    public int getPuertoPing() {
+        return puertoPing;
     }
 
-    public void setPuertoMonitoreo(int puerto) {
-        this.puertoMonitoreo = puerto;
+    public void setPuertoPing(int puertoPing) {
+        this.puertoPing = puertoPing;
+    }
+
+    public int getPuertoParaDirectorio() {
+        return puertoParaDirectorio;
+    }
+
+    public void setPuertoParaDirectorio(int puertoParaDirectorio) {
+        this.puertoParaDirectorio = puertoParaDirectorio;
     }
     
     public void agregarUsuarioActivo()
@@ -76,12 +84,13 @@ public class InfoServidor {
         this.estaListo = estado;
     }
 
-    public InfoServidor(String IP, int puertoCliente, int puertoSincronizacion,int puertoMonitoreo, boolean estado) 
+    public InfoServidor(String IP, int puertoCliente, int puertoSincronizacion,int puertoParaDirectorio, int puertoPing, boolean estado) 
     {
         this.IP = IP;
         this.puertoCliente = puertoCliente;
         this.puertoSincronizacion = puertoSincronizacion;
-        this.puertoMonitoreo = puertoMonitoreo;
+        this.puertoParaDirectorio = puertoParaDirectorio;
+        this.puertoPing = puertoPing;
         this.estaListo = estado;
     }  
 }

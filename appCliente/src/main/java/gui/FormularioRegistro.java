@@ -31,7 +31,16 @@ public class FormularioRegistro extends javax.swing.JFrame implements IFormulari
     {
         return textNickname.getText();
     }
-      
+     
+    public int getPuerto()
+    {
+        return Integer.parseInt(puertoDirectorioTextField.getText());
+    }
+    
+    public String getIP()
+    {
+        return ipDirectorioTextField.getText();
+    }
     
     private void habilitarBoton(){
         if(habilitaNickname)
@@ -55,10 +64,15 @@ public class FormularioRegistro extends javax.swing.JFrame implements IFormulari
         textNickname = new javax.swing.JTextField();
         botonConfirmar = new javax.swing.JButton();
         labelTitulo = new javax.swing.JLabel();
+        ipDirectorioTextField = new javax.swing.JTextField();
+        labelNickname1 = new javax.swing.JLabel();
+        puertoDirectorioTextField = new javax.swing.JTextField();
+        labelNickname2 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Messenger - Registro");
-        setMinimumSize(new java.awt.Dimension(300, 100));
+        setMinimumSize(new java.awt.Dimension(350, 350));
+        setPreferredSize(new java.awt.Dimension(350, 350));
         setResizable(false);
 
         jPanel1.setBackground(Constantes.COLOR_BASE);
@@ -89,16 +103,36 @@ public class FormularioRegistro extends javax.swing.JFrame implements IFormulari
         labelTitulo.setForeground(new java.awt.Color(255, 255, 255));
         labelTitulo.setText("REGISTRO");
 
+        ipDirectorioTextField.setText("127.0.0.1");
+        ipDirectorioTextField.setMinimumSize(new java.awt.Dimension(140, 30));
+        ipDirectorioTextField.setPreferredSize(new java.awt.Dimension(140, 30));
+        ipDirectorioTextField.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                ipDirectorioTextFieldKeyReleased(evt);
+            }
+        });
+
+        labelNickname1.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
+        labelNickname1.setForeground(new java.awt.Color(255, 255, 255));
+        labelNickname1.setText("IP:");
+
+        puertoDirectorioTextField.setText("300");
+        puertoDirectorioTextField.setMinimumSize(new java.awt.Dimension(140, 30));
+        puertoDirectorioTextField.setPreferredSize(new java.awt.Dimension(140, 30));
+        puertoDirectorioTextField.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                puertoDirectorioTextFieldKeyReleased(evt);
+            }
+        });
+
+        labelNickname2.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
+        labelNickname2.setForeground(new java.awt.Color(255, 255, 255));
+        labelNickname2.setText("Puerto:");
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(39, 39, 39)
-                .addComponent(labelNickname)
-                .addGap(12, 12, 12)
-                .addComponent(textNickname, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                 .addGap(0, 218, Short.MAX_VALUE)
                 .addComponent(botonConfirmar, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -107,6 +141,23 @@ public class FormularioRegistro extends javax.swing.JFrame implements IFormulari
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(labelTitulo)
                 .addGap(68, 68, 68))
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGap(39, 39, 39)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(labelNickname1)
+                            .addComponent(labelNickname2))
+                        .addGap(45, 45, 45))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(labelNickname)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)))
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(puertoDirectorioTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(ipDirectorioTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(textNickname, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -114,12 +165,18 @@ public class FormularioRegistro extends javax.swing.JFrame implements IFormulari
                 .addContainerGap()
                 .addComponent(labelTitulo)
                 .addGap(35, 35, 35)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(labelNickname, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGap(10, 10, 10)
-                        .addComponent(textNickname, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 27, Short.MAX_VALUE)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(textNickname, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(labelNickname, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(labelNickname1, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(ipDirectorioTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(labelNickname2, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(puertoDirectorioTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 34, Short.MAX_VALUE)
                 .addComponent(botonConfirmar, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
@@ -151,6 +208,14 @@ public class FormularioRegistro extends javax.swing.JFrame implements IFormulari
         habilitarBoton();
     }//GEN-LAST:event_textNicknameKeyReleased
 
+    private void ipDirectorioTextFieldKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_ipDirectorioTextFieldKeyReleased
+        // TODO add your handling code here:
+    }//GEN-LAST:event_ipDirectorioTextFieldKeyReleased
+
+    private void puertoDirectorioTextFieldKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_puertoDirectorioTextFieldKeyReleased
+        // TODO add your handling code here:
+    }//GEN-LAST:event_puertoDirectorioTextFieldKeyReleased
+
     public void cerrarFormulario() {
        this.dispose();
     }
@@ -160,10 +225,14 @@ public class FormularioRegistro extends javax.swing.JFrame implements IFormulari
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton botonConfirmar;
+    private javax.swing.JTextField ipDirectorioTextField;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JLabel labelNickname;
+    private javax.swing.JLabel labelNickname1;
+    private javax.swing.JLabel labelNickname2;
     private javax.swing.JLabel labelTitulo;
+    private javax.swing.JTextField puertoDirectorioTextField;
     private javax.swing.JTextField textNickname;
     // End of variables declaration//GEN-END:variables
 

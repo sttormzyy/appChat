@@ -4,30 +4,19 @@
  */
 package servidor;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
  *
  * @author Usuario
  */
-public class InfoServidor {
+public class InfoServidor implements Serializable{
     private String IP;
     private int puertoCliente;
     private int puertoSincronizacion;
-    
-    private ArrayList<String> clientesConectados;
-    
-    public void agregarClienteConectado(String cliente) {
-        this.clientesConectados.add(cliente);
-    }
-    
-    public void eliminarClienteConectado(String cliente) {
-        this.clientesConectados.remove(cliente);
-    }
-    
-    public boolean consultarCliente(String cliente) {
-        return this.clientesConectados.contains(cliente);
-    } 
+    private int puertoParaDirectorio;
+    private int puertoPing;
     
     public String getIP() {
         return IP;
@@ -53,10 +42,32 @@ public class InfoServidor {
         this.puertoSincronizacion = puertoSincronizacion;
     }
 
-    public InfoServidor(String IP, int puertoCliente, int puertoSincronizacion) {
+    public int getPuertoParaDirectorio() {
+        return puertoParaDirectorio;
+    }
+
+    public void setPuertoParaDirectorio(int puertoParaDirectorio) {
+        this.puertoParaDirectorio = puertoParaDirectorio;
+    }
+
+    public int getPuertoPing() {
+        return puertoPing;
+    }
+
+    public void setPuertoPing(int puertoPing) {
+        this.puertoPing = puertoPing;
+    }
+
+    public InfoServidor()
+    {
+        
+    }
+    
+    public InfoServidor(String IP, int puertoCliente, int puertoSincronizacion, int puertoParaDirectorio, int puertoPing) {
         this.IP = IP;
         this.puertoCliente = puertoCliente;
         this.puertoSincronizacion = puertoSincronizacion;
-        this.clientesConectados = new ArrayList<>();
+        this.puertoParaDirectorio = puertoParaDirectorio;
+        this.puertoPing = puertoPing;
     }  
 }

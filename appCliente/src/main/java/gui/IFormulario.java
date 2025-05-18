@@ -14,5 +14,7 @@ public interface IFormulario {
    public void abrirFormulario();
    public void abrirFormulario(ArrayList<String> contactos);
    public void cerrarFormulario(); 
-   public String getNickname();   
+   public String getNickname();
+   public int getPuerto();
+   public String getIP();
 }

@@ -4,11 +4,14 @@
  */
 package servidor;
 
+import configuracion.IServidorListener;
+import configuracion.VentanaServidor;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import static servidor.Constantes.*;
@@ -24,11 +27,12 @@ public class Servidor implements Runnable{
     private Sincronizador sincronizador;
     private ComunicacionDirectorio comunicacionDirectorio;
     
-    private HashMap<String, Integer> clientesRegistrados = new HashMap<String,Integer>();
+    private ArrayList<String> clientesRegistrados = new ArrayList<>();
     private HashMap<String, Integer> clientesActivosGlobales = new HashMap<String,Integer>();
     private HashMap<String, HiloServidor> clientesActivosLocales = new HashMap<>();
     private HashMap<String, ArrayList<MensajeDeRed>> mensajesPendientes = new HashMap<>();   
 
+    private IServidorListener gui;
     
     public Servidor(InfoServidor infoServidor, Sincronizador sincronizador, ComunicacionDirectorio comunicacionDirectorio)
     {
@@ -36,43 +40,7 @@ public class Servidor implements Runnable{
         this.sincronizador = sincronizador;
         this.comunicacionDirectorio = comunicacionDirectorio;
     }
-    
-    /*
-    public void iniciarServidor() throws IOException 
-    {
-        serverSocket = new ServerSocket(this.infoServidor.getPuertoCliente());
-        System.out.println("Servidor iniciado en el puerto " + this.infoServidor.getPuertoCliente());
-        while (ejecutando) 
-        {
-            try 
-            {
-                Socket clienteSocket = serverSocket.accept();
-                System.out.println("Cliente conectado desde: " + clienteSocket.getInetAddress());
-                HiloServidor hilo = new HiloServidor(clienteSocket, this);
-                new Thread(hilo).start();
-            } catch (IOException e) {
-                if (ejecutando) {
-                    System.err.println("Error al aceptar conexión: " + e.getMessage());
-                }
-            }
-        }
-    }
-    
-    
-    public void detenerServidor() {
-        ejecutando = false;
-        try 
-        {
-            if (serverSocket != null && !serverSocket.isClosed()) {
-                serverSocket.close();
-                System.out.println("Servidor detenido y puerto liberado.");
-        }
-        } catch (IOException e) {
-            System.err.println("Error al cerrar el servidor: " + e.getMessage());
-        }
-    }
-    */
-    
+  
     public synchronized void enviarMensaje(MensajeDeRed msj) {
         String destino = msj.getNicknameDestino();
         HiloServidor socket = clientesActivosLocales.get(destino);
@@ -80,98 +48,125 @@ public class Servidor implements Runnable{
         if (socket != null) {
             socket.enviarMensaje(msj);
         } else {
-            if (!mensajesPendientes.containsKey(destino)) {
-                mensajesPendientes.put(destino, new ArrayList<>());
+            if(clientesActivosGlobales.containsKey(destino))
+            {
+                sincronizador.sincronizarMensaje(msj,clientesActivosGlobales.get(destino));
             }
-            mensajesPendientes.get(destino).add(msj);
-        }
+            else
+            {
+                sincronizador.sincronizarMensajePendiente(msj);
+                if (!mensajesPendientes.containsKey(destino)) {
+                    mensajesPendientes.put(destino, new ArrayList<>());
+                }
+                mensajesPendientes.get(destino).add(msj);
+                for(MensajeDeRed mesj: mensajesPendientes.get(destino))
+                {
+                    System.out.println(mesj.getContenido());
+                }
+                }
+            }
     }   
 
     public synchronized String validarNickname(String nickname) {
-        if (!clientesRegistrados.containsKey(nickname)) {
-            sincronizador.sincronizarUsuarioRegistrado(nickname);
+        if (!clientesRegistrados.contains(nickname)) {
             return ESTADO_VERIFICADO;
-        } else if (clientesActivosGlobales.containsKey(nickname)) {
+        } else if (clientesActivosGlobales.containsKey(nickname) || clientesActivosLocales.containsKey(nickname)) {
             return YA_EXISTE_UNA_SESION_ACTIVA_CON_ESE_NICKNAME;
         } else {
-            sincronizador.sincronizarUsuarioRegistrado(nickname);
             return ESTADO_VERIFICADO;
         }
     }
 
     public synchronized void agregarClienteActivo(String nickname, HiloServidor hiloServidor) {
-        if (!clientesRegistrados.containsKey(nickname)) {
-            clientesRegistrados.put(nickname, this.infoServidor.getPuertoSincronizacion()); 
+        if (!clientesRegistrados.contains(nickname)) {
+            clientesRegistrados.add(nickname); 
             sincronizador.sincronizarUsuarioRegistrado(nickname);
-            System.out.println("Nuevo cliente registrado: " + nickname);
+            gui.informar("Nuevo cliente registrado: " + nickname);
         }
         clientesActivosLocales.put(nickname, hiloServidor);
         clientesActivosGlobales.put(nickname, this.infoServidor.getPuertoSincronizacion()); 
         sincronizador.sincronizarUsuarioActivo(nickname, true);
-        System.out.println("Nuevo cliente activo: " + nickname);
+        comunicacionDirectorio.avisarUsuarioConectado(infoServidor.getIP(),infoServidor.getPuertoCliente());
+        gui.informar("Nuevo cliente activo: " + nickname);
     }
 
     
     public void enviarMensajesPendientes(String nickname, HiloServidor hiloServidor)
     {
         ArrayList<MensajeDeRed> msjPendientes = mensajesPendientes.get(nickname);
-        if (msjPendientes != null) 
-        {
-            while(!msjPendientes.isEmpty()) 
-            {
-                hiloServidor.enviarMensaje(msjPendientes.get(0));
-                msjPendientes.remove(0);
+
+        if (msjPendientes != null && !msjPendientes.isEmpty()) {
+            for (MensajeDeRed mensaje : new ArrayList<>(msjPendientes)) {
+                hiloServidor.enviarMensaje(mensaje);
             }
             mensajesPendientes.remove(nickname);
+            sincronizador.sincronizarYaSeEnvioMensajesPendientes(nickname);
         }
     }
 
     public synchronized void eliminarClienteActivo(String nickname) {
+        clientesActivosLocales.get(nickname).detenerHilo();
         clientesActivosLocales.remove(nickname);
-        System.out.println(nickname + " se desconectó");
+        clientesActivosGlobales.remove(nickname);
+        gui.informar(nickname + " se desconectó");
         sincronizador.sincronizarUsuarioActivo(nickname, false);
-        comunicacionDirectorio.avisarUsuarioDesconectado(this.infoServidor.getPuertoCliente());
+        
+        comunicacionDirectorio.avisarUsuarioDesconectado(this.infoServidor.getIP(),this.infoServidor.getPuertoCliente());
         if (clientesActivosLocales.isEmpty()) {
-            System.out.println("No hay más clientes activos localmente. Cerrando servidor...");
+            gui.informar("No hay más clientes activos localmente");
         }
     }
     
     
   // METODOS QUE LLAMA SINCRONIZADOR
-    public void agregarClienteRegistrado(String nickname, int puertoSincronizacion)
+    public void agregarClienteRegistrado(String nickname)
     {
-        clientesRegistrados.put(nickname,puertoSincronizacion);
-        System.out.println("Nuevo cliente registrado: " + nickname);
+         if (!clientesRegistrados.contains(nickname))
+            clientesRegistrados.add(nickname);
+         gui.informar("Nuevo cliente registrado sincronizado: " + nickname);
     }
     
     public void eliminarClienteActivoGlobal(String nickname)
     {
         clientesActivosGlobales.remove(nickname); 
+        gui.informar(nickname + " se desconectó");
     }
     
     public void agregarClienteActivoGlobal(String nickname, int puertoSincronizacion)
     {
         clientesActivosGlobales.put(nickname, puertoSincronizacion); 
-        System.out.println("Nuevo cliente activo: " + nickname);
+        gui.informar("Nuevo cliente activo sincronizado: " + nickname);
     }
   
     public void agregarMensajePendiente(String nickname, MensajeDeRed mensaje) {
-       mensajesPendientes.computeIfAbsent(nickname, k -> new ArrayList<>());
-       mensajesPendientes.get(nickname).add(mensaje);
-   }
+       if (!mensajesPendientes.containsKey(nickname)) {
+            mensajesPendientes.put(nickname, new ArrayList<>());
+        }
+        mensajesPendientes.get(nickname).add(mensaje);
+    }
     
-    public void sincronizarTodo(HashMap<String,Integer> clientesRegistrados,HashMap<String,Integer> clientesActivosGlobales,HashMap<String,ArrayList<MensajeDeRed>> mensajesPendientes)
+    public void eliminarMensajesPendientes(String nickname)
     {
+        mensajesPendientes.remove(nickname);
+    }
+   
+    
+    public void sincronizarTodo(ArrayList<String> clientesRegistrados, HashMap<String,Integer> clientesActivosGlobales, HashMap<String,ArrayList<MensajeDeRed>> mensajesPendientes)
+    {
+        System.out.println("INFO Q SINCRONIZA");
+        System.out.println(clientesRegistrados);
+        System.out.println(clientesActivosGlobales);
         this.clientesRegistrados = clientesRegistrados;
         this.clientesActivosGlobales = clientesActivosGlobales;
         this.mensajesPendientes = mensajesPendientes;
+        sincronizador.agregarServidor(infoServidor);
         comunicacionDirectorio.avisarEstoyListo();
     }
 
     // FIN METODOS QUE LLAMA SINCRONIZADOR
     
     public ArrayList<String> obtenerListaClientes() {
-        return new ArrayList<>(clientesRegistrados.keySet());
+        return clientesRegistrados;
     }
     
     public String getIP()
@@ -188,8 +183,20 @@ public class Servidor implements Runnable{
     {
         return String.valueOf(this.infoServidor.getPuertoSincronizacion());
     }
+    
+        
+    public String getPuertoParaDirectorio()
+    {
+        return String.valueOf(this.infoServidor.getPuertoParaDirectorio());
+    }
+    
+        
+    public String getPuertoPing()
+    {
+        return String.valueOf(this.infoServidor.getPuertoPing());
+    }
 
-    public HashMap<String, Integer> getClientesRegistrados() {
+    public ArrayList<String> getClientesRegistrados() {
         return clientesRegistrados;
     }
 
@@ -201,11 +208,20 @@ public class Servidor implements Runnable{
         return mensajesPendientes;
     }
 
+    public boolean consultarCliente(String nickname)
+    {
+        return clientesActivosLocales.containsKey(nickname);
+    }
    
+    public void setGui(IServidorListener s)
+    {
+        this.gui =s;
+        gui.informar("Servidor iniciado en el puerto " + this.infoServidor.getPuertoCliente());
+    }
+    
     public void run() {
         try {
             serverSocket = new ServerSocket(this.infoServidor.getPuertoCliente());
-            System.out.println("Servidor iniciado en el puerto " + this.infoServidor.getPuertoCliente());
 
             while (ejecutando) {
                 try {
@@ -229,8 +245,17 @@ public class Servidor implements Runnable{
         try {
             if (serverSocket != null && !serverSocket.isClosed()) {
                 serverSocket.close();
-                System.out.println("Servidor detenido y puerto liberado.");
+                gui.informar("Servidor detenido y puerto liberado.");
             }
+            for (Map.Entry<String, HiloServidor> entry : new HashMap<>(clientesActivosLocales).entrySet()) {
+                String nickname = entry.getKey();
+                HiloServidor hilo = entry.getValue();
+
+                System.out.println("Hilo servidor " + nickname + " apagado");
+                hilo.detenerHilo();  // Esto puede modificar clientesActivosLocales sin problema
+            }
+
+
         } catch (IOException e) {
             System.err.println("Error al cerrar el servidor: " + e.getMessage());
         }
