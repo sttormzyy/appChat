@@ -1,0 +1,75 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
+package servidor;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.net.ServerSocket;
+import java.net.Socket;
+
+public class Echo implements Runnable {
+    private int puertoPing;
+    private volatile boolean enEjecucion = true;
+    private ServerSocket serverSocket;
+
+    public Echo(int puertoPing) {
+        this.puertoPing = puertoPing;
+    }
+
+    public void detener() {
+        enEjecucion = false;
+        try {
+            if (serverSocket != null && !serverSocket.isClosed()) {
+                serverSocket.close();
+            }
+        } catch (IOException e) {
+            System.err.println("Error cerrando Echo: " + e.getMessage());
+        }
+    }
+
+    @Override
+    public void run() {
+        try {
+            serverSocket = new ServerSocket(puertoPing);
+            System.out.println("Echo escuchando en el puerto " + puertoPing + "...");
+
+            while (enEjecucion) {
+                Socket cliente = null;
+                try {
+                    cliente = serverSocket.accept();
+
+                    BufferedReader in = new BufferedReader(new InputStreamReader(cliente.getInputStream()));
+                    PrintWriter out = new PrintWriter(cliente.getOutputStream(), true);
+
+                    String mensaje = in.readLine();
+                    System.out.println("Echo recibió: " + mensaje + " de " + cliente.getInetAddress());
+
+                    // Siempre responde con ECHO
+                    out.println("ECHO");
+
+                } catch (IOException e) {
+                    if (enEjecucion) {
+                        System.err.println("Error atendiendo cliente: " + e.getMessage());
+                    }
+                } finally {
+                    if (cliente != null && !cliente.isClosed()) {
+                        try {
+                            cliente.close();
+                        } catch (IOException e) {
+                            System.err.println("Error cerrando cliente en Echo: " + e.getMessage());
+                        }
+                    }
+                }
+            }
+
+        } catch (IOException e) {
+            System.err.println("No se pudo abrir el puerto " + puertoPing + ": " + e.getMessage());
+        }
+    }
+}
+
+

@@ -1,0 +1,16 @@
+[ {
+  "contacto" : {
+    "nicknameAgendado" : "nico Armani",
+    "nicknameReal" : "nico"
+  },
+  "mensajes" : [ {
+    "contenido" : "hola",
+    "fechaHora" : "2025-05-25 11:38:55"
+  }, {
+    "contenido" : "guarda estos mensajes por favor te li pido por todos los santos del cielo\nave maria",
+    "fechaHora" : "2025-05-25 11:45:53"
+  } ],
+  "nicknameAgendado" : "nico Armani",
+  "nicknameReal" : "nico",
+  "ultimoMensaje" : "guarda estos mensajes por favor te li pido por todos los santos del cielo\nave maria"
+} ]
