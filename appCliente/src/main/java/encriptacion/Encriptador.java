@@ -45,18 +45,18 @@ public class Encriptador {
     }
     
     public Contacto encriptarContacto(Contacto cont) throws Exception{
-        return null;
+        return strategy.encriptarContacto(cont);
     }
     
     public Contacto desencriptarContacto(Contacto cont) throws Exception{
-        return null;
+        return strategy.desencriptarContacto(cont);
     }
     
     public Agenda encriptarAgenda(Agenda agnd) throws Exception{
-        return null;
+        return strategy.encriptarAgenda(agnd);
     }
     
     public Agenda desencriptarAgenda(Agenda agnd) throws Exception{
-        return null;
+        return strategy.desencriptarAgenda(agnd);
     }
 }
