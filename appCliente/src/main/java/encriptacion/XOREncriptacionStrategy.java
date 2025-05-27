@@ -1,88 +1,85 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
 package encriptacion;
 
-import javax.crypto.Cipher;
-import javax.crypto.SecretKey;
-import javax.crypto.spec.SecretKeySpec;
-import java.util.Base64;
 import modelo.Agenda;
 import modelo.Contacto;
 import modelo.Conversacion;
 import modelo.Mensaje;
 
-public class DESEncriptacionStrategy implements EncriptacionStrategy {
-    private final SecretKey claveSecreta;
-    private final Cipher cifrado;
+/**
+ *
+ * @author user
+ */
+public class XOREncriptacionStrategy implements EncriptacionStrategy{
+    private final String claveSecreta;
 
-    public DESEncriptacionStrategy(String clave) throws Exception {
-        byte[] claveBytes = clave.getBytes();
+    public XOREncriptacionStrategy(String clave) throws Exception {
+        if (clave == null || clave.isEmpty()){
+            throw new IllegalArgumentException("La clave XOR no puede ser nula ni vacía.");
+        }
+        this.claveSecreta = clave;
+    }
+    
+    private String xor(String input) {
+        char[] texto = input.toCharArray();
+        char[] claveChars = claveSecreta.toCharArray();
+        char[] resultado = new char[texto.length];
 
-        // Validar longitud
-        if (claveBytes.length != 8) {
-            throw new InvalidKeyException("Clave DES inválida. Debe tener exactamente 8 bytes.");
+        for (int i = 0; i < texto.length; i++) {
+            resultado[i] = (char) (texto[i] ^ claveChars[i % claveChars.length]);
         }
 
-        this.claveSecreta = new SecretKeySpec(claveBytes, "DES");
-        this.cifrado = Cipher.getInstance("DES");
+        return new String(resultado);
     }
 
     @Override
-    public String encriptarString(String contenido) throws Exception {
-        cifrado.init(Cipher.ENCRYPT_MODE, claveSecreta);
-        byte[] encrypted = cifrado.doFinal(contenido.getBytes());
-        return Base64.getEncoder().encodeToString(encrypted);
+    public String encriptarString(String contenido) {
+        return xor(contenido);
     }
 
     @Override
-    public String desencriptarString(String contenido) throws Exception {
-        cifrado.init(Cipher.DECRYPT_MODE, claveSecreta);
-        byte[] decrypted = cifrado.doFinal(Base64.getDecoder().decode(contenido));
-        return new String(decrypted);
+    public String desencriptarString(String contenido) {
+        return xor(contenido);
     }
-    
+
     @Override
-    public Mensaje encriptarMensaje(Mensaje msj) throws Exception {
-        String contenidoEncriptado = encriptarString(msj.getContenido());
-        Mensaje msjEncriptado = new Mensaje(contenidoEncriptado, msj.isMine(), msj.getFechaHora());
-        return msjEncriptado;
+    public Mensaje encriptarMensaje(Mensaje msj) {
+        String contenidoEncriptado = xor(msj.getContenido());
+        return new Mensaje(contenidoEncriptado, msj.isMine(), msj.getFechaHora());
     }
-    
+
     @Override
-    public Mensaje desencriptarMensaje(Mensaje msj) throws Exception {
-        String contenidoDesencriptado = desencriptarString(msj.getContenido());
-        Mensaje msjDesencriptado = new Mensaje(contenidoDesencriptado, msj.isMine(), msj.getFechaHora());
-        return msjDesencriptado;
+    public Mensaje desencriptarMensaje(Mensaje msj) {
+        String contenidoDesencriptado = xor(msj.getContenido());
+        return new Mensaje(contenidoDesencriptado, msj.isMine(), msj.getFechaHora());
     }
-    
+
     @Override
     public Conversacion encriptarConversacion(Conversacion conv) throws Exception {
         Conversacion convEncriptada = new Conversacion(encriptarContacto(conv.getContacto()));
         convEncriptada.setNotificacion(conv.getNotificacion());
-        
         for (Mensaje mensaje : conv.getMensajes()) {
             Mensaje msjEncriptado = encriptarMensaje(mensaje);
-            String contenido = msjEncriptado.getContenido();
-            Boolean esMio = msjEncriptado.isMine();
-            String fechaHora = msjEncriptado.getFechaHora();
-            convEncriptada.agregarMensaje(contenido, esMio, fechaHora);
+            convEncriptada.agregarMensaje(msjEncriptado.getContenido(), msjEncriptado.isMine(), msjEncriptado.getFechaHora());
         }
         return convEncriptada;
     }
-    
+
     @Override
     public Conversacion desencriptarConversacion(Conversacion conv) throws Exception {
         Conversacion convDesencriptada = new Conversacion(desencriptarContacto(conv.getContacto()));
         convDesencriptada.setNotificacion(conv.getNotificacion());
-        
         for (Mensaje mensaje : conv.getMensajes()) {
             Mensaje msjDesencriptado = desencriptarMensaje(mensaje);
-            String contenido = msjDesencriptado.getContenido();
-            Boolean esMio = msjDesencriptado.isMine();
-            String fechaHora = msjDesencriptado.getFechaHora();
-            convDesencriptada.agregarMensaje(contenido, esMio, fechaHora);
+            convDesencriptada.agregarMensaje(msjDesencriptado.getContenido(), msjDesencriptado.isMine(), msjDesencriptado.getFechaHora());
         }
         return convDesencriptada;
     }
-
+    
+    
     @Override
     public Contacto encriptarContacto(Contacto cont) throws Exception{
         String nickRealEncriptado = encriptarString(cont.getNicknameReal());
@@ -103,8 +100,7 @@ public class DESEncriptacionStrategy implements EncriptacionStrategy {
     public Agenda encriptarAgenda(Agenda agnd) throws Exception{
         Agenda agndEncriptada = new Agenda();
         
-        for (Object obj : agnd.getContactos()) {
-            Contacto cont = (Contacto) obj;
+        for (Contacto cont : agnd.getContactos()) {
             String nickRealEncriptado = encriptarString(cont.getNicknameReal());
             String nickAgendaEncriptado = encriptarString(cont.getNicknameAgendado());
             agndEncriptada.agregarContacto(nickRealEncriptado);
@@ -116,9 +112,8 @@ public class DESEncriptacionStrategy implements EncriptacionStrategy {
     @Override
     public Agenda desencriptarAgenda(Agenda agnd) throws Exception{
         Agenda agndDesencriptada = new Agenda();
-        
-        for (Object obj : agnd.getContactos()) {
-            Contacto cont = (Contacto) obj;
+
+        for (Contacto cont : agnd.getContactos()) {
             String nickRealDesencriptado = desencriptarString(cont.getNicknameReal());
             String nickAgendaDesencriptado = desencriptarString(cont.getNicknameAgendado());
             agndDesencriptada.agregarContacto(nickRealDesencriptado);

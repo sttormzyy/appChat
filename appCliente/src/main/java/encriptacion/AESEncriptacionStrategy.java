@@ -42,26 +42,26 @@ class AESEncriptacionStrategy implements EncriptacionStrategy {
     @Override
     public Mensaje encriptarMensaje(Mensaje msj) throws Exception {
         String contenidoEncriptado = encriptarString(msj.getContenido());
-        Mensaje msjEncriptado = new Mensaje(contenidoEncriptado, msj.esMio(), msj.getFechaHora());
+        Mensaje msjEncriptado = new Mensaje(contenidoEncriptado, msj.isMine(), msj.getFechaHora());
         return msjEncriptado;
     }
     
     @Override
     public Mensaje desencriptarMensaje(Mensaje msj) throws Exception {
         String contenidoDesencriptado = desencriptarString(msj.getContenido());
-        Mensaje msjDesencriptado = new Mensaje(contenidoDesencriptado, msj.esMio(), msj.getFechaHora());
+        Mensaje msjDesencriptado = new Mensaje(contenidoDesencriptado, msj.isMine(), msj.getFechaHora());
         return msjDesencriptado;
     }
     
     @Override
     public Conversacion encriptarConversacion(Conversacion conv) throws Exception {
-        Conversacion convEncriptada = new Conversacion(conv.getContacto());
-        convEncriptada.setNotificacion(conv.tieneNotificacion());
+        Conversacion convEncriptada = new Conversacion(encriptarContacto(conv.getContacto()));
+        convEncriptada.setNotificacion(conv.getNotificacion());
         
         for (Mensaje mensaje : conv.getMensajes()) {
             Mensaje msjEncriptado = encriptarMensaje(mensaje);
             String contenido = msjEncriptado.getContenido();
-            Boolean esMio = msjEncriptado.esMio();
+            Boolean esMio = msjEncriptado.isMine();
             String fechaHora = msjEncriptado.getFechaHora();
             convEncriptada.agregarMensaje(contenido, esMio, fechaHora);
         }
@@ -70,13 +70,13 @@ class AESEncriptacionStrategy implements EncriptacionStrategy {
     
     @Override
     public Conversacion desencriptarConversacion(Conversacion conv) throws Exception {
-        Conversacion convDesencriptada = new Conversacion(conv.getContacto());
-        convDesencriptada.setNotificacion(conv.tieneNotificacion());
+        Conversacion convDesencriptada = new Conversacion(desencriptarContacto(conv.getContacto()));
+        convDesencriptada.setNotificacion(conv.getNotificacion());
         
         for (Mensaje mensaje : conv.getMensajes()) {
             Mensaje msjDesencriptado = desencriptarMensaje(mensaje);
             String contenido = msjDesencriptado.getContenido();
-            Boolean esMio = msjDesencriptado.esMio();
+            Boolean esMio = msjDesencriptado.isMine();
             String fechaHora = msjDesencriptado.getFechaHora();
             convDesencriptada.agregarMensaje(contenido, esMio, fechaHora);
         }
@@ -103,8 +103,7 @@ class AESEncriptacionStrategy implements EncriptacionStrategy {
     public Agenda encriptarAgenda(Agenda agnd) throws Exception{
         Agenda agndEncriptada = new Agenda();
         
-        for (Object obj : agnd.getContactos()) {
-            Contacto cont = (Contacto) obj;
+        for (Contacto cont : agnd.getContactos()) {
             String nickRealEncriptado = encriptarString(cont.getNicknameReal());
             String nickAgendaEncriptado = encriptarString(cont.getNicknameAgendado());
             agndEncriptada.agregarContacto(nickRealEncriptado);
@@ -117,8 +116,7 @@ class AESEncriptacionStrategy implements EncriptacionStrategy {
     public Agenda desencriptarAgenda(Agenda agnd) throws Exception{
         Agenda agndDesencriptada = new Agenda();
 
-        for (Object obj : agnd.getContactos()) {
-            Contacto cont = (Contacto) obj;
+        for (Contacto cont : agnd.getContactos()) {
             String nickRealDesencriptado = desencriptarString(cont.getNicknameReal());
             String nickAgendaDesencriptado = desencriptarString(cont.getNicknameAgendado());
             agndDesencriptada.agregarContacto(nickRealDesencriptado);
