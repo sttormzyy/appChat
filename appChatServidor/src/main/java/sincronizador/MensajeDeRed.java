@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package servidor;
+package sincronizador;
 
 import java.io.Serializable;
 
@@ -11,13 +11,15 @@ public class MensajeDeRed implements Serializable{
    private String nicknameDestino;
    private String contenido;
    private String horaEnvio;
+   private String metodoEncriptacion;
     
     // Constructor
-    public MensajeDeRed(String nicknameOrigen, String nicknameDestino, String contenido, String horaEnvio) {
+    public MensajeDeRed(String nicknameOrigen, String nicknameDestino, String contenido, String horaEnvio, String metodoEncriptacion) {
         this.nicknameOrigen = nicknameOrigen;
         this.nicknameDestino = nicknameDestino;
         this.contenido = contenido;
         this.horaEnvio = horaEnvio;
+        this.metodoEncriptacion = metodoEncriptacion;
     }
     
     public String getNicknameOrigen() {
@@ -36,4 +38,7 @@ public class MensajeDeRed implements Serializable{
         return horaEnvio;
     }
     
+    public String getMetodoEncriptacion() {
+        return metodoEncriptacion;
+    }
 }

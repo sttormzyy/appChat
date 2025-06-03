@@ -27,24 +27,10 @@ public class VentanaDirectorio extends javax.swing.JFrame implements IDirectorio
         this.setLocationRelativeTo(null);
     }
     
-    public void agregarServidor(InfoServidor servidor)
-    {
-         try {
-            StyledDocument docIP = listaIp.getStyledDocument();
-            StyledDocument docEstado = listaEstado.getStyledDocument();
-            StyledDocument docPuerto = listaPuerto.getStyledDocument();
-            StyledDocument docClientes = listaClientes.getStyledDocument();
-
-            docIP.insertString(docIP.getLength(), servidor.getIP() + "\n", null);
-            docEstado.insertString(docEstado.getLength(), (servidor.estaListo() ? "Activo" : "Inactivo") + "\n", null);
-            docPuerto.insertString(docPuerto.getLength(), servidor.getPuertoCliente() + "\n", null);
-            docClientes.insertString(docClientes.getLength(), servidor.getCantidadUsuariosActivos()+ "\n", null);
-
-        } catch (BadLocationException e) {
-        e.printStackTrace();
-        }
-    }
-    
+    /**
+     * Actualiza la vista con la informacion sobre los servidores registrados en el directorio
+     * @param servidores 
+     */
     public void actualizarVista(ArrayList<InfoServidor> servidores) {
         listaIp.setText("");
         listaEstado.setText("");

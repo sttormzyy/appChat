@@ -1,51 +1,50 @@
-C:\Users\user\Documents\NetBeansProjects\subir\appChat\appCliente\src\main\java\controlador\Control.java
-C:\Users\user\Documents\NetBeansProjects\subir\appChat\appCliente\src\main\java\encriptacion\AESEncriptacionStrategy.java
-C:\Users\user\Documents\NetBeansProjects\subir\appChat\appCliente\src\main\java\encriptacion\DESEncriptacionStrategy.java
-C:\Users\user\Documents\NetBeansProjects\subir\appChat\appCliente\src\main\java\encriptacion\EncriptacionStrategy.java
-C:\Users\user\Documents\NetBeansProjects\subir\appChat\appCliente\src\main\java\encriptacion\Encriptador.java
-C:\Users\user\Documents\NetBeansProjects\subir\appChat\appCliente\src\main\java\encriptacion\EncriptadorTest.java
-C:\Users\user\Documents\NetBeansProjects\subir\appChat\appCliente\src\main\java\encriptacion\InvalidKeyException.java
-C:\Users\user\Documents\NetBeansProjects\subir\appChat\appCliente\src\main\java\encriptacion\XOREncriptacionStrategy.java
-C:\Users\user\Documents\NetBeansProjects\subir\appChat\appCliente\src\main\java\gui\ContactoItemList.java
-C:\Users\user\Documents\NetBeansProjects\subir\appChat\appCliente\src\main\java\gui\ContenedorMensajeVista.java
-C:\Users\user\Documents\NetBeansProjects\subir\appChat\appCliente\src\main\java\gui\ConversacionItemList.java
-C:\Users\user\Documents\NetBeansProjects\subir\appChat\appCliente\src\main\java\gui\FormularioAgregar.java
-C:\Users\user\Documents\NetBeansProjects\subir\appChat\appCliente\src\main\java\gui\FormularioEditarContacto.java
-C:\Users\user\Documents\NetBeansProjects\subir\appChat\appCliente\src\main\java\gui\FormularioItemList.java
-C:\Users\user\Documents\NetBeansProjects\subir\appChat\appCliente\src\main\java\gui\FormularioRegistro.java
-C:\Users\user\Documents\NetBeansProjects\subir\appChat\appCliente\src\main\java\gui\IFormulario.java
-C:\Users\user\Documents\NetBeansProjects\subir\appChat\appCliente\src\main\java\gui\IGestorContacto.java
-C:\Users\user\Documents\NetBeansProjects\subir\appChat\appCliente\src\main\java\gui\IGestorConversacion.java
-C:\Users\user\Documents\NetBeansProjects\subir\appChat\appCliente\src\main\java\gui\IVista.java
-C:\Users\user\Documents\NetBeansProjects\subir\appChat\appCliente\src\main\java\gui\IVistaFormulario.java
-C:\Users\user\Documents\NetBeansProjects\subir\appChat\appCliente\src\main\java\gui\MensajeVista.java
-C:\Users\user\Documents\NetBeansProjects\subir\appChat\appCliente\src\main\java\gui\MenuItemList.java
-C:\Users\user\Documents\NetBeansProjects\subir\appChat\appCliente\src\main\java\gui\ModernScrollBarUI.java
-C:\Users\user\Documents\NetBeansProjects\subir\appChat\appCliente\src\main\java\gui\VentanaError.java
-C:\Users\user\Documents\NetBeansProjects\subir\appChat\appCliente\src\main\java\gui\VentanaPrincipal.java
-C:\Users\user\Documents\NetBeansProjects\subir\appChat\appCliente\src\main\java\main\SistemaMensajeria.java
-C:\Users\user\Documents\NetBeansProjects\subir\appChat\appCliente\src\main\java\modelo\Agenda.java
-C:\Users\user\Documents\NetBeansProjects\subir\appChat\appCliente\src\main\java\modelo\Contacto.java
-C:\Users\user\Documents\NetBeansProjects\subir\appChat\appCliente\src\main\java\modelo\Conversacion.java
-C:\Users\user\Documents\NetBeansProjects\subir\appChat\appCliente\src\main\java\modelo\Mensaje.java
-C:\Users\user\Documents\NetBeansProjects\subir\appChat\appCliente\src\main\java\modelo\Usuario.java
-C:\Users\user\Documents\NetBeansProjects\subir\appChat\appCliente\src\main\java\persistencia\IFactory.java
-C:\Users\user\Documents\NetBeansProjects\subir\appChat\appCliente\src\main\java\persistencia\IPersistencia.java
-C:\Users\user\Documents\NetBeansProjects\subir\appChat\appCliente\src\main\java\persistencia\IPersistenciaAgenda.java
-C:\Users\user\Documents\NetBeansProjects\subir\appChat\appCliente\src\main\java\persistencia\IPersistenciaConversaciones.java
-C:\Users\user\Documents\NetBeansProjects\subir\appChat\appCliente\src\main\java\persistencia\JSON\JSONFactory.java
-C:\Users\user\Documents\NetBeansProjects\subir\appChat\appCliente\src\main\java\persistencia\JSON\JSONPersistenciaAgenda.java
-C:\Users\user\Documents\NetBeansProjects\subir\appChat\appCliente\src\main\java\persistencia\JSON\JSONPersitenciaConversaciones.java
-C:\Users\user\Documents\NetBeansProjects\subir\appChat\appCliente\src\main\java\persistencia\Persistencia.java
-C:\Users\user\Documents\NetBeansProjects\subir\appChat\appCliente\src\main\java\persistencia\TextoPlano\TextoPlanoFactory.java
-C:\Users\user\Documents\NetBeansProjects\subir\appChat\appCliente\src\main\java\persistencia\TextoPlano\TextoPlanoPersistenciaAgenda.java
-C:\Users\user\Documents\NetBeansProjects\subir\appChat\appCliente\src\main\java\persistencia\TextoPlano\TextoPlanoPersitenciaConversaciones.java
-C:\Users\user\Documents\NetBeansProjects\subir\appChat\appCliente\src\main\java\persistencia\XML\ConversacionesDTO.java
-C:\Users\user\Documents\NetBeansProjects\subir\appChat\appCliente\src\main\java\persistencia\XML\XMLFactory.java
-C:\Users\user\Documents\NetBeansProjects\subir\appChat\appCliente\src\main\java\persistencia\XML\XMLPersistenciaAgenda.java
-C:\Users\user\Documents\NetBeansProjects\subir\appChat\appCliente\src\main\java\persistencia\XML\XMLPersitenciaConversaciones.java
-C:\Users\user\Documents\NetBeansProjects\subir\appChat\appCliente\src\main\java\red\ComunicacionServidor.java
-C:\Users\user\Documents\NetBeansProjects\subir\appChat\appCliente\src\main\java\red\IEmisor.java
-C:\Users\user\Documents\NetBeansProjects\subir\appChat\appCliente\src\main\java\red\IReceptor.java
-C:\Users\user\Documents\NetBeansProjects\subir\appChat\appCliente\src\main\java\red\MensajeDeRed.java
-C:\Users\user\Documents\NetBeansProjects\subir\appChat\appCliente\src\main\java\resources\Constantes.java
+E:\INGENIERIA INFORMATICA\4.1\Analisis y Diseño de Sistemas II\tpVersionNueva\appChat\appCliente\src\main\java\modelo\Mensaje.java
+E:\INGENIERIA INFORMATICA\4.1\Analisis y Diseño de Sistemas II\tpVersionNueva\appChat\appCliente\src\main\java\persistencia\TextoPlano\TextoPlanoPersitenciaConversaciones.java
+E:\INGENIERIA INFORMATICA\4.1\Analisis y Diseño de Sistemas II\tpVersionNueva\appChat\appCliente\src\main\java\gui\FormularioItemList.java
+E:\INGENIERIA INFORMATICA\4.1\Analisis y Diseño de Sistemas II\tpVersionNueva\appChat\appCliente\src\main\java\gui\IGestorContacto.java
+E:\INGENIERIA INFORMATICA\4.1\Analisis y Diseño de Sistemas II\tpVersionNueva\appChat\appCliente\src\main\java\persistencia\XML\XMLFactory.java
+E:\INGENIERIA INFORMATICA\4.1\Analisis y Diseño de Sistemas II\tpVersionNueva\appChat\appCliente\src\main\java\red\IEmisor.java
+E:\INGENIERIA INFORMATICA\4.1\Analisis y Diseño de Sistemas II\tpVersionNueva\appChat\appCliente\src\main\java\gui\ConversacionItemList.java
+E:\INGENIERIA INFORMATICA\4.1\Analisis y Diseño de Sistemas II\tpVersionNueva\appChat\appCliente\src\main\java\red\ComunicacionServidor.java
+E:\INGENIERIA INFORMATICA\4.1\Analisis y Diseño de Sistemas II\tpVersionNueva\appChat\appCliente\src\main\java\encriptacion\AESEncriptacion.java
+E:\INGENIERIA INFORMATICA\4.1\Analisis y Diseño de Sistemas II\tpVersionNueva\appChat\appCliente\src\main\java\gui\FormularioAgregar.java
+E:\INGENIERIA INFORMATICA\4.1\Analisis y Diseño de Sistemas II\tpVersionNueva\appChat\appCliente\src\main\java\gui\FormularioEditarContacto.java
+E:\INGENIERIA INFORMATICA\4.1\Analisis y Diseño de Sistemas II\tpVersionNueva\appChat\appCliente\src\main\java\main\SistemaMensajeria.java
+E:\INGENIERIA INFORMATICA\4.1\Analisis y Diseño de Sistemas II\tpVersionNueva\appChat\appCliente\src\main\java\persistencia\IFactory.java
+E:\INGENIERIA INFORMATICA\4.1\Analisis y Diseño de Sistemas II\tpVersionNueva\appChat\appCliente\src\main\java\gui\MensajeVista.java
+E:\INGENIERIA INFORMATICA\4.1\Analisis y Diseño de Sistemas II\tpVersionNueva\appChat\appCliente\src\main\java\persistencia\IPersistenciaAgenda.java
+E:\INGENIERIA INFORMATICA\4.1\Analisis y Diseño de Sistemas II\tpVersionNueva\appChat\appCliente\src\main\java\modelo\Agenda.java
+E:\INGENIERIA INFORMATICA\4.1\Analisis y Diseño de Sistemas II\tpVersionNueva\appChat\appCliente\src\main\java\gui\MenuItemList.java
+E:\INGENIERIA INFORMATICA\4.1\Analisis y Diseño de Sistemas II\tpVersionNueva\appChat\appCliente\src\main\java\persistencia\IPersistenciaConversaciones.java
+E:\INGENIERIA INFORMATICA\4.1\Analisis y Diseño de Sistemas II\tpVersionNueva\appChat\appCliente\src\main\java\persistencia\JSON\JSONPersistenciaAgenda.java
+E:\INGENIERIA INFORMATICA\4.1\Analisis y Diseño de Sistemas II\tpVersionNueva\appChat\appCliente\src\main\java\persistencia\XML\XMLPersitenciaConversaciones.java
+E:\INGENIERIA INFORMATICA\4.1\Analisis y Diseño de Sistemas II\tpVersionNueva\appChat\appCliente\src\main\java\persistencia\TextoPlano\TextoPlanoPersistenciaAgenda.java
+E:\INGENIERIA INFORMATICA\4.1\Analisis y Diseño de Sistemas II\tpVersionNueva\appChat\appCliente\src\main\java\persistencia\TextoPlano\TextoPlanoFactory.java
+E:\INGENIERIA INFORMATICA\4.1\Analisis y Diseño de Sistemas II\tpVersionNueva\appChat\appCliente\src\main\java\persistencia\XML\XMLPersistenciaAgenda.java
+E:\INGENIERIA INFORMATICA\4.1\Analisis y Diseño de Sistemas II\tpVersionNueva\appChat\appCliente\src\main\java\gui\ContenedorMensajeVista.java
+E:\INGENIERIA INFORMATICA\4.1\Analisis y Diseño de Sistemas II\tpVersionNueva\appChat\appCliente\src\main\java\encriptacion\XOREncriptacion.java
+E:\INGENIERIA INFORMATICA\4.1\Analisis y Diseño de Sistemas II\tpVersionNueva\appChat\appCliente\src\main\java\encriptacion\Encriptador.java
+E:\INGENIERIA INFORMATICA\4.1\Analisis y Diseño de Sistemas II\tpVersionNueva\appChat\appCliente\src\main\java\gui\ModernScrollBarUI.java
+E:\INGENIERIA INFORMATICA\4.1\Analisis y Diseño de Sistemas II\tpVersionNueva\appChat\appCliente\src\main\java\red\MensajeDeRed.java
+E:\INGENIERIA INFORMATICA\4.1\Analisis y Diseño de Sistemas II\tpVersionNueva\appChat\appCliente\src\main\java\gui\ContactoItemList.java
+E:\INGENIERIA INFORMATICA\4.1\Analisis y Diseño de Sistemas II\tpVersionNueva\appChat\appCliente\src\main\java\gui\FormularioRegistro.java
+E:\INGENIERIA INFORMATICA\4.1\Analisis y Diseño de Sistemas II\tpVersionNueva\appChat\appCliente\src\main\java\modelo\Conversacion.java
+E:\INGENIERIA INFORMATICA\4.1\Analisis y Diseño de Sistemas II\tpVersionNueva\appChat\appCliente\src\main\java\controlador\Control.java
+E:\INGENIERIA INFORMATICA\4.1\Analisis y Diseño de Sistemas II\tpVersionNueva\appChat\appCliente\src\main\java\gui\IFormulario.java
+E:\INGENIERIA INFORMATICA\4.1\Analisis y Diseño de Sistemas II\tpVersionNueva\appChat\appCliente\src\main\java\persistencia\IPersistencia.java
+E:\INGENIERIA INFORMATICA\4.1\Analisis y Diseño de Sistemas II\tpVersionNueva\appChat\appCliente\src\main\java\gui\IGestorConversacion.java
+E:\INGENIERIA INFORMATICA\4.1\Analisis y Diseño de Sistemas II\tpVersionNueva\appChat\appCliente\src\main\java\persistencia\JSON\JSONFactory.java
+E:\INGENIERIA INFORMATICA\4.1\Analisis y Diseño de Sistemas II\tpVersionNueva\appChat\appCliente\src\main\java\modelo\Usuario.java
+E:\INGENIERIA INFORMATICA\4.1\Analisis y Diseño de Sistemas II\tpVersionNueva\appChat\appCliente\src\main\java\persistencia\JSON\JSONPersitenciaConversaciones.java
+E:\INGENIERIA INFORMATICA\4.1\Analisis y Diseño de Sistemas II\tpVersionNueva\appChat\appCliente\src\main\java\resources\Constantes.java
+E:\INGENIERIA INFORMATICA\4.1\Analisis y Diseño de Sistemas II\tpVersionNueva\appChat\appCliente\src\main\java\encriptacion\DESEncriptacion.java
+E:\INGENIERIA INFORMATICA\4.1\Analisis y Diseño de Sistemas II\tpVersionNueva\appChat\appCliente\src\main\java\gui\VentanaError.java
+E:\INGENIERIA INFORMATICA\4.1\Analisis y Diseño de Sistemas II\tpVersionNueva\appChat\appCliente\src\main\java\gui\VentanaPrincipal.java
+E:\INGENIERIA INFORMATICA\4.1\Analisis y Diseño de Sistemas II\tpVersionNueva\appChat\appCliente\src\main\java\encriptacion\IEncriptacion.java
+E:\INGENIERIA INFORMATICA\4.1\Analisis y Diseño de Sistemas II\tpVersionNueva\appChat\appCliente\src\main\java\persistencia\Persistencia.java
+E:\INGENIERIA INFORMATICA\4.1\Analisis y Diseño de Sistemas II\tpVersionNueva\appChat\appCliente\src\main\java\gui\IVista.java
+E:\INGENIERIA INFORMATICA\4.1\Analisis y Diseño de Sistemas II\tpVersionNueva\appChat\appCliente\src\main\java\gui\IVistaFormulario.java
+E:\INGENIERIA INFORMATICA\4.1\Analisis y Diseño de Sistemas II\tpVersionNueva\appChat\appCliente\src\main\java\gui\FormularioPersistencia.java
+E:\INGENIERIA INFORMATICA\4.1\Analisis y Diseño de Sistemas II\tpVersionNueva\appChat\appCliente\src\main\java\red\IReceptor.java
+E:\INGENIERIA INFORMATICA\4.1\Analisis y Diseño de Sistemas II\tpVersionNueva\appChat\appCliente\src\main\java\persistencia\XML\ConversacionesDTO.java
+E:\INGENIERIA INFORMATICA\4.1\Analisis y Diseño de Sistemas II\tpVersionNueva\appChat\appCliente\src\main\java\modelo\Contacto.java

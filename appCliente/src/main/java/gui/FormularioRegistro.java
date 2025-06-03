@@ -4,12 +4,18 @@
  */
 package gui;
 
-import resources.Constantes;
+import gui.VentanaError;
 import java.awt.Color;
+import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
+import resources.Constantes;
+import static resources.Constantes.AES;
+import static resources.Constantes.DES;
+import static resources.Constantes.XOR;
+
 
 /**
  *
@@ -17,29 +23,34 @@ import javax.swing.ImageIcon;
  */
 public class FormularioRegistro extends javax.swing.JFrame implements IFormulario {
     private boolean habilitaNickname = false;
-    private ButtonGroup tipoArchivo;
+    private ButtonGroup grupoEncriptacion = new ButtonGroup();
+    private ActionListener controlador;
     
     public FormularioRegistro(ActionListener controlador) {
         initComponents();
         setBackground(Constantes.COLOR_BASE);
         setLocationRelativeTo(null);
+        grupoEncriptacion.add(aesRadioButton);
+        grupoEncriptacion.add(desRadioButton);
+        grupoEncriptacion.add(xorRadioButton);
+        xorRadioButton.setActionCommand(Constantes.XOR);
+        desRadioButton.setActionCommand(Constantes.DES);
+        aesRadioButton.setActionCommand(Constantes.AES);
+        xorRadioButton.setSelected(true);
         setIconImage(new ImageIcon(getClass().getResource("/resources/iconApp.png")).getImage());
-        botonConfirmar.addActionListener(controlador);
-        botonConfirmar.setEnabled(false);
-        tipoArchivo = new ButtonGroup();
-        tipoArchivo.add(this.xmlRadioButton);
-        tipoArchivo.add(this.jsonRadioButton);
-        tipoArchivo.add(this.textoPlanoRadioButton);
-        this.xmlRadioButton.setActionCommand(Constantes.XML);
-        this.jsonRadioButton.setActionCommand(Constantes.JSON);
-        this.textoPlanoRadioButton.setActionCommand(Constantes.TEXTO_PLANO);
-        this.xmlRadioButton.setSelected(true);
+        this.controlador = controlador;
     }
     
-    public String getTipoArchivo(){
-        return tipoArchivo.getSelection().getActionCommand();
+    public String getMetodoEncriptacion()
+    {
+        return grupoEncriptacion.getSelection().getActionCommand();
     }
     
+   public String getClaveEncriptacion()
+    {
+        return claveTextField.getText();
+    }
+        
     public String getNickname()
     {
         return textNickname.getText();
@@ -55,13 +66,7 @@ public class FormularioRegistro extends javax.swing.JFrame implements IFormulari
         return ipDirectorioTextField.getText();
     }
     
-    private void habilitarBoton(){
-        if(habilitaNickname)
-            botonConfirmar.setEnabled(true);
-        else
-            botonConfirmar.setEnabled(false);
-    }
-    
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -82,18 +87,20 @@ public class FormularioRegistro extends javax.swing.JFrame implements IFormulari
         puertoDirectorioTextField = new javax.swing.JTextField();
         labelNickname2 = new javax.swing.JLabel();
         labelNickname3 = new javax.swing.JLabel();
-        xmlRadioButton = new javax.swing.JRadioButton();
-        jsonRadioButton = new javax.swing.JRadioButton();
-        textoPlanoRadioButton = new javax.swing.JRadioButton();
+        aesRadioButton = new javax.swing.JRadioButton();
+        desRadioButton = new javax.swing.JRadioButton();
+        xorRadioButton = new javax.swing.JRadioButton();
+        claveTextField = new javax.swing.JTextField();
+        labelNickname4 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Messenger - Registro");
         setMinimumSize(new java.awt.Dimension(350, 350));
         setResizable(false);
-        getContentPane().setLayout(new java.awt.BorderLayout());
 
         jPanel1.setBackground(Constantes.COLOR_BASE);
-        jPanel1.setPreferredSize(new java.awt.Dimension(350, 425));
+        jPanel1.setMinimumSize(new java.awt.Dimension(490, 410));
+        jPanel1.setPreferredSize(new java.awt.Dimension(490, 410));
         jPanel1.setVerifyInputWhenFocusTarget(false);
 
         jPanel2.setBackground(Constantes.COLOR_BASE);
@@ -101,15 +108,10 @@ public class FormularioRegistro extends javax.swing.JFrame implements IFormulari
 
         labelNickname.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
         labelNickname.setForeground(new java.awt.Color(255, 255, 255));
-        labelNickname.setText("nickname:");
+        labelNickname.setText("Nickname:");
 
         textNickname.setMinimumSize(new java.awt.Dimension(140, 30));
         textNickname.setPreferredSize(new java.awt.Dimension(140, 30));
-        textNickname.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyReleased(java.awt.event.KeyEvent evt) {
-                textNicknameKeyReleased(evt);
-            }
-        });
 
         botonConfirmar.setBackground(Constantes.COLOR_BOTON);
         botonConfirmar.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
@@ -152,110 +154,111 @@ public class FormularioRegistro extends javax.swing.JFrame implements IFormulari
         labelNickname2.setForeground(new java.awt.Color(255, 255, 255));
         labelNickname2.setText("Puerto:");
 
-        labelNickname3.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
+        labelNickname3.setFont(new java.awt.Font("Segoe UI", 0, 22)); // NOI18N
         labelNickname3.setForeground(new java.awt.Color(255, 255, 255));
-        labelNickname3.setText("Tipo de Archivo");
+        labelNickname3.setText("Metodo encriptacion");
 
-        xmlRadioButton.setForeground(new java.awt.Color(255, 255, 255));
-        xmlRadioButton.setBackground(Constantes.COLOR_BASE);
-        xmlRadioButton.setText("XML");
-        xmlRadioButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                xmlRadioButtonActionPerformed(evt);
+        aesRadioButton.setForeground(new java.awt.Color(255, 255, 255));
+        aesRadioButton.setBackground(Constantes.COLOR_BASE);
+        aesRadioButton.setText("AES");
+
+        desRadioButton.setForeground(new java.awt.Color(255, 255, 255));
+        desRadioButton.setBackground(Constantes.COLOR_BASE);
+        desRadioButton.setText("DES");
+
+        xorRadioButton.setForeground(new java.awt.Color(255, 255, 255));
+        xorRadioButton.setText("XOR");
+        xorRadioButton.setActionCommand("TEXTO_PLANO");
+
+        claveTextField.setMinimumSize(new java.awt.Dimension(140, 30));
+        claveTextField.setPreferredSize(new java.awt.Dimension(140, 30));
+        claveTextField.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                claveTextFieldKeyReleased(evt);
             }
         });
 
-        jsonRadioButton.setForeground(new java.awt.Color(255, 255, 255));
-        jsonRadioButton.setBackground(Constantes.COLOR_BASE);
-        jsonRadioButton.setText("JSON");
-        jsonRadioButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jsonRadioButtonActionPerformed(evt);
-            }
-        });
-
-        textoPlanoRadioButton.setForeground(new java.awt.Color(255, 255, 255));
-        textoPlanoRadioButton.setText("Texto Plano");
-        textoPlanoRadioButton.setActionCommand("TEXTO_PLANO");
-        textoPlanoRadioButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                textoPlanoRadioButtonActionPerformed(evt);
-            }
-        });
+        labelNickname4.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
+        labelNickname4.setForeground(new java.awt.Color(255, 255, 255));
+        labelNickname4.setText("Clave encriptacion:");
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGap(72, 72, 72)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                .addGroup(jPanel2Layout.createSequentialGroup()
-                                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addGroup(jPanel2Layout.createSequentialGroup()
-                                            .addGap(39, 39, 39)
-                                            .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                                .addComponent(labelNickname1)
-                                                .addComponent(labelNickname2))
-                                            .addGap(45, 45, 45))
-                                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                                            .addContainerGap()
-                                            .addComponent(labelNickname)
-                                            .addGap(18, 18, 18)))
-                                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addComponent(puertoDirectorioTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(ipDirectorioTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(textNickname, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                                .addGroup(jPanel2Layout.createSequentialGroup()
-                                    .addContainerGap()
-                                    .addComponent(xmlRadioButton)
-                                    .addGap(18, 18, 18)
-                                    .addComponent(jsonRadioButton)
-                                    .addGap(18, 18, 18)
-                                    .addComponent(textoPlanoRadioButton)
-                                    .addGap(15, 15, 15)))
-                            .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addGap(72, 72, 72)
-                                .addComponent(labelNickname3)))
-                        .addGap(0, 12, Short.MAX_VALUE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(botonConfirmar, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap())
+                            .addComponent(labelNickname2)
+                            .addComponent(labelNickname))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 105, Short.MAX_VALUE)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(puertoDirectorioTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(ipDirectorioTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(textNickname, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addComponent(labelNickname1)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(labelNickname4)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(claveTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(52, 52, 52))
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGap(63, 63, 63)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(labelNickname3)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGap(6, 6, 6)
+                        .addComponent(aesRadioButton)
+                        .addGap(18, 18, 18)
+                        .addComponent(desRadioButton)
+                        .addGap(18, 18, 18)
+                        .addComponent(xorRadioButton)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(botonConfirmar, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(17, 17, 17))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                .addGap(0, 0, Short.MAX_VALUE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(labelTitulo)
-                .addGap(69, 69, 69))
+                .addGap(146, 146, 146))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGap(9, 9, 9)
                 .addComponent(labelTitulo)
-                .addGap(35, 35, 35)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(textNickname, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 23, Short.MAX_VALUE)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGap(6, 6, 6)
+                        .addComponent(textNickname, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(labelNickname1, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(ipDirectorioTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(labelNickname2, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(puertoDirectorioTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(18, 18, 18)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(labelNickname4, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(claveTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addComponent(labelNickname, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(labelNickname1, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(ipDirectorioTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(labelNickname2, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(puertoDirectorioTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(labelNickname3, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(textoPlanoRadioButton)
-                    .addComponent(jsonRadioButton)
-                    .addComponent(xmlRadioButton))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(botonConfirmar, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(14, 14, 14))
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                        .addComponent(labelNickname3, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(xorRadioButton)
+                            .addComponent(desRadioButton)
+                            .addComponent(aesRadioButton))
+                        .addGap(27, 27, 27))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                        .addComponent(botonConfirmar, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(25, 25, 25))))
         );
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -270,8 +273,8 @@ public class FormularioRegistro extends javax.swing.JFrame implements IFormulari
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 366, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap()
+                .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -279,11 +282,6 @@ public class FormularioRegistro extends javax.swing.JFrame implements IFormulari
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
-    private void textNicknameKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_textNicknameKeyReleased
-        habilitaNickname = !this.textNickname.getText().isEmpty() && this.textNickname.getText().length()<=64;
-        habilitarBoton();
-    }//GEN-LAST:event_textNicknameKeyReleased
 
     private void ipDirectorioTextFieldKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_ipDirectorioTextFieldKeyReleased
         // TODO add your handling code here:
@@ -293,20 +291,68 @@ public class FormularioRegistro extends javax.swing.JFrame implements IFormulari
         // TODO add your handling code here:
     }//GEN-LAST:event_puertoDirectorioTextFieldKeyReleased
 
-    private void xmlRadioButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_xmlRadioButtonActionPerformed
+    private void claveTextFieldKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_claveTextFieldKeyReleased
         // TODO add your handling code here:
-    }//GEN-LAST:event_xmlRadioButtonActionPerformed
-
-    private void jsonRadioButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jsonRadioButtonActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jsonRadioButtonActionPerformed
-
-    private void textoPlanoRadioButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textoPlanoRadioButtonActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_textoPlanoRadioButtonActionPerformed
+    }//GEN-LAST:event_claveTextFieldKeyReleased
 
     private void botonConfirmarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botonConfirmarActionPerformed
-        // TODO add your handling code here:
+    String nickname = getNickname();
+    String ip = getIP();
+    int puerto;
+    String clave = getClaveEncriptacion();
+    String metodo = getMetodoEncriptacion();
+
+    // Validar nickname
+    if (nickname.isEmpty() || nickname.length() > 64) {
+        new VentanaError(this, true, "El nickname no puede estar vacío ni superar los 64 caracteres.");
+        return;
+    }
+
+    // Validar IP
+    if (!ip.matches("^((25[0-5]|2[0-4]\\d|[0-1]?\\d{1,2})\\.){3}(25[0-5]|2[0-4]\\d|[0-1]?\\d{1,2})$")) {
+        new VentanaError(this, true, "La dirección IP no es válida.");
+        return;
+    }
+
+    // Validar puerto
+    try {
+        puerto = Integer.parseInt(puertoDirectorioTextField.getText());
+        if (puerto < 1 || puerto > 65535) {
+            new VentanaError(this, true,  "El puerto debe ser un número entre 1 y 65535.");
+            return;        }
+    } catch (NumberFormatException e) {
+        new VentanaError(this, true, "<html>El puerto debe ser un número entre 1 y 65535<br>y no contener caracteres.</html>");
+        return;
+    }
+
+    // Validar clave según método
+    switch (metodo) {
+        case AES:
+            if (!(clave.length() == 16 || clave.length() == 24 || clave.length() == 32)) {
+                new VentanaError(this, true, "La clave para AES debe tener 16, 24 o 32 caracteres.");
+                return;
+            }
+            break;
+        case DES:
+            if (clave.length() != 8) {
+                new VentanaError(this, true,"La clave para DES debe tener exactamente 8 caracteres.");
+                return;
+            }
+            break;
+        case XOR:  // XOR
+            if (clave.isEmpty()) {
+                new VentanaError(this, true, "Debe ingresar una clave no vacia para el método XOR.");
+                return;
+            }
+            break;
+        default:
+             new VentanaError(this, true, "Seleccione un método de encriptación válido.");
+            return;
+    }
+    
+    ActionEvent eventoRegistro = new ActionEvent(this, ActionEvent.ACTION_PERFORMED, "REGISTRO");
+   
+    controlador.actionPerformed(eventoRegistro);
     }//GEN-LAST:event_botonConfirmarActionPerformed
 
     public void cerrarFormulario() {
@@ -317,20 +363,22 @@ public class FormularioRegistro extends javax.swing.JFrame implements IFormulari
        this.setVisible(true);
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JRadioButton aesRadioButton;
     private javax.swing.JButton botonConfirmar;
+    private javax.swing.JTextField claveTextField;
+    private javax.swing.JRadioButton desRadioButton;
     private javax.swing.JTextField ipDirectorioTextField;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
-    private javax.swing.JRadioButton jsonRadioButton;
     private javax.swing.JLabel labelNickname;
     private javax.swing.JLabel labelNickname1;
     private javax.swing.JLabel labelNickname2;
     private javax.swing.JLabel labelNickname3;
+    private javax.swing.JLabel labelNickname4;
     private javax.swing.JLabel labelTitulo;
     private javax.swing.JTextField puertoDirectorioTextField;
     private javax.swing.JTextField textNickname;
-    private javax.swing.JRadioButton textoPlanoRadioButton;
-    private javax.swing.JRadioButton xmlRadioButton;
+    private javax.swing.JRadioButton xorRadioButton;
     // End of variables declaration//GEN-END:variables
 
     @Override

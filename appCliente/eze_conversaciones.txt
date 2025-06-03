@@ -1,4 +1,0 @@
---- Conversacion ---
-Contacto:nico
-Notificada:false
-hola|2025-05-25 11:48:38|true

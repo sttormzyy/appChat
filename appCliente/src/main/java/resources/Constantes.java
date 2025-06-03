@@ -20,6 +20,9 @@ public class Constantes {
     public static final String XML = ".xml";
     public static final String JSON = ".json";
     public static final String TEXTO_PLANO = ".txt";
+    public static final String AES = "AES";
+    public static final String DES = "DES";
+    public static final String XOR = "XOR";
     
     // comandos para la comunicacion por sockets
     public static final String RECIBIR_MENSAJE = "RECIBIR MENSAJE";

@@ -4,6 +4,7 @@
  */
 package directorio;
 
+import gui.VentanaError;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -22,6 +23,10 @@ public class ComunicacionClientes implements Runnable{
         this.directorio = direct;
     }
     
+    /**
+     * Escucha conexiones de clientes que requieren un servidor al cual conectarse
+     * Crea un hilo para atender cada solicitud
+     */
     public void iniciarServidor(){
         try{
         servidor = new ServerSocket(this.puerto);
@@ -34,7 +39,8 @@ public class ComunicacionClientes implements Runnable{
             new Thread(hilo).start();
         }
         }catch(IOException e){
-            System.out.println("Acordame de generar un metodo para agregar una ventana error");
+             String mensajeError = "Error al iniciar el directorio, reinicie por favor:\n" + e.getClass().getSimpleName() + " - " + e.getMessage();
+             new VentanaError(null, true, mensajeError);
         }
     }
 

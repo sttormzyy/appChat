@@ -4,6 +4,8 @@
  */
 package directorio;
 
+import java.util.Objects;
+
 
 /**
  *
@@ -73,6 +75,11 @@ public class InfoServidor {
     {
         return this.cantUsuariosActivos;
     }
+
+    public void setCantidadUsuariosActivos(int cant)
+    {
+        cantUsuariosActivos = cant;
+    }
     
     public boolean estaListo()
     {
@@ -93,4 +100,20 @@ public class InfoServidor {
         this.puertoPing = puertoPing;
         this.estaListo = estado;
     }  
+    
+        
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        InfoServidor that = (InfoServidor) obj;
+        return puertoCliente == that.puertoCliente &&
+               Objects.equals(IP, that.getIP());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(IP, puertoCliente);
+    }
+
 }

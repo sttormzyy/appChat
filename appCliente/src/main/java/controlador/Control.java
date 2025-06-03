@@ -4,7 +4,6 @@
  */
 package controlador;
 
-
 import gui.VentanaError;
 import gui.IVista;
 import java.awt.event.ActionEvent;
@@ -18,12 +17,15 @@ import modelo.*;
 import red.*;
 import gui.VentanaPrincipal.SideBar;
 import java.io.File;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import persistencia.IPersistencia;
 import persistencia.JSON.JSONFactory;
 import persistencia.Persistencia;
 import persistencia.TextoPlano.TextoPlanoFactory;
 import persistencia.XML.XMLFactory;
-import resources.Constantes;
+import encriptacion.Encriptador;
+
 
 public class Control implements ActionListener,IReceptor{
     private static Control instance = null;
@@ -31,7 +33,9 @@ public class Control implements ActionListener,IReceptor{
     private IVista vista;
     private IEmisor emisor;
     private IPersistencia persistencia;
-
+    private Encriptador encriptador;
+    private String metodoEncriptacion;
+    
     private Control(){}
     
     public static Control getInstance(){      
@@ -64,22 +68,30 @@ public class Control implements ActionListener,IReceptor{
      */
     @Override
     public void actionPerformed(ActionEvent evento) {
-        String nickname, ip;
+        String nickname, ip, claveEncriptacion, tipoArchivo;
         Conversacion conversacion;
         int puerto;
-        String tipoArchivo;
         
         switch(evento.getActionCommand()) {
             case "REGISTRO":
                 nickname = vista.getNicknameRegistro();
                 ip = vista.getIPRegistro();
                 puerto = vista.getPuertoRegistro();
-                tipoArchivo = vista.getTipoArchivo();
+                claveEncriptacion = vista.getClaveEncriptacion();
+                metodoEncriptacion = vista.getMetodoEncriptacion();
+                tipoArchivo = getTipoArchivo(nickname);
                 
-                if(!existeTipoArchivo(nickname,tipoArchivo))
-                    this.registrar(nickname, ip, puerto,tipoArchivo);
+                
+                encriptador = new Encriptador(metodoEncriptacion, claveEncriptacion);
+                this.usuario = new Usuario(nickname, ip, puerto);
+
+                if(tipoArchivo == null)
+                {
+                   vista.abrirFormularioPersistencia();
+                   this.registrar(nickname, ip, puerto); 
+                }
                 else
-                    this.recuperarUsuario(nickname, ip, puerto, tipoArchivo);
+                   this.recuperarUsuario(nickname, ip, puerto, tipoArchivo);
                 
                 break;
                 
@@ -97,14 +109,14 @@ public class Control implements ActionListener,IReceptor{
                             
                         }
                         else{
-                            VentanaError error = new VentanaError((JFrame)vista,true,"No se pudo enviar el mensaje");
+                             new VentanaError((JFrame)vista,true,"No se pudo enviar el mensaje");
                         }
                     }else{
-                        VentanaError error = new VentanaError((JFrame)vista,true,"Por favor, escriba un mensaje para ser enviado");
+                        new VentanaError((JFrame)vista,true,"Por favor, escriba un mensaje para ser enviado");
                     }
                 }else
                 {
-                    VentanaError error = new VentanaError((JFrame)vista,true,"Por favor, seleccione una conversacion para enviar mensajes");
+                    new VentanaError((JFrame)vista,true,"Por favor, seleccione una conversacion para enviar mensajes");
                 }
                 break;
                            
@@ -124,7 +136,7 @@ public class Control implements ActionListener,IReceptor{
                     vista.abrirFormularioAgregarConversacion(contactosSinConversacion);
                 else
                 {
-                    VentanaError error = new VentanaError((JFrame)vista,true,"Agregue mas contactos para iniciar nuevas conversaciones");
+                    new VentanaError((JFrame)vista,true,"Agregue mas contactos para iniciar nuevas conversaciones");
                 }
                 break;
                 
@@ -152,7 +164,7 @@ public class Control implements ActionListener,IReceptor{
                     vista.abrirFormularioEditarContacto(nickname);
                 }else
                 {
-                    VentanaError error = new VentanaError((JFrame)vista,true,"Contacto ya existente");
+                    new VentanaError((JFrame)vista,true,"Contacto ya existente");
                 }
                 break;
                 
@@ -190,11 +202,15 @@ public class Control implements ActionListener,IReceptor{
                 contacto = conversacion.getContacto();
                 vista.mostrarConversacion(conversacion.getMensajes(), contacto.getNicknameAgendado());  
                 break;
+            
+            case "ELEGIR PERSISTENCIA":
+                tipoArchivo = (String) evento.getSource(); //evento.geSource() devuelve el tipo de persistencia elegido por el usuario
+                asignarPersistencia(tipoArchivo, usuario.getNickname());
+                break;
                 
             case "CIERRE":
                 emisor.detener();
-                // Que vaya despues de cerrar los sockets asi no llegan mensajes en el medio
-                persistencia.persistir(usuario);
+                if(persistencia != null) persistencia.persistir(usuario);
                 break;
             
         }
@@ -206,18 +222,10 @@ public class Control implements ActionListener,IReceptor{
      * @param ip
      * @param puerto 
      */
-    private void registrar(String nickname, String ipDirectorio, int puertoDirectorio,String tipoArchivo){
+    private void registrar(String nickname, String ipDirectorio, int puertoDirectorio){
     	String estado = this.iniciarEmisor(nickname, ipDirectorio, puertoDirectorio);
         if (estado.equals(ESTADO_VERIFICADO))
         {
-            usuario = new Usuario(nickname,ipDirectorio,puertoDirectorio);
-            
-            switch(tipoArchivo) {
-                case Constantes.XML: persistencia = new Persistencia(new XMLFactory(), nickname);break;
-                case Constantes.JSON: persistencia = new Persistencia(new JSONFactory(), nickname);break;
-                case Constantes.TEXTO_PLANO: persistencia = new Persistencia(new TextoPlanoFactory(), nickname);break;
-            }
-            
             emisor.pedirMensajesPendientes();
             vista.cerrarFormularioRegistro();
             vista.setNicknameUsuario(nickname);
@@ -231,20 +239,20 @@ public class Control implements ActionListener,IReceptor{
          }
     }
     
+    /**
+     * Inicia sesion con usuario de la app a partir de los datos recibidos por parametro.
+     * Ademas despersiste sus conversacioens y agenda
+     * @param nickname
+     * @param ipDirectorio
+     * @param puertoDirectorio
+     * @param tipoArchivo 
+     */
     private void recuperarUsuario(String nickname, String ipDirectorio, int puertoDirectorio,String tipoArchivo){
     	String estado = this.iniciarEmisor(nickname, ipDirectorio, puertoDirectorio);
         if (estado.equals(ESTADO_VERIFICADO))
         {
-            usuario = new Usuario(nickname,ipDirectorio,puertoDirectorio);
-            
-            switch(tipoArchivo) {
-                case Constantes.XML: persistencia = new Persistencia(new XMLFactory(), nickname);break;
-                case Constantes.JSON: persistencia = new Persistencia(new JSONFactory(), nickname);break;
-                case Constantes.TEXTO_PLANO: persistencia = new Persistencia(new TextoPlanoFactory(), nickname);break;
-            }
-            
+            asignarPersistencia(tipoArchivo,nickname);
             persistencia.despersistir(usuario);
-            
             emisor.pedirMensajesPendientes();
             vista.cerrarFormularioRegistro();
             vista.setNicknameUsuario(nickname);
@@ -263,13 +271,13 @@ public class Control implements ActionListener,IReceptor{
      * @return 
      */
     private String iniciarEmisor(String nickname, String ipDirectorio, int puertoDirectorio){
-        this.emisor= new ComunicacionServidor(nickname, this, ipDirectorio, puertoDirectorio);
+        this.emisor = new ComunicacionServidor(nickname, this, ipDirectorio, puertoDirectorio);
         Thread hilo = new Thread((Runnable)emisor);
         hilo.start();
         try {
             hilo.join(1000);
         } catch (InterruptedException ex) {
-            return "FALLO POR INTERRUMPCION";
+            return "FALLO POR INTERRUPCION";
         }
         return emisor.getEstado();
     }
@@ -281,8 +289,15 @@ public class Control implements ActionListener,IReceptor{
      * @return true si puedo enviar el mensaje, false caso contrario
      */
     public synchronized boolean enviarMensaje(String contenido, String nicknameDestino){
-       MensajeDeRed msjRed = new MensajeDeRed(usuario.getNickname(),nicknameDestino, contenido, LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
-       return emisor.enviarMensaje(msjRed);
+       String contenidoEncriptado;
+        try {
+            contenidoEncriptado = encriptador.encriptar(contenido);
+            MensajeDeRed msjRed = new MensajeDeRed(usuario.getNickname(),nicknameDestino, contenidoEncriptado, LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")), metodoEncriptacion);
+            return emisor.enviarMensaje(msjRed);
+        } catch (Exception ex) {
+            Logger.getLogger(Control.class.getName()).log(Level.SEVERE, null, ex);
+        }
+       return false;
     }
     
     /**
@@ -296,7 +311,16 @@ public class Control implements ActionListener,IReceptor{
         Contacto contacto;
         String hora = "";
         String horaEnvio = mensaje.getHoraEnvio();
-
+        String contenidoDesencriptado = "";
+        System.out.println("MENSAJE ENCRIPTADO: "+mensaje.getContenido());
+        
+        try {
+            contenidoDesencriptado = encriptador.desencriptar(mensaje.getContenido(),mensaje.getMetodoEncriptacion());
+            System.out.println("MENSAJE DESENCRIPTADO: "+contenidoDesencriptado);
+        } catch (Exception ex) {
+            Logger.getLogger(Control.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
         if (horaEnvio != null && horaEnvio.length() >= 16) {
             hora = horaEnvio.substring(11, 16);
         }
@@ -308,16 +332,16 @@ public class Control implements ActionListener,IReceptor{
             contacto = usuario.obtenerContactoPorNickname(nicknameNuevoContacto);
             usuario.iniciarConversacion(contacto);
             conversacion = usuario.buscarConversacionPorNickname(nicknameNuevoContacto);
-            conversacion.agregarMensaje(mensaje.getContenido(),false,mensaje.getHoraEnvio());
+            conversacion.agregarMensaje(contenidoDesencriptado,false,mensaje.getHoraEnvio());
             usuario.buscarConversacionPorNickname(nicknameNuevoContacto).setNotificacion(true);
             vista.notificar();
         }else
         {   
             contacto = usuario.obtenerContactoPorNickname(mensaje.getNicknameOrigen());
-            conversacion.agregarMensaje(mensaje.getContenido(),false,mensaje.getHoraEnvio());
+            conversacion.agregarMensaje(contenidoDesencriptado,false,mensaje.getHoraEnvio());
             if(contacto.getNicknameReal().equals(nicknameConversacionActiva))
             {
-                 vista.agregarMensaje(mensaje.getContenido(),false,hora);
+                 vista.agregarMensaje(contenidoDesencriptado,false,hora);
             }
             else
             {
@@ -340,9 +364,8 @@ public class Control implements ActionListener,IReceptor{
     
     public void detener()
     {
-        VentanaError v = new VentanaError(null,true,"Sistema caido, reinicie aplicacion");
         vista.cerrarVentana();
-        persistencia.persistir(usuario);
+        if(persistencia != null) persistencia.persistir(usuario);
     }
     
     private boolean sePuedeEnviarMensaje(String mensaje)
@@ -355,10 +378,31 @@ public class Control implements ActionListener,IReceptor{
         return  vista.getNicknameRealActivo()!=null;
     }
     
-    private boolean existeTipoArchivo(String nickname, String tipoArchivo){
-        File arch;
-        arch = new File(nickname+"_agenda"+tipoArchivo);
-        return arch.exists();
+    private String getTipoArchivo(String nickname){
+        if((new File(nickname+"_agenda"+XML)).exists())
+           return XML;
+        else
+            if((new File(nickname+"_agenda"+JSON)).exists())
+                return JSON;
+            else if((new File(nickname+"_agenda"+TEXTO_PLANO)).exists())
+                    return TEXTO_PLANO;
+                 else
+                    return null;    
+    }
+
+    public void asignarPersistencia(String tipoArchivo, String nickname)
+    {
+        switch(tipoArchivo) {
+            case XML: 
+                persistencia = new Persistencia(new XMLFactory(), nickname);
+                break;
+            case JSON: 
+                persistencia = new Persistencia(new JSONFactory(), nickname);
+                break;
+            case TEXTO_PLANO: 
+                persistencia = new Persistencia(new TextoPlanoFactory(), nickname);
+                break;
+        }
     }
 }
 

@@ -47,6 +47,7 @@ public class Configuracion extends javax.swing.JFrame{
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Directorio de servidores - Configuracion");
+        setResizable(false);
 
         jPanel1.setBackground(new Color(47,52,52));
 
@@ -59,10 +60,10 @@ public class Configuracion extends javax.swing.JFrame{
         jLabel3.setForeground(new java.awt.Color(255, 255, 255));
         jLabel3.setText("Puerto para clientes:");
 
-        puertoServidoresTextField.setText("200");
+        puertoServidoresTextField.setText("5000");
         puertoServidoresTextField.setPreferredSize(new java.awt.Dimension(100, 22));
 
-        puertoClientesTextField.setText("300");
+        puertoClientesTextField.setText("6000");
         puertoClientesTextField.setPreferredSize(new java.awt.Dimension(100, 22));
 
         directorioIpTextField.setText("127.0.0.1");
@@ -126,16 +127,50 @@ public class Configuracion extends javax.swing.JFrame{
     }// </editor-fold>//GEN-END:initComponents
 
     private void iniciarDirectorioBotonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_iniciarDirectorioBotonActionPerformed
-       for (IConfiguracionListener controlador : controladores) {
-            controlador.configuracionLista(
-                    directorioIpTextField.getText(),
-                    Integer.parseInt(puertoServidoresTextField.getText()),
-                    Integer.parseInt(puertoClientesTextField.getText())
-            );
-        }
-        this.dispose();        
+        String ip = directorioIpTextField.getText().trim();
+           String puertoServidoresStr = puertoServidoresTextField.getText().trim();
+           String puertoClientesStr = puertoClientesTextField.getText().trim();
+
+           // Validar IP
+           if (!esIPValida(ip)) {
+               new VentanaError(this,true,"La IP ingresada no es válida.");
+               return;
+           }
+
+           // Validar que los puertos sean números y estén en rango
+           int puertoServidores, puertoClientes;
+           try {
+               puertoServidores = Integer.parseInt(puertoServidoresStr);
+               puertoClientes = Integer.parseInt(puertoClientesStr);
+
+               if (!esPuertoValido(puertoServidores) || !esPuertoValido(puertoClientes)) {
+                   new VentanaError(this,true,"Los puertos deben estar entre 1024 y 65535.");
+                   return;
+               }
+           } catch (NumberFormatException e) {
+               new VentanaError(this,true,"Los puertos deben ser números válidos.");
+               return;
+           }
+
+           // Si todo es válido, notificar a los listeners
+           for (IConfiguracionListener controlador : controladores) {
+               controlador.configuracionLista(ip, puertoServidores, puertoClientes);
+           }
+
+           this.dispose();           
     }//GEN-LAST:event_iniciarDirectorioBotonActionPerformed
 
+    
+    private boolean esPuertoValido(int puerto) {
+        return puerto >= 1024 && puerto <= 65535;
+    }
+
+    private boolean esIPValida(String ip) {
+        String regex = 
+            "^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}" +
+            "([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$";
+        return ip != null && ip.matches(regex);
+    }
     /**
      * @param args the command line arguments
      */

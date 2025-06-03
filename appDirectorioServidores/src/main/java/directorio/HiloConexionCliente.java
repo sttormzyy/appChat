@@ -33,11 +33,15 @@ public class HiloConexionCliente implements Runnable{
         { }
     }
     
+    /**
+     * Se encarga de buscar el servidor con menos carga y devolverle su IP y puerto a un
+     * cliente para que se conecte
+     */
     private void conexion(){
         InfoServidor servidor = directorio.getServidorConMenosCarga();
         String clienteYaRecibio;
         if(servidor != null){
-            System.out.println("SERVER DEVUELTO "+servidor.getIP()+" "+servidor.getPuertoCliente());
+            System.out.println("Servidor devuelto "+servidor.getIP()+" "+servidor.getPuertoCliente());
             out.println(servidor.getIP()+":"+servidor.getPuertoCliente());
             try {
                 clienteYaRecibio = in.readLine();

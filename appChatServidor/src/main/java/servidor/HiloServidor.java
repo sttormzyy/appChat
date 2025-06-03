@@ -4,6 +4,7 @@
  */
 package servidor;
 
+import sincronizador.MensajeDeRed;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -51,6 +52,12 @@ public class HiloServidor implements Runnable{
         
     }
     
+    /**
+     * Se encarga de atender las solicitudes de un usuario en particular. Entre ellas encontramos:
+     *  - Enviar mensaje
+     *  - Pedir lista de usuarios registrados
+     *  - Pedir mensajes pendientes
+     */
     public void conectar() 
     {
         try
@@ -70,7 +77,8 @@ public class HiloServidor implements Runnable{
                             String nicknameDestino = in.readLine();
                             String contenido = in.readLine();
                             String hora = in.readLine();
-                            MensajeDeRed msj = new MensajeDeRed(nicknameOrigen, nicknameDestino, contenido, hora);
+                            String metodoEncriptacion = in.readLine();
+                            MensajeDeRed msj = new MensajeDeRed(nicknameOrigen, nicknameDestino, contenido, hora, metodoEncriptacion);
                             servidor.enviarMensaje(msj);
                             break;
                         case RECIBIR_CLIENTES:                     
@@ -100,14 +108,22 @@ public class HiloServidor implements Runnable{
         System.out.println("Conexion cerrada con el servidor");
     }
     
+    /**
+     * Envia a un usuario un mensaje que acaba de recibir
+     * @param msj 
+     */
     public void enviarMensaje(MensajeDeRed msj){
         out.println(RECIBIR_MENSAJE);
         out.println(msj.getNicknameOrigen());
         out.println(msj.getNicknameDestino());
         out.println(msj.getContenido());
         out.println(msj.getHoraEnvio());
+        out.println(msj.getMetodoEncriptacion());
     }
     
+    /**
+     * Envia a un usuario la lista de usuarios registrados
+     */
     public void enviarListaClientes(){
         ArrayList<String> clientes = servidor.obtenerListaClientes();
         out.println(RECIBIR_CLIENTES);
@@ -117,6 +133,9 @@ public class HiloServidor implements Runnable{
         }
     }
     
+    /**
+     * Envia a un usuario sus mensajes pendientes
+     */
     public void enviarMensajesPendientes()
     {
         servidor.enviarMensajesPendientes(nickname, this);

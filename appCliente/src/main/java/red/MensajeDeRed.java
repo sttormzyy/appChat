@@ -9,13 +9,15 @@ public class MensajeDeRed {
    private String nicknameDestino;
    private String contenido;
    private String horaEnvio;
+   private String metodoEncriptacion;
     
     // Constructor
-    public MensajeDeRed(String nicknameOrigen, String nicknameDestino, String contenido, String horaEnvio) {
+    public MensajeDeRed(String nicknameOrigen, String nicknameDestino, String contenido, String horaEnvio, String metodoEncriptacion) {
         this.nicknameOrigen = nicknameOrigen;
         this.nicknameDestino = nicknameDestino;
         this.contenido = contenido;
         this.horaEnvio = horaEnvio;
+        this.metodoEncriptacion = metodoEncriptacion;
     }
     
     public String getNicknameOrigen() {
@@ -32,6 +34,10 @@ public class MensajeDeRed {
     
     public String getHoraEnvio() {
         return horaEnvio;
+    }
+    
+    public String getMetodoEncriptacion() {
+        return metodoEncriptacion;
     }
     
 }

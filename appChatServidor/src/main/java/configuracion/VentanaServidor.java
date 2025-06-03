@@ -23,7 +23,6 @@ public class VentanaServidor extends javax.swing.JFrame implements IServidorList
     }
 
     public void informar(String mensaje) {
-        System.out.println("infomrar");
         infoTextArea.append(mensaje + "\n");
     }
         

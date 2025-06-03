@@ -16,6 +16,7 @@ public interface IVistaFormulario {
    public void abrirFormularioAgregarConversacion(ArrayList<String> contactos);
    public void abrirFormularioAgregarContacto(ArrayList<String> contactos);
    public void abrirFormularioEditarContacto(String nickname);
+   public void abrirFormularioPersistencia();
    public void cerrarFormularioAgregarConversacion();
    public void cerrarFormularioAgregarContacto();
    public void cerrarFormularioEditarContacto();
@@ -26,5 +27,6 @@ public interface IVistaFormulario {
    public String getNicknameContactoEditado();
    public String getNicknameContactoActual();
    public String getNicknameConversacion();
-   public String getTipoArchivo();
+   public String getMetodoEncriptacion();
+   public String getClaveEncriptacion();
 }

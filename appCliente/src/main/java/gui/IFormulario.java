@@ -17,5 +17,6 @@ public interface IFormulario {
    public String getNickname();
    public int getPuerto();
    public String getIP();
-   public String getTipoArchivo();
+   public String getMetodoEncriptacion();
+   public String getClaveEncriptacion();
 }

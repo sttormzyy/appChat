@@ -35,7 +35,7 @@ public class Directorio implements IConfiguracionListener {
     }
     
     
-    public InfoServidor getServidorConMenosCarga(){
+    public synchronized InfoServidor getServidorConMenosCarga(){
         InfoServidor servidor = null;
         int i = 0;
         int actMin = 99999;
@@ -49,20 +49,45 @@ public class Directorio implements IConfiguracionListener {
         return servidor;
     }
 
-    public ArrayList<InfoServidor> getServidores() {
+    public synchronized  ArrayList<InfoServidor> getServidores() {
         return this.servidores;
     }
 
+    public synchronized ArrayList<InfoServidor> getServidoresActivos() {
+        ArrayList<InfoServidor> activos = new ArrayList<>();
+        for (InfoServidor servidor : this.servidores) {
+             System.out.println("ESTADO "+servidor.estaListo());
+            if (servidor.estaListo()) {
+               
+                activos.add(servidor);
+            }
+        }
+        return activos;
+    }
+
+        
     public synchronized void agregarServidor(InfoServidor servidor) 
     {
-        this.servidores.add(servidor);
-        System.out.println("agregue a "+servidor.getPuertoCliente());
+        InfoServidor servidorYaEsta = this.buscarServidor(servidor.getIP(), servidor.getPuertoCliente());
+        if(servidorYaEsta != null)
+        {
+            servidorYaEsta.setEstado(true);
+        }
+        else
+        {
+            servidores.add(servidor);
+        }
         notificarObservadores();
     }
     
     public synchronized void eliminarServidores(ArrayList<InfoServidor> servidores) {
+        InfoServidor servidorInactivo;
         for (InfoServidor servidor: servidores)
-            this.servidores.remove(servidor);      
+        {
+            servidorInactivo = this.buscarServidor(servidor.getIP(),servidor.getPuertoCliente());
+            servidorInactivo.setEstado(false);   
+            servidorInactivo.setCantidadUsuariosActivos(0);
+        }
         notificarObservadores();
     }
     

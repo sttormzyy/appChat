@@ -4,59 +4,53 @@
  */
 package encriptacion;
 
-import modelo.Agenda;
-import modelo.Contacto;
-import modelo.Conversacion;
-import modelo.Mensaje;
+import static resources.Constantes.*;
 
 /**
  *
- * @author user
+ * @author Usuario
  */
 public class Encriptador {
-    private EncriptacionStrategy strategy;
-
-    public void setStrategy(EncriptacionStrategy strategy) {
-        this.strategy = strategy;
-    }
-
-    public String encriptarString(String contenido) throws Exception {
-        return strategy.encriptarString(contenido);
-    }
-
-    public String desencriptarString(String contenido) throws Exception {
-        return strategy.desencriptarString(contenido);
+    IEncriptacion strategy;
+    String clave;
+    
+    public Encriptador(String metodoEncriptacion, String clave)
+    {
+        this.clave = clave;
+        switch(metodoEncriptacion)
+        {
+            case AES:
+                strategy = new AESEncriptacion(clave);
+                break;
+            case DES:
+                strategy = new DESEncriptacion(clave);
+                break;
+            case XOR:
+                strategy =  new XOREncriptacion(clave);
+                break;
+        }
     }
     
-    public Mensaje encriptarMensaje(Mensaje msj) throws Exception {
-        return strategy.encriptarMensaje(msj);
+    public String encriptar(String contenido)
+    {
+        return strategy.encriptar(contenido);
     }
     
-    public Mensaje desencriptarMensaje(Mensaje msj) throws Exception {
-        return strategy.desencriptarMensaje(msj);
-    }
-    
-    public Conversacion encriptarConversacion(Conversacion conv) throws Exception {
-        return strategy.encriptarConversacion(conv);
-    }
-    
-    public Conversacion desencriptarConversacion(Conversacion conv) throws Exception {
-        return strategy.desencriptarConversacion(conv);
-    }
-    
-    public Contacto encriptarContacto(Contacto cont) throws Exception{
-        return strategy.encriptarContacto(cont);
-    }
-    
-    public Contacto desencriptarContacto(Contacto cont) throws Exception{
-        return strategy.desencriptarContacto(cont);
-    }
-    
-    public Agenda encriptarAgenda(Agenda agnd) throws Exception{
-        return strategy.encriptarAgenda(agnd);
-    }
-    
-    public Agenda desencriptarAgenda(Agenda agnd) throws Exception{
-        return strategy.desencriptarAgenda(agnd);
+    public String desencriptar(String contenido, String tipo)
+    {
+        IEncriptacion encriptador = null;
+        switch(tipo)
+        {
+            case AES:
+                encriptador = new AESEncriptacion(clave);
+                break;
+            case DES:
+                encriptador = new DESEncriptacion(clave);
+                break;
+            case XOR:
+                encriptador =  new XOREncriptacion(clave);
+                break;
+        }
+        return encriptador.desencriptar(contenido);
     }
 }

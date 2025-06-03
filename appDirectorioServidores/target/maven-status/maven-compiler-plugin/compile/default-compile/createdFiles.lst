@@ -1,4 +1,6 @@
 monitor\Monitor$HiloConexionServidor.class
+gui\VentanaError.class
+gui\VentanaError$1.class
 monitor\Ping.class
 directorio\IDirectorioListener.class
 gui\Configuracion.class

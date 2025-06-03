@@ -36,6 +36,7 @@ public class VentanaPrincipal extends javax.swing.JFrame implements IVista{
     private SideBar sideBar;
     private boolean barraDeMensajeClikeada = false;
 
+
     public enum SideBar {
         AGENDA,
         CONVERSACIONES;
@@ -641,8 +642,18 @@ public class VentanaPrincipal extends javax.swing.JFrame implements IVista{
         this.dispose();
     }
     
-    public String getTipoArchivo() {
-        return registro.getTipoArchivo();
+    public String getMetodoEncriptacion() {
+        return registro.getMetodoEncriptacion();
+    }
+    
+    public void abrirFormularioPersistencia()
+    {
+        new FormularioPersistencia(null,true,controlador);
+    }
+    
+    public String getClaveEncriptacion()
+    {
+       return registro.getClaveEncriptacion();
     }
     
     public void disableBotonAgregarContacto()

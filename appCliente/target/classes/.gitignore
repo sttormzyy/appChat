@@ -1,7 +1,8 @@
-/META-INF/
 /controlador/
+/encriptacion/
 /gui/
 /main/
 /modelo/
+/persistencia/
 /red/
 /resources/

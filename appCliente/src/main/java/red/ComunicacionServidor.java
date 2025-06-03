@@ -30,35 +30,65 @@ public class ComunicacionServidor implements Runnable, IEmisor {
         this.puertoDirectorio = puertoDirectorio;
     }
 
+    /**
+     * Se conecta al directorio para obtener la IP y el puerto del servidor al que debe conectarse el cliente.
+     *
+     * @return IP y puerto del servidor al que se conectará el cliente, o "NO HAY SERVIDORES" en caso de error.
+     */
     private String obtenerServidor() {
-        try (Socket socket = new Socket(IPDirectorio, puertoDirectorio);
-             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-             PrintWriter out = new PrintWriter(socket.getOutputStream(), true)) {
-
+        try (
+            Socket socket = new Socket(IPDirectorio, puertoDirectorio);
+            BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            PrintWriter out = new PrintWriter(socket.getOutputStream(), true)
+        ) {
+            // Leer la respuesta del directorio
             String respuesta = in.readLine();
+            System.out.println("Directorio devolvió servidor: " + respuesta);
+
+            // Enviar confirmación de recepción
             out.println("RECIBIDO");
-            System.out.println(respuesta);
-            
-            return (respuesta == null || respuesta.equals("NO HAY SERVIDORES")) ? null : respuesta;
+
+            if (respuesta == null) {
+                new VentanaError(null, true,
+                    "<html>Error conectando con el servidor.</html>");
+                receptor.detener();
+                return "NO HAY SERVIDORES";
+            }
+
+            if ("NO HAY SERVIDORES".equals(respuesta)) {
+                new VentanaError(null, true,
+                    "<html>No hay servidores disponibles.<br>Por favor, reintente más tarde.</html>");
+                receptor.detener();
+                return "NO HAY SERVIDORES";
+            }
+
+            return respuesta;
 
         } catch (Exception ex) {
-            System.out.println(ex + " excepcion en obtener servidor");
-            return null;
+            new VentanaError(null, true,
+                "<html>Error conectando con el servidor.</html>");
+            receptor.detener();
+            return "NO HAY SERVIDORES";
         }
     }
 
+
+    /**
+     * Se conecta al servidor de acuerdo a los parametros y la utiliza para enviar y recibir mensajes
+     * @param ipServidor
+     * @param puertoServidor 
+     */
     private void conectarServidor(String ipServidor, int puertoServidor) {
         try {
             this.socketCliente = new Socket(ipServidor, puertoServidor);
             this.in = new BufferedReader(new InputStreamReader(socketCliente.getInputStream()));
             this.out = new PrintWriter(socketCliente.getOutputStream(), true);
         } catch (Exception ex) {
-            System.out.println("Exepcion conectando al servidor "+ex);
             return ;
         }
 
         estado = verificarme(nickname);
-          System.out.println("entre a un servidor con estado "+estado);
+        System.out.println("entre a un servidor con estado "+estado);
         if (estado.equals(ESTADO_VERIFICADO)) {
             intentos+=1;
             try {
@@ -74,8 +104,8 @@ public class ComunicacionServidor implements Runnable, IEmisor {
                             String destino = in.readLine();
                             String contenido = in.readLine();
                             String hora = in.readLine();
-                            System.out.println("recibi "+contenido);
-                            receptor.recibirMensaje(new MensajeDeRed(origen, destino, contenido, hora));
+                            String metodoEncriptacion = in.readLine();
+                            receptor.recibirMensaje(new MensajeDeRed(origen, destino, contenido, hora, metodoEncriptacion));
                             break;
 
                         case RECIBIR_CLIENTES:
@@ -89,21 +119,21 @@ public class ComunicacionServidor implements Runnable, IEmisor {
                     }
                 }
             } catch (Exception e) {
-                if (enEjecucion) {
-                    System.out.println("Conexión interrumpida inesperadamente");
-                } else {
-                    System.out.println("Cliente detenido intencionalmente.");
-                }
+                return;
             }
         }
         else
         {
-            receptor.detener();
+            enEjecucion = false;
             return;
         }
 }
 
-
+   /**
+    * Chequea que en el sistema no haya nadie activo con ese nombre
+    * @param nickname
+    * @return 
+    */
     public String verificarme(String nickname) {
         out.println(nickname);
         try {
@@ -121,9 +151,14 @@ public class ComunicacionServidor implements Runnable, IEmisor {
             out.println(msj.getNicknameDestino());
             out.println(msj.getContenido());
             out.println(msj.getHoraEnvio());
-
+            out.println(msj.getMetodoEncriptacion());
+            
+            System.out.println("ENVIO "+msj.getContenido());
+            System.out.println("con metodo "+msj.getMetodoEncriptacion());
+         
             if (out.checkError()) {
-                new VentanaError(null, true, "No se pudo enviar el mensaje");
+                new VentanaError(null, true, "Error en conexion con servidor, reinicie la aplicaicon");
+                receptor.detener();
                 return false;
             }
             return true;
@@ -134,10 +169,17 @@ public class ComunicacionServidor implements Runnable, IEmisor {
         }
     }
 
+    /**
+     * Pide al servidor la lista de clientes registrados para saber que contactos se puede agendar
+     */
     public void pedirListaClientes() {
         out.println(RECIBIR_CLIENTES);
     }
-
+    
+    /**
+     * Al iniciar la aplicacion, se le pide al servidor que envie los mensajes pendientes que el cliente que acaba de ingresar recibio
+     * mientras no estaba conectado 
+     */
     public void pedirMensajesPendientes() {
         out.println(RECIBIR_MENSAJES_PENDIENTES);
     }
@@ -146,59 +188,44 @@ public class ComunicacionServidor implements Runnable, IEmisor {
         return estado;
     }
 
+    /**
+     * Se conecta al directorio para obtener un servidor al cual conectarse
+     * Luego se conecta al servidor que obtenga a partir del directorio. 
+     * En caso de perder la conexion, reintenta con un servidor nuevo
+     * En caso de no haber servidores o que haya un usuario activo con el mismo nickname, informa y cierra la aplicacion
+     */
     @Override
     public void run() {
         String iPyPuerto = obtenerServidor();
-        while (iPyPuerto != null && enEjecucion) {
+        while (enEjecucion && !iPyPuerto.equalsIgnoreCase("NO HAY SERVIDORES")) {
             String[] partes = iPyPuerto.split(":");
             conectarServidor(partes[0], Integer.parseInt(partes[1]));
             if (enEjecucion) {
                 intentos-=1;
                 if(intentos>0)
                 {
-                    System.out.println("intento "+intentos);
+                    System.out.println("intento "+(intentos-4));
                     iPyPuerto = obtenerServidor();
-                    //new VentanaError(null,true,"Reconectando");
+                    try {
+                        Thread.sleep(2000); 
+                    } catch (InterruptedException e) {}
+                
                 }else
                 {
+                    new VentanaError(null,true,"Imposible conectar con servidor, reinicie la aplicacion");
                     receptor.detener();
-                    this.detener();
                 }
             }
         }
-
-        if (enEjecucion) {
-            new VentanaError(null, true, "IMPOSIBLE CONECTAR CON SERVIDOR");
-        }
+        this.detener();
     }
 
     public void detener() {
         enEjecucion = false;
-        
-        System.out.println("deteniendo hilo cleinte");
-        
-            try {
-        if (socketCliente != null && !socketCliente.isClosed()) {
-            socketCliente.close();
-        }
-    } catch (IOException e) {
-    }
-            try {
-        if (in != null) {
-            in.close();
-            
-        }
-    } catch (IOException e) {
-    }
-
-    if (out != null) {
         try {
-            out.close();
-
-        } catch (Exception e) {
+            if (socketCliente != null && !socketCliente.isClosed()) socketCliente.close(); 
+            if (in != null) in.close();
+            if (out != null) out.close();
+        } catch (IOException e) { }
         }
-    }
-
-        System.out.println("Puede Salir del detener del emisor");
-    }
 }

@@ -98,7 +98,7 @@ public class Configuracion extends javax.swing.JFrame {
         puertoClienteTextField.setMinimumSize(new java.awt.Dimension(68, 26));
 
         puertoClienteTextField.setPreferredSize(new java.awt.Dimension(68, 26));
-        puertoClienteTextField.setText("1000");
+        puertoClienteTextField.setText("2000");
 
         ipTextField.setMinimumSize(new java.awt.Dimension(68, 26));
 
@@ -114,7 +114,7 @@ public class Configuracion extends javax.swing.JFrame {
         puertoDirectorioTextField.setMinimumSize(new java.awt.Dimension(68, 26));
 
         puertoDirectorioTextField.setPreferredSize(new java.awt.Dimension(68, 26));
-        puertoDirectorioTextField.setText("200");
+        puertoDirectorioTextField.setText("5000");
 
         ipDirectorioTextField.setMinimumSize(new java.awt.Dimension(68, 26));
 
@@ -130,7 +130,7 @@ public class Configuracion extends javax.swing.JFrame {
         puertoSincroTextField.setMinimumSize(new java.awt.Dimension(68, 26));
 
         puertoSincroTextField.setPreferredSize(new java.awt.Dimension(68, 26));
-        puertoSincroTextField.setText("1001");
+        puertoSincroTextField.setText("2001");
 
         jLabel5.setForeground(new java.awt.Color(255, 255, 255));
         jLabel5.setText("Puerto para sincronizacion:");
@@ -138,7 +138,7 @@ public class Configuracion extends javax.swing.JFrame {
         puertoParaDirectorioTextField.setMinimumSize(new java.awt.Dimension(68, 26));
 
         puertoParaDirectorioTextField.setPreferredSize(new java.awt.Dimension(68, 26));
-        puertoParaDirectorioTextField.setText("1003");
+        puertoParaDirectorioTextField.setText("2003");
 
         jLabel6.setForeground(new java.awt.Color(255, 255, 255));
         jLabel6.setText("Puerto para directorio:");
@@ -146,7 +146,7 @@ public class Configuracion extends javax.swing.JFrame {
         jLabel7.setForeground(new java.awt.Color(255, 255, 255));
         jLabel7.setText("Puerto para ping/echo:");
 
-        puertoPingTextField.setText("1002");
+        puertoPingTextField.setText("2002");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);

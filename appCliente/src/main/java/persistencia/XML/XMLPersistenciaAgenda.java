@@ -38,10 +38,6 @@ public class XMLPersistenciaAgenda implements IPersistenciaAgenda {
         try {
             JAXBContext context = JAXBContext.newInstance(Agenda.class,Contacto.class);
             Agenda agendaRecuperada = (Agenda) context.createUnmarshaller().unmarshal(new File(nickname+"_agenda"+Constantes.XML));
-            System.out.println("Hola");
-            System.out.println(agendaRecuperada.getContactos().size());
-            System.out.println(agendaRecuperada.getContactos().get(0).getNicknameReal());
-            System.out.println(agendaRecuperada.getContactos().get(0).getNicknameAgendado());
             for (Contacto c: agendaRecuperada.getContactos()) {
                 agenda.agregarContacto(c.getNicknameReal());
                 agenda.actualizarContacto(c.getNicknameReal(), c.getNicknameAgendado());

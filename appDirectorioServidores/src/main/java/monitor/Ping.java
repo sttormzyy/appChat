@@ -33,35 +33,36 @@ public class Ping implements Runnable {
     public void run() {
         while (true) {
             ArrayList<InfoServidor> caidos = new ArrayList<>();
-            ArrayList<InfoServidor> servidores = new ArrayList<>(directorio.getServidores());  // Copia de la lista
-
+            ArrayList<InfoServidor> servidores = new ArrayList<>(directorio.getServidoresActivos());  // Copia de la lista
+            
+            
             for (InfoServidor servidor : servidores) {
-                if (servidor.estaListo()) {
-                    try (Socket socket = new Socket()) {
-                        socket.connect(new InetSocketAddress(servidor.getIP(), servidor.getPuertoPing()), 2000);
-                        socket.setSoTimeout(1000); // lee con timeout
+                try (Socket socket = new Socket()) {
+                    socket.connect(new InetSocketAddress(servidor.getIP(), servidor.getPuertoPing()), 500);
+                    socket.setSoTimeout(200); // lee con timeout
 
-                        PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
-                        BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+                    PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
+                    BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+                        
+                    //System.out.println("Ping a " + servidor.getPuertoCliente());
+                    out.println("PING");
 
-                        out.println("PING");
+                    String respuesta = in.readLine();
+                    //System.out.println("Respuesta de " + servidor.getPuertoCliente() + ": " + respuesta);
 
-                        String respuesta = in.readLine();
-                        System.out.println("Respuesta de " + servidor.getPuertoCliente() + ": " + respuesta);
-
-                        if (respuesta == null || !respuesta.equals("ECHO")) {
-                            System.out.println("Servidor sin respuesta válida: " + servidor.getPuertoCliente());
-                            caidos.add(servidor);
-                        }
-
-                    } catch (IOException ex) {
-                        System.out.println("Servidor no respondió: " + servidor.getPuertoCliente());
+                    if (respuesta == null || !respuesta.equals("ECHO")) {
+                        System.out.println("Servidor sin respuesta válida: " + servidor.getPuertoCliente());
                         caidos.add(servidor);
                     }
+
+                } catch (IOException ex) {
+                     System.out.println("Servidor no respondió: " + servidor.getPuertoCliente());
+                     caidos.add(servidor);
                 }
+                
 
                 try {
-                    Thread.sleep(1000);
+                    Thread.sleep(100);
                 } catch (InterruptedException ex) {
                     Logger.getLogger(Ping.class.getName()).log(Level.WARNING, "Ping interrumpido", ex);
                 }
@@ -70,12 +71,6 @@ public class Ping implements Runnable {
             if (!caidos.isEmpty()) {
                 directorio.eliminarServidores(caidos);
                 monitor.eliminarConexiones(caidos);
-            }
-
-            try {
-                Thread.sleep(1000); // Tiempo entre rondas de ping
-            } catch (InterruptedException ex) {
-                Logger.getLogger(Ping.class.getName()).log(Level.WARNING, "Loop interrumpido", ex);
             }
         }
     }
