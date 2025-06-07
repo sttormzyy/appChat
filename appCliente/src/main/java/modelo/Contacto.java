@@ -6,6 +6,8 @@ package modelo;
 
 import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlRootElement;
+import java.io.UnsupportedEncodingException;
+import java.util.Base64;
 
 
 @XmlRootElement(name = "contacto")
@@ -51,10 +53,21 @@ public class Contacto {
         return this.nicknameAgendado + "|" + this.nicknameReal;
     }
     
-    public static Contacto fromTextoPlano(String s) {   
+    public static Contacto fromTextoPlano(String s) {
         String[] partes = s.split("\\|");
-        String nicknameAgendado = partes[0];
-        String nicknameReal = partes[1];
-        return new Contacto(nicknameAgendado, nicknameReal);
+
+        if (partes.length < 2) {
+            throw new IllegalArgumentException("Línea inválida: " + s);
+        }
+        try {
+            String nicknameAgendado = new String(Base64.getDecoder().decode(partes[0]), "UTF-8");
+            String nicknameReal = new String(Base64.getDecoder().decode(partes[1]), "UTF-8");
+            return new Contacto(nicknameAgendado, nicknameReal);
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException("Error de codificación", e);
+        } catch (IllegalArgumentException e) {
+            throw new RuntimeException("Cadena mal codificada en Base64: " + s, e);
+        }
     }
+
 }

@@ -56,15 +56,14 @@ public class AESEncriptacion implements IEncriptacion {
             try {
                 contenidoDesencriptado = cifrado.doFinal(Base64.getDecoder().decode(contenido));
             } catch (IllegalBlockSizeException ex) {
-                Logger.getLogger(AESEncriptacion.class.getName()).log(Level.SEVERE, null, ex);
+                 return contenido;
             } catch (BadPaddingException ex) {
-                Logger.getLogger(AESEncriptacion.class.getName()).log(Level.SEVERE, null, ex);
+                 return contenido;
             }
             return new String(contenidoDesencriptado);
         } catch (InvalidKeyException ex) {
-            Logger.getLogger(AESEncriptacion.class.getName()).log(Level.SEVERE, null, ex);
+           return contenido;
         }
-        return "";
     }
 }
 

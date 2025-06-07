@@ -209,6 +209,27 @@ public class VentanaPrincipal extends javax.swing.JFrame implements IVista{
         }
     }
     
+     /**
+      * Actualiza visualmente la conversacion para mostrar el ultimo mensaje
+      * @param nickname nickname real del contacto
+      * @param mensaje 
+      */
+    public void actualizarConversacion(String nickname, String mensaje)
+    {
+        for(Component c: menuList.getComponents())
+        {
+             ConversacionItemList conversacionVista = (ConversacionItemList) c;
+             if(conversacionVista.getNickname().equals(nickname))
+             {
+                if (mensaje.length() > 30) {
+                    mensaje = mensaje.substring(0, 30) + "...";
+                    }
+                 conversacionVista.getUltimoMensajeLabel().setText(mensaje);
+                break;
+             }
+        }
+    }
+    
     /**
      * Carga en el menuList visualmente a una conversacion en particular
      * @param conversacion 

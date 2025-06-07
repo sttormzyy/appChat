@@ -60,10 +60,10 @@ public class Configuracion extends javax.swing.JFrame{
         jLabel3.setForeground(new java.awt.Color(255, 255, 255));
         jLabel3.setText("Puerto para clientes:");
 
-        puertoServidoresTextField.setText("5000");
+        puertoServidoresTextField.setText("30000");
         puertoServidoresTextField.setPreferredSize(new java.awt.Dimension(100, 22));
 
-        puertoClientesTextField.setText("6000");
+        puertoClientesTextField.setText("35000");
         puertoClientesTextField.setPreferredSize(new java.awt.Dimension(100, 22));
 
         directorioIpTextField.setText("127.0.0.1");

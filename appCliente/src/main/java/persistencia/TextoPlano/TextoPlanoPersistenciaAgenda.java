@@ -9,6 +9,7 @@ import java.io.BufferedWriter;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Base64;
 import modelo.Agenda;
 import modelo.Contacto;
 import persistencia.IPersistenciaAgenda;
@@ -24,7 +25,9 @@ public class TextoPlanoPersistenciaAgenda implements IPersistenciaAgenda {
     public void persistirAgenda(Agenda agenda, String nickname) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(nickname + "_agenda"+Constantes.TEXTO_PLANO))) {
             for (Contacto contacto : agenda.getContactos()) {
-                writer.append(Contacto.toTextoPlano(contacto) + "\n");
+                String nicknameRealBase64 = Base64.getEncoder().encodeToString(contacto.getNicknameReal().getBytes("UTF-8"));
+                String nicknameAgendadoBase64 = Base64.getEncoder().encodeToString(contacto.getNicknameAgendado().getBytes("UTF-8"));
+                writer.append(nicknameAgendadoBase64 + "|" + nicknameRealBase64 + "\n");
             }
         } catch (IOException e) {
             e.printStackTrace();

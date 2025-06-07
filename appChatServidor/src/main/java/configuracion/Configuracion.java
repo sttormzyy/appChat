@@ -26,35 +26,52 @@ public class Configuracion extends javax.swing.JFrame {
         return ipTextField.getText();
     }
     
-    public int getPuertoCliente()
-    {
-        return Integer.parseInt(puertoClienteTextField.getText());
-    }
-    
-    public int getPuertoSincronizacion()
-    {
-        return  Integer.parseInt(puertoSincroTextField.getText());
-    }
         
-    public int getPuertoParaDirectorio()
-    {
-        return  Integer.parseInt(puertoParaDirectorioTextField.getText());
-    }
-    
-    public int getPuertoPing()
-    {
-        return  Integer.parseInt(puertoPingTextField.getText());
-    }
-    
     public String getIPDirectorio()
     {
         return ipDirectorioTextField.getText();
-    }
+    } 
     
-    public int getPuertoDirectorio()
-    {
-        return Integer.parseInt(puertoDirectorioTextField.getText());
+    public int getPuertoCliente() {
+    try {
+        return Integer.parseInt(puertoClienteTextField.getText());
+    } catch (NumberFormatException e) {
+        return 0;
     }
+}
+
+    public int getPuertoSincronizacion() {
+        try {
+            return Integer.parseInt(puertoSincroTextField.getText());
+        } catch (NumberFormatException e) {
+            return 0;
+        }
+    }
+
+    public int getPuertoParaDirectorio() {
+        try {
+            return Integer.parseInt(puertoParaDirectorioTextField.getText());
+        } catch (NumberFormatException e) {
+            return 0;
+        }
+    }
+
+    public int getPuertoPing() {
+        try {
+            return Integer.parseInt(puertoPingTextField.getText());
+        } catch (NumberFormatException e) {
+            return 0;
+        }
+    }
+
+    public int getPuertoDirectorio() {
+        try {
+            return Integer.parseInt(puertoDirectorioTextField.getText());
+        } catch (NumberFormatException e) {
+            return 0;
+        }
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -98,7 +115,7 @@ public class Configuracion extends javax.swing.JFrame {
         puertoClienteTextField.setMinimumSize(new java.awt.Dimension(68, 26));
 
         puertoClienteTextField.setPreferredSize(new java.awt.Dimension(68, 26));
-        puertoClienteTextField.setText("2000");
+        puertoClienteTextField.setText("40000");
 
         ipTextField.setMinimumSize(new java.awt.Dimension(68, 26));
 
@@ -114,7 +131,7 @@ public class Configuracion extends javax.swing.JFrame {
         puertoDirectorioTextField.setMinimumSize(new java.awt.Dimension(68, 26));
 
         puertoDirectorioTextField.setPreferredSize(new java.awt.Dimension(68, 26));
-        puertoDirectorioTextField.setText("5000");
+        puertoDirectorioTextField.setText("30000");
 
         ipDirectorioTextField.setMinimumSize(new java.awt.Dimension(68, 26));
 
@@ -130,7 +147,7 @@ public class Configuracion extends javax.swing.JFrame {
         puertoSincroTextField.setMinimumSize(new java.awt.Dimension(68, 26));
 
         puertoSincroTextField.setPreferredSize(new java.awt.Dimension(68, 26));
-        puertoSincroTextField.setText("2001");
+        puertoSincroTextField.setText("41000");
 
         jLabel5.setForeground(new java.awt.Color(255, 255, 255));
         jLabel5.setText("Puerto para sincronizacion:");
@@ -138,7 +155,7 @@ public class Configuracion extends javax.swing.JFrame {
         puertoParaDirectorioTextField.setMinimumSize(new java.awt.Dimension(68, 26));
 
         puertoParaDirectorioTextField.setPreferredSize(new java.awt.Dimension(68, 26));
-        puertoParaDirectorioTextField.setText("2003");
+        puertoParaDirectorioTextField.setText("43000");
 
         jLabel6.setForeground(new java.awt.Color(255, 255, 255));
         jLabel6.setText("Puerto para directorio:");
@@ -146,7 +163,7 @@ public class Configuracion extends javax.swing.JFrame {
         jLabel7.setForeground(new java.awt.Color(255, 255, 255));
         jLabel7.setText("Puerto para ping/echo:");
 
-        puertoPingTextField.setText("2002");
+        puertoPingTextField.setText("42000");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);

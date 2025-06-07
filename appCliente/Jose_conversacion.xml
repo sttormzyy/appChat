@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<conversacionesDTO>
+    <conversaciones>
+        <conversacion xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="conversacion">
+            <contacto>
+                <nicknameAgendado>Gian Frnaco</nicknameAgendado>
+                <nicknameReal>Gian</nicknameReal>
+            </contacto>
+            <mensajes>
+                <mensaje>
+                    <contenido>holaa gian</contenido>
+                    <fechaHora>2025-06-07 15:38:28</fechaHora>
+                    <esMio>true</esMio>
+                </mensaje>
+                <mensaje>
+                    <contenido>joya funciona</contenido>
+                    <fechaHora>2025-06-07 15:38:34</fechaHora>
+                    <esMio>false</esMio>
+                </mensaje>
+                <mensaje>
+                    <contenido>DSASDA</contenido>
+                    <fechaHora>2025-06-07 15:40:31</fechaHora>
+                    <esMio>true</esMio>
+                </mensaje>
+            </mensajes>
+            <notificada>false</notificada>
+        </conversacion>
+    </conversaciones>
+</conversacionesDTO>

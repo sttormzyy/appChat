@@ -249,7 +249,7 @@ public class Servidor implements Runnable{
         try {
             if (serverSocket != null && !serverSocket.isClosed()) {
                 serverSocket.close();
-                gui.informar("Servidor detenido y puerto liberado.");
+                 if(gui!=null) gui.informar("Servidor detenido y puerto liberado.");
             }
             for (Map.Entry<String, HiloServidor> entry : new HashMap<>(clientesActivosLocales).entrySet()) {
                 String nickname = entry.getKey();

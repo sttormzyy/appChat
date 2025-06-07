@@ -6,8 +6,10 @@ package modelo;
 
 import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlRootElement;
+import java.io.UnsupportedEncodingException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Base64;
 
 @XmlRootElement(name = "mensaje")
 public class Mensaje {
@@ -73,15 +75,34 @@ public class Mensaje {
     // Metodos persistencia
     
     public static String toTextoPlano(Mensaje m) {
-        return m.contenido+"|"+m.fechaHora+"|"+String.valueOf(m.mine);
+        try {
+            String contenido64 = Base64.getEncoder().encodeToString(m.contenido.getBytes("UTF-8"));
+            return contenido64 + "|" + m.fechaHora + "|" + m.mine;
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException("Error al codificar contenido en Base64", e);
+        }
     }
+
     
-    public static Mensaje fromTextoPlano(String s,String buffer) {
-        String[] partes = s.split("\\|");
-        String contenido = buffer+partes[0];
-        String fechaHora = partes[1];
-        boolean esMio = Boolean.parseBoolean(partes[2]);
-        return new Mensaje(contenido, fechaHora, esMio);
+    public static Mensaje fromTextoPlano(String s, String buffer) {
+        try {
+            String[] partes = s.split("\\|");
+
+            if (partes.length != 3) {
+                throw new IllegalArgumentException("Formato inválido para mensaje: " + s);
+            }
+
+            String contenidoDecodificado = new String(Base64.getDecoder().decode(partes[0]), "UTF-8");
+            String contenido = buffer + contenidoDecodificado;
+            String fechaHora = partes[1];
+            boolean esMio = Boolean.parseBoolean(partes[2]);
+
+            return new Mensaje(contenido, fechaHora, esMio);
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException("Error al decodificar contenido en Base64", e);
+        } catch (IllegalArgumentException e) {
+            throw new RuntimeException("Error al parsear mensaje desde texto plano: " + s, e);
+        }
     }
 
 }

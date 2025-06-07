@@ -53,6 +53,7 @@ public class FormularioPersistencia extends javax.swing.JDialog {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
         setTitle("Configuracion persistencia");
+        setResizable(false);
 
         jPanel1.setBackground(new java.awt.Color(47, 52, 52));
 

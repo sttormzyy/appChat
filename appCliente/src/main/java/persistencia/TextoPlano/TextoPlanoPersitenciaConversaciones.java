@@ -10,6 +10,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Base64;
 import modelo.Agenda;
 import modelo.Contacto;
 import modelo.Conversacion;
@@ -29,7 +30,7 @@ public class TextoPlanoPersitenciaConversaciones implements IPersistenciaConvers
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(nickname + "_conversaciones.txt"))) {
             for (Conversacion c: conversaciones) {
                 writer.append("--- Conversacion ---\n" );
-                writer.append("Contacto:"+c.getContacto().getNicknameReal()+"\n");
+                writer.append("Contacto:"+Base64.getEncoder().encodeToString(c.getContacto().getNicknameReal().getBytes("UTF-8"))+"\n");
                 writer.append("Notificada:"+c.getNotificacion()+"\n");                
                 for (Mensaje m : c.getMensajes()) {
                     writer.append(Mensaje.toTextoPlano(m)).append("\n");
@@ -51,7 +52,8 @@ public class TextoPlanoPersitenciaConversaciones implements IPersistenciaConvers
                 if (linea.isEmpty()) continue;
                 while (linea != null && !linea.isEmpty() && linea.equals("--- Conversacion ---")) {
                     if((linea = reader.readLine()) != null && !linea.isEmpty()){
-                        Contacto contacto = agenda.obtenerContactoPorNickname(linea.substring("Contacto:".length()).trim());
+                        String nicknameDecodificado = new String(Base64.getDecoder().decode(linea.substring("Contacto:".length()).trim()), "UTF-8");
+                        Contacto contacto = agenda.obtenerContactoPorNickname(nicknameDecodificado);
                         Conversacion conversacion = new Conversacion(contacto);
                         usuario.agregarConversacion(conversacion);
                         

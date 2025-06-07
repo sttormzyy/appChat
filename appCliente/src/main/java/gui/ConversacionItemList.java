@@ -154,7 +154,13 @@ public class ConversacionItemList extends MenuItemList {
         ActionEvent event = new ActionEvent(nicknameReal, ActionEvent.ACTION_PERFORMED, "VER CONVERSACION");
         controlador.actionPerformed(event);
     }//GEN-LAST:event_formMouseClicked
-
+    
+    public String getNickname()
+    {
+       return nicknameReal;
+        
+    }
+    
     public JLabel getNicknameLabel() {
         return nicknameLabel;
     }

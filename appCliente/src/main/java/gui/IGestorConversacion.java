@@ -15,5 +15,6 @@ public interface IGestorConversacion {
    public void agregarConversacion(Conversacion conversacion);
    public void cargarConversaciones(ArrayList<Conversacion> conversaciones);
    public void mostrarConversacion(ArrayList<Mensaje> mensajes, String nickname);
+   public void actualizarConversacion(String nickname, String mensaje);
    public void notificar();
 }

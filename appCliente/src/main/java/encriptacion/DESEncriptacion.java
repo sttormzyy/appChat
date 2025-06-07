@@ -56,14 +56,13 @@ public class DESEncriptacion implements IEncriptacion {
             try {
                 decrypted = cifrado.doFinal(Base64.getDecoder().decode(contenido));
             } catch (IllegalBlockSizeException ex) {
-                Logger.getLogger(DESEncriptacion.class.getName()).log(Level.SEVERE, null, ex);
+                return contenido;
             } catch (BadPaddingException ex) {
-                Logger.getLogger(DESEncriptacion.class.getName()).log(Level.SEVERE, null, ex);
+                return contenido;
             }
             return new String(decrypted);
         } catch (InvalidKeyException ex) {
-            Logger.getLogger(DESEncriptacion.class.getName()).log(Level.SEVERE, null, ex);
+            return contenido;
         }
-        return "";
     }
 }

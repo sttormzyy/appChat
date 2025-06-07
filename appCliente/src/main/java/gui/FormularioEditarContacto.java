@@ -44,6 +44,7 @@ public class FormularioEditarContacto extends javax.swing.JDialog implements IFo
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Messenger - Formulario Editar Contacto");
+        setResizable(false);
 
         jPanel1.setBackground(Constantes.COLOR_BASE);
 

@@ -141,7 +141,7 @@ public class FormularioRegistro extends javax.swing.JFrame implements IFormulari
         labelNickname1.setForeground(new java.awt.Color(255, 255, 255));
         labelNickname1.setText("IP:");
 
-        puertoDirectorioTextField.setText("300");
+        puertoDirectorioTextField.setText("35000");
         puertoDirectorioTextField.setMinimumSize(new java.awt.Dimension(140, 30));
         puertoDirectorioTextField.setPreferredSize(new java.awt.Dimension(140, 30));
         puertoDirectorioTextField.addKeyListener(new java.awt.event.KeyAdapter() {

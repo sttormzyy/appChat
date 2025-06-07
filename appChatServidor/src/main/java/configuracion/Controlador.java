@@ -56,7 +56,7 @@ public class Controlador implements ActionListener{
     private void apagarServidor()
     {
         echo.detener();
-        ventanaServidor.dispose();
+        if(ventanaServidor!=null)ventanaServidor.dispose();
         comunicacionDirectorio.detener();
         try {
             Thread.sleep(1000);

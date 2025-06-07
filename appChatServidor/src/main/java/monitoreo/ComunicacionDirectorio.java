@@ -89,7 +89,7 @@ public class ComunicacionDirectorio implements Runnable{
         System.out.println("Intentando registrar servidor...");
 
         int intentos = 0;
-        final int MAX_INTENTOS = 100;
+        final int MAX_INTENTOS = 50;
 
         while (intentos < MAX_INTENTOS) {
             try {
@@ -162,14 +162,15 @@ public class ComunicacionDirectorio implements Runnable{
                 try {
                     Thread.sleep(500);
                 } catch (InterruptedException ie) {
-                    Thread.currentThread().interrupt(); // Restaurar el estado de interrupción
+                    new VentanaError(null,true,"Error registrando servidor en el directorio");
+                    controlador.actionPerformed(new ActionEvent("Comunicacion con directorio caida", 80, "COMPONENTE CAIDO"));
                     return;
                 }
             }
         }
 
        new VentanaError(null,true,"Error registrando servidor en el directorio");
-       servidor.detener();
+       controlador.actionPerformed(new ActionEvent("Comunicacion con directorio caida", 80, "COMPONENTE CAIDO"));
     }
     
     /**

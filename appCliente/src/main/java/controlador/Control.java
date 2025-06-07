@@ -106,7 +106,7 @@ public class Control implements ActionListener,IReceptor{
                         {
                             usuario.agregarMensaje(nickname,contenido,true);
                             vista.agregarMensaje(contenido,true,LocalDateTime.now().format(DateTimeFormatter.ofPattern("HH:mm")));
-                            
+                            vista.actualizarConversacion(nickname, contenido); 
                         }
                         else{
                              new VentanaError((JFrame)vista,true,"No se pudo enviar el mensaje");
@@ -342,6 +342,7 @@ public class Control implements ActionListener,IReceptor{
             if(contacto.getNicknameReal().equals(nicknameConversacionActiva))
             {
                  vista.agregarMensaje(contenidoDesencriptado,false,hora);
+                 vista.actualizarConversacion(nicknameConversacionActiva, contenidoDesencriptado);
             }
             else
             {
