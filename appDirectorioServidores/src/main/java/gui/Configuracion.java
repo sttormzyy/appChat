@@ -6,6 +6,8 @@ package gui;
 
 import java.awt.Color;
 import java.awt.event.ActionListener;
+import java.io.IOException;
+import java.net.ServerSocket;
 import java.util.ArrayList;
 
 /**
@@ -128,37 +130,58 @@ public class Configuracion extends javax.swing.JFrame{
 
     private void iniciarDirectorioBotonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_iniciarDirectorioBotonActionPerformed
         String ip = directorioIpTextField.getText().trim();
-           String puertoServidoresStr = puertoServidoresTextField.getText().trim();
-           String puertoClientesStr = puertoClientesTextField.getText().trim();
+        String puertoServidoresStr = puertoServidoresTextField.getText().trim();
+        String puertoClientesStr = puertoClientesTextField.getText().trim();
 
-           // Validar IP
-           if (!esIPValida(ip)) {
-               new VentanaError(this,true,"La IP ingresada no es válida.");
-               return;
-           }
+        // Validar IP
+        if (!esIPValida(ip)) {
+            new VentanaError(this, true, "La IP ingresada no es válida.");
+            return;
+        }
 
-           // Validar que los puertos sean números y estén en rango
-           int puertoServidores, puertoClientes;
-           try {
-               puertoServidores = Integer.parseInt(puertoServidoresStr);
-               puertoClientes = Integer.parseInt(puertoClientesStr);
+        // Validar que los puertos sean números y estén en rango
+        int puertoServidores, puertoClientes;
+        try {
+            puertoServidores = Integer.parseInt(puertoServidoresStr);
+            puertoClientes = Integer.parseInt(puertoClientesStr);
 
-               if (!esPuertoValido(puertoServidores) || !esPuertoValido(puertoClientes)) {
-                   new VentanaError(this,true,"Los puertos deben estar entre 1024 y 65535.");
-                   return;
-               }
-           } catch (NumberFormatException e) {
-               new VentanaError(this,true,"Los puertos deben ser números válidos.");
-               return;
-           }
+            if (!esPuertoValido(puertoServidores) || !esPuertoValido(puertoClientes)) {
+                new VentanaError(this, true, "Los puertos deben estar entre 1024 y 65535.");
+                return;
+            }
 
-           // Si todo es válido, notificar a los listeners
-           for (IConfiguracionListener controlador : controladores) {
-               controlador.configuracionLista(ip, puertoServidores, puertoClientes);
-           }
+            // Verificar si los puertos están en uso
+            if (estaEnUso(puertoServidores)) {
+                new VentanaError(this, true, "El puerto de servidores ya está en uso.");
+                return;
+            }
 
-           this.dispose();           
+            if (estaEnUso(puertoClientes)) {
+                new VentanaError(this, true, "El puerto de clientes ya está en uso.");
+                return;
+            }
+
+        } catch (NumberFormatException e) {
+            new VentanaError(this, true, "Los puertos deben ser números válidos y estar entre 1024 y 65535.");
+            return;
+        }
+
+        // Si todo es válido, notificar a los listeners
+        for (IConfiguracionListener controlador : controladores) {
+            controlador.configuracionLista(ip, puertoServidores, puertoClientes);
+        }
+
+        this.dispose();      
     }//GEN-LAST:event_iniciarDirectorioBotonActionPerformed
+    
+    private boolean estaEnUso(int puerto) {
+        try (ServerSocket socket = new ServerSocket(puerto)) {
+            socket.setReuseAddress(true);
+            return false; // El puerto está libre
+        } catch (IOException e) {
+            return true; // El puerto está en uso
+    }
+}
 
     
     private boolean esPuertoValido(int puerto) {

@@ -16,23 +16,37 @@ import resources.Constantes;
  *
  * @author Windows11
  */
-public class JSONPersistenciaAgenda implements IPersistenciaAgenda{
-    
+public class JSONPersistenciaAgenda implements IPersistenciaAgenda {
+
     ObjectMapper mapper = new ObjectMapper();
+
+    private static final String CARPETA = "Persistencia" + File.separator;
 
     @Override
     public void persistirAgenda(Agenda agenda, String nickname) {
         try {
-            mapper.writerWithDefaultPrettyPrinter().writeValue(new File(nickname + "_agenda" + Constantes.JSON), agenda);
+            File directorio = new File(CARPETA);
+            if (!directorio.exists()) {
+                directorio.mkdirs(); // Crear la carpeta si no existe
+            }
+
+            mapper.writerWithDefaultPrettyPrinter()
+                  .writeValue(new File(CARPETA + nickname + "_agenda" + Constantes.JSON), agenda);
         } catch (IOException e) {
             e.printStackTrace();
-        }    
+        }
     }
 
     @Override
     public void despersistirAgenda(Agenda agenda, String nickname) {
         try {
-            Agenda agendaRecuperada = mapper.readValue(new File(nickname+"_agenda.json"), Agenda.class);
+            File archivo = new File(CARPETA + nickname + "_agenda" + Constantes.JSON);
+            if (!archivo.exists()) {
+                System.err.println("Archivo no encontrado: " + archivo.getPath());
+                return;
+            }
+
+            Agenda agendaRecuperada = mapper.readValue(archivo, Agenda.class);
             for (Contacto c : agendaRecuperada.getContactos()) {
                 agenda.agregarContacto(c.getNicknameReal());
                 agenda.actualizarContacto(c.getNicknameReal(), c.getNicknameAgendado());
@@ -41,5 +55,4 @@ public class JSONPersistenciaAgenda implements IPersistenciaAgenda{
             e.printStackTrace();
         }
     }
-    
 }

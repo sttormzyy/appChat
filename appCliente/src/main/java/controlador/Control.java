@@ -161,7 +161,6 @@ public class Control implements ActionListener,IReceptor{
                 {
                     this.vista.agregarContacto(usuario.obtenerContactoPorNickname(nickname));
                     vista.cerrarFormularioAgregarContacto();
-                    vista.abrirFormularioEditarContacto(nickname);
                 }else
                 {
                     new VentanaError((JFrame)vista,true,"Contacto ya existente");
@@ -379,17 +378,19 @@ public class Control implements ActionListener,IReceptor{
         return  vista.getNicknameRealActivo()!=null;
     }
     
-    private String getTipoArchivo(String nickname){
-        if((new File(nickname+"_agenda"+XML)).exists())
-           return XML;
+    private String getTipoArchivo(String nickname) {
+        String carpeta = "Persistencia" + File.separator;
+
+        if ((new File(carpeta + nickname + "_agenda" + XML)).exists())
+            return XML;
+        else if ((new File(carpeta + nickname + "_agenda" + JSON)).exists())
+            return JSON;
+        else if ((new File(carpeta + nickname + "_agenda" + TEXTO_PLANO)).exists())
+            return TEXTO_PLANO;
         else
-            if((new File(nickname+"_agenda"+JSON)).exists())
-                return JSON;
-            else if((new File(nickname+"_agenda"+TEXTO_PLANO)).exists())
-                    return TEXTO_PLANO;
-                 else
-                    return null;    
+            return null;
     }
+
 
     public void asignarPersistencia(String tipoArchivo, String nickname)
     {

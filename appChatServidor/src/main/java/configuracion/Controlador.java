@@ -8,6 +8,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.net.ServerSocket;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import monitoreo.ComunicacionDirectorio;
 import monitoreo.Echo;
 import servidor.InfoServidor;
@@ -126,7 +128,15 @@ public class Controlador implements ActionListener{
         sincronizador.setServidor(servidor);
         comunicacionDirectorio.setSincronizador(sincronizador);
         comunicacionDirectorio.setServidor(servidor);
-
+        
+        while(!componentesListos())
+        {
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException ex) {
+            }
+        }
+        
         if (comunicacionDirectorio.registrarServidorEnDirectorio(ipDirectorio, puertoDirectorio, infoServidor)) {
             ventanaServidor = new VentanaServidor(this);
             ventanaServidor.setVisible(true);
@@ -160,5 +170,9 @@ public class Controlador implements ActionListener{
         return ip != null && ip.matches(regex);
     }
 
+    private boolean componentesListos()
+    {
+        return servidor.estaListo() && sincronizador.estaListo() && comunicacionDirectorio.estaListo() && echo.estaListo();
+    }
 
 }

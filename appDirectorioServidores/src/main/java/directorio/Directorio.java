@@ -56,7 +56,6 @@ public class Directorio implements IConfiguracionListener {
     public synchronized ArrayList<InfoServidor> getServidoresActivos() {
         ArrayList<InfoServidor> activos = new ArrayList<>();
         for (InfoServidor servidor : this.servidores) {
-             System.out.println("ESTADO "+servidor.estaListo());
             if (servidor.estaListo()) {
                
                 activos.add(servidor);

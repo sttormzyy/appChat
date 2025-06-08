@@ -1,3 +1,4 @@
+/META-INF/
 /controlador/
 /encriptacion/
 /gui/
@@ -6,4 +7,3 @@
 /persistencia/
 /red/
 /resources/
-/META-INF/

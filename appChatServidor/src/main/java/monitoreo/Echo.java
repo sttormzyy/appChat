@@ -19,7 +19,7 @@ import java.net.Socket;
  */
 public class Echo implements Runnable {
     private int puertoPing;
-    private volatile boolean enEjecucion = true;
+    private volatile boolean enEjecucion = true, estaListo = false;
     private ServerSocket serverSocket;
     private ActionListener controlador;
 
@@ -40,10 +40,16 @@ public class Echo implements Runnable {
         }
     }
 
+    public boolean estaListo()
+    {
+        return estaListo;
+    }
+       
     @Override
     public void run() {
         try {
             serverSocket = new ServerSocket(puertoPing);
+            estaListo = true;
             System.out.println("Echo escuchando en el puerto " + puertoPing + "...");
 
             while (enEjecucion) {

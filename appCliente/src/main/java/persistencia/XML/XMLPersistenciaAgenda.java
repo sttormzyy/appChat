@@ -20,14 +20,22 @@ import resources.Constantes;
  *
  * @author Windows11
  */
-public class XMLPersistenciaAgenda implements IPersistenciaAgenda {    
+public class XMLPersistenciaAgenda implements IPersistenciaAgenda {
+    
+    private static final String CARPETA = "Persistencia" + File.separator;
+
     @Override
     public void persistirAgenda(Agenda agenda, String nickname) {
         try {
-            JAXBContext context = JAXBContext.newInstance(Agenda.class,Contacto.class);
+            File directorio = new File(CARPETA);
+            if (!directorio.exists()) {
+                directorio.mkdirs();
+            }
+
+            JAXBContext context = JAXBContext.newInstance(Agenda.class, Contacto.class);
             Marshaller marshaller = context.createMarshaller();
             marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-            marshaller.marshal(agenda, new File(nickname+"_agenda"+Constantes.XML));
+            marshaller.marshal(agenda, new File(CARPETA + nickname + "_agenda" + Constantes.XML));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -36,15 +44,16 @@ public class XMLPersistenciaAgenda implements IPersistenciaAgenda {
     @Override
     public void despersistirAgenda(Agenda agenda, String nickname) {
         try {
-            JAXBContext context = JAXBContext.newInstance(Agenda.class,Contacto.class);
-            Agenda agendaRecuperada = (Agenda) context.createUnmarshaller().unmarshal(new File(nickname+"_agenda"+Constantes.XML));
-            for (Contacto c: agendaRecuperada.getContactos()) {
+            JAXBContext context = JAXBContext.newInstance(Agenda.class, Contacto.class);
+            Agenda agendaRecuperada = (Agenda) context.createUnmarshaller()
+                    .unmarshal(new File(CARPETA + nickname + "_agenda" + Constantes.XML));
+            for (Contacto c : agendaRecuperada.getContactos()) {
                 agenda.agregarContacto(c.getNicknameReal());
                 agenda.actualizarContacto(c.getNicknameReal(), c.getNicknameAgendado());
             }
         } catch (JAXBException ex) {
             Logger.getLogger(XMLPersistenciaAgenda.class.getName()).log(Level.SEVERE, null, ex);
-        }    
+        }
     }
-    
 }
+

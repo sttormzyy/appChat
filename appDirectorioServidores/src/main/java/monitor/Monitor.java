@@ -165,84 +165,6 @@ public class Monitor implements Runnable{
     }
     }
 
-    /*
-    public void iniciarMonitor(){
-        try{
-        new Thread(new Ping(directorio, this)).start();
-        monitor = new ServerSocket(this.puerto);
-        BufferedReader in;
-        PrintWriter out;
-        System.out.println("Monitor iniciado en el puerto " + puerto);
-        while (true) 
-        {
-            Socket servidorSocket = monitor.accept();
-            try{
-                in = new BufferedReader(new InputStreamReader(servidorSocket.getInputStream()));
-                out = new PrintWriter(servidorSocket.getOutputStream(), true);
-                System.out.println("Servidor conectado a monitor desde: " + servidorSocket.getInetAddress());
-                String ipServidor;
-                int puertoServidorParaClientes,puertoSincronizacion, puertoParaDirectorio, puertoPing ;
-                InfoServidor servidor;
-                
-                String comando = in.readLine();
-                switch (comando){
-                    case "REGISTRO":
-                        ipServidor = in.readLine();
-                        puertoServidorParaClientes = Integer.parseInt(in.readLine());
-                        puertoSincronizacion = Integer.parseInt(in.readLine());
-                        puertoParaDirectorio = Integer.parseInt(in.readLine());
-                        puertoPing = Integer.parseInt(in.readLine());
-  
-                        if (directorio.getServidores().size() >= 1) {
-                            out.println("FRANCIA");
-                            servidor = new InfoServidor(ipServidor,puertoServidorParaClientes,puertoSincronizacion,puertoParaDirectorio,puertoPing, false);
-                            sincronizacionTotal(servidor);
-                        } else {
-                            out.println("PRIMERO");
-                            servidor = new InfoServidor(ipServidor,puertoServidorParaClientes,puertoSincronizacion,puertoParaDirectorio,puertoPing, true);
-                            enlistarServidor(servidorSocket, servidor);
-                        }
-                        break;
-                    case "LISTO":
-                        ipServidor = in.readLine();
-                        puertoServidorParaClientes = Integer.parseInt(in.readLine());                
-                        puertoSincronizacion = Integer.parseInt(in.readLine());
-                        puertoParaDirectorio = Integer.parseInt(in.readLine());
-                        puertoPing = Integer.parseInt(in.readLine());
-                        servidor = new InfoServidor(ipServidor,puertoServidorParaClientes,puertoSincronizacion,puertoParaDirectorio,puertoPing, true);
-                        enlistarServidor(servidorSocket, servidor);
-                        break;
-                }
-            } catch (IOException e)
-            { 
-                System.out.println(e);
-            }
-
-        }
-        }catch(IOException e){
-            System.out.println("Acordame de generar un metodo para agregar una ventana error");
-        }
-    }
-    
-
-    public void sincronizacionTotal(InfoServidor servidor) {
-        System.out.println("SINCRONIZAR A "+servidor.getIP()+" "+servidor.getPuertoSincronizacion());
-        InfoServidor servidorConMenosCarga = directorio.getServidorConMenosCarga();
-        Socket socketSincronizador = this.buscarConexionPorIpYPuerto(servidorConMenosCarga.getIP(), servidorConMenosCarga.getPuertoParaDirectorio());
-        PrintWriter out;
-        try{
-            out = new PrintWriter(socketSincronizador.getOutputStream(), true);
-            out.println("SINCRONIZAR SERVIDOR");
-            out.println(servidor.getIP());
-            out.println(servidor.getPuertoCliente());
-            out.println(servidor.getPuertoSincronizacion());
-            out.println(servidor.getPuertoParaDirectorio());
-            out.println(servidor.getPuertoPing());
-        } catch (IOException e)
-        { }
-    }
-    */
-
     /**
      * Intenta sincronizar un servidor recien registrado.
      * Prueba usar de sincronziadrocada uno de los servidores activos en orden de menor carga
@@ -290,18 +212,58 @@ public class Monitor implements Runnable{
        }
    }
 
-    /**
+    
+    /*
+    private void enlistarServidor(Socket servidorSocket,InfoServidor servidor){
+        try {
+            agregarConexion(servidor,  new Socket(servidor.getIP(), servidor.getPuertoParaDirectorio()));
+        } catch (IOException ex) {
+            Logger.getLogger(Monitor.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        directorio.agregarServidor(servidor);
+        enviarNuevoServidor(servidor);
+        new Thread(new HiloConexionServidor(servidorSocket)).start();
+    }
+    */
+    
+     /**
      * Registra el servidor en el directorio e inicia el hilo que atiende a dicho servidor
      * @param servidorSocket
      * @param servidor
      * @throws IOException 
      */
-    private void enlistarServidor(Socket servidorSocket,InfoServidor servidor) throws IOException {
-        agregarConexion(servidor,  new Socket(servidor.getIP(), servidor.getPuertoParaDirectorio()));
-        directorio.agregarServidor(servidor);
-        enviarNuevoServidor(servidor);
-        new Thread(new HiloConexionServidor(servidorSocket)).start();
+    private void enlistarServidor(Socket servidorSocket, InfoServidor servidor) {
+        boolean conectado = false;
+        int intentos = 0;
+        final int MAX_INTENTOS = 100;
+
+        while (!conectado && intentos < MAX_INTENTOS) {
+            try {
+                Socket nuevoSocket = new Socket(servidor.getIP(), servidor.getPuertoParaDirectorio());
+                agregarConexion(servidor, nuevoSocket);
+                conectado = true; // Salir del bucle si se conecta exitosamente
+            } catch (IOException ex) {
+                intentos++;
+                Logger.getLogger(Monitor.class.getName()).log(Level.WARNING,
+                    "Intento " + intentos + " fallido al conectar con el servidor: " + servidor.getIP(), ex);
+                try {
+                    Thread.sleep(500); // Esperar medio segundo antes de reintentar
+                } catch (InterruptedException ie) {
+                    Thread.currentThread().interrupt();
+                    break;
+                }
+            }
+        }
+
+        if (conectado) {
+            directorio.agregarServidor(servidor);
+            enviarNuevoServidor(servidor);
+            new Thread(new HiloConexionServidor(servidorSocket)).start();
+        } else {
+            new VentanaError(null,true,"No se pudo establecer conexion con el servidor \n"+"IP:"+servidor.getIP()+" puerto:"+servidor.getPuertoParaDirectorio());
+        }
     }
+
     
     /**
      * Comunica a los servidores activos que se registro un nuevo servidor

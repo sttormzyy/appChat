@@ -16,7 +16,7 @@ public class Sincronizador implements Runnable {
     private ArrayList<InfoServidor> servidores = new ArrayList<>();
     private ServerSocket sincronizadorSocket;
     private ActionListener controlador;
-    private boolean enEjecucion = true;
+    private boolean enEjecucion = true, estaListo = false;
 
     public Sincronizador(int puertoSincronizacion, ActionListener controlador) {
         this.puertoSincronizacion = puertoSincronizacion;
@@ -254,7 +254,12 @@ public class Sincronizador implements Runnable {
     public void eliminarServidor(InfoServidor servidor) {
         servidores.removeIf(s -> s.getIP().equals(servidor.getIP()) && s.getPuertoSincronizacion() == servidor.getPuertoSincronizacion());
     }
-
+    
+    public boolean estaListo()
+    {
+        return estaListo;
+    }
+    
     /**
      * Recibe solicitudes de otros sincronizadores y actua de acuerdo al comando recibido para mantener actualizada y consistente la informacion
     */
@@ -262,6 +267,7 @@ public class Sincronizador implements Runnable {
     public void run() {
         try {
             sincronizadorSocket = new ServerSocket(this.puertoSincronizacion);
+            estaListo = true;
             System.out.println("Sincronizador activo en " + puertoSincronizacion);
 
             while (enEjecucion) {

@@ -20,35 +20,50 @@ import resources.Constantes;
  * @author Windows11
  */
 public class JSONPersitenciaConversaciones implements IPersistenciaConversaciones {
+
     ObjectMapper mapper;
+    private static final String CARPETA = "Persistencia" + File.separator;
 
     public JSONPersitenciaConversaciones() {
         mapper = new ObjectMapper();
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
     }
-    
-    
 
     @Override
     public void persistirConversaciones(ArrayList<Conversacion> conversaciones, String nickname) {
         try {
-            mapper.writerWithDefaultPrettyPrinter().writeValue(new File(nickname+"_conversacion"+Constantes.JSON), conversaciones);
+            File directorio = new File(CARPETA);
+            if (!directorio.exists()) {
+                directorio.mkdirs(); // Crear la carpeta si no existe
+            }
+
+            File archivo = new File(CARPETA + nickname + "_conversacion" + Constantes.JSON);
+            mapper.writerWithDefaultPrettyPrinter().writeValue(archivo, conversaciones);
         } catch (IOException e) {
             e.printStackTrace();
-        }    
+        }
     }
 
     @Override
     public void despersistirConversaciones(Usuario usuario, String nickname) {
         try {
-            ArrayList<Conversacion> conversaciones = mapper.readValue(new File(nickname+"_conversacion"+Constantes.JSON), new TypeReference<ArrayList<Conversacion>>() {});
+            File archivo = new File(CARPETA + nickname + "_conversacion" + Constantes.JSON);
+            if (!archivo.exists()) {
+                System.err.println("Archivo no encontrado: " + archivo.getPath());
+                return;
+            }
+
+            ArrayList<Conversacion> conversaciones = mapper.readValue(
+                archivo, new TypeReference<ArrayList<Conversacion>>() {}
+            );
+
             for (Conversacion c : conversaciones) {
                 c.setContacto(usuario.obtenerContactoPorNickname(c.getNicknameReal()));
                 usuario.agregarConversacion(c);
             }
         } catch (IOException e) {
             e.printStackTrace();
-        }    
+        }
     }
-    
 }
+

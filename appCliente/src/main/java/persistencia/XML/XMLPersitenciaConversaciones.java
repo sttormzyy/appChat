@@ -25,16 +25,22 @@ import resources.Constantes;
  */
 public class XMLPersitenciaConversaciones implements IPersistenciaConversaciones {
     
+    private static final String CARPETA = "Persistencia" + File.separator;
+
     @Override
     public void persistirConversaciones(ArrayList<Conversacion> conversacion, String nickname) {
-        
-        JAXBContext context;
         try {
+            File directorio = new File(CARPETA);
+            if (!directorio.exists()) {
+                directorio.mkdirs();
+            }
+
             ConversacionesDTO c = new ConversacionesDTO(conversacion);
-            context = JAXBContext.newInstance(ConversacionesDTO.class, Conversacion.class, Mensaje.class, Contacto.class);
+            JAXBContext context = JAXBContext.newInstance(ConversacionesDTO.class, Conversacion.class, Mensaje.class, Contacto.class);
             Marshaller marshaller = context.createMarshaller();
             marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-            marshaller.marshal(c, new File(nickname+"_conversacion"+Constantes.XML));
+            marshaller.marshal(c, new File(CARPETA + nickname + "_conversacion" + Constantes.XML));
+
         } catch (JAXBException ex) {
             Logger.getLogger(XMLPersitenciaConversaciones.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -42,13 +48,12 @@ public class XMLPersitenciaConversaciones implements IPersistenciaConversaciones
 
     @Override
     public void despersistirConversaciones(Usuario usuario, String nickname) {
-        JAXBContext context;
         try {
-            context = JAXBContext.newInstance(ConversacionesDTO.class, Conversacion.class, Mensaje.class, Contacto.class);
+            JAXBContext context = JAXBContext.newInstance(ConversacionesDTO.class, Conversacion.class, Mensaje.class, Contacto.class);
             Unmarshaller unmarshaller = context.createUnmarshaller();
-            ConversacionesDTO dto = (ConversacionesDTO) unmarshaller.unmarshal(new File(nickname+"_conversacion"+Constantes.XML));
+            ConversacionesDTO dto = (ConversacionesDTO) unmarshaller.unmarshal(new File(CARPETA + nickname + "_conversacion" + Constantes.XML));
             ArrayList<Conversacion> conversaciones = dto.getConversaciones();
-            for(Conversacion c: conversaciones){
+            for (Conversacion c : conversaciones) {
                 c.setContacto(usuario.obtenerContactoPorNickname(c.getNicknameReal()));
                 usuario.getConversaciones().add(c);
             }
@@ -56,5 +61,5 @@ public class XMLPersitenciaConversaciones implements IPersistenciaConversaciones
             Logger.getLogger(XMLPersitenciaConversaciones.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
 }
+

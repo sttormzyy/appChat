@@ -26,7 +26,7 @@ import static servidor.Constantes.*;
  */
 public class Servidor implements Runnable{
     private InfoServidor infoServidor;
-    private boolean ejecutando = true;
+    private boolean ejecutando = true, estaListo = false;
     private ServerSocket serverSocket;
     private Sincronizador sincronizador;
     private ComunicacionDirectorio comunicacionDirectorio;
@@ -219,6 +219,11 @@ public class Servidor implements Runnable{
         comunicacionDirectorio.avisarEstoyListo();
     }
 
+    public boolean estaListo()
+    {
+        return estaListo;
+    }
+       
     /**
      * Escucha conexiones de clientes 
      * Crea un hilo para atender cada solicitud
@@ -226,7 +231,7 @@ public class Servidor implements Runnable{
     public void run() {
         try {
             serverSocket = new ServerSocket(this.infoServidor.getPuertoCliente());
-
+            estaListo = true;
             while (ejecutando) {
                 try {
                     Socket clienteSocket = serverSocket.accept();

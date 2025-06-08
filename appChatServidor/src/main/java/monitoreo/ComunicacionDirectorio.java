@@ -35,7 +35,7 @@ public class ComunicacionDirectorio implements Runnable{
     private Sincronizador sincronizador;
     private Servidor servidor;
     private ActionListener controlador;
-    private boolean enEjecucion = true;
+    private boolean enEjecucion = true, estaListo = false;
 
     public ComunicacionDirectorio(String IPDirectorio, int puertoDirectorio, int puertoParaDirectorio, int puertoPing, ActionListener controlador) {
         this.IPDirectorio = IPDirectorio;
@@ -248,7 +248,11 @@ public class ComunicacionDirectorio implements Runnable{
         this.sincronizador.sincronizarTodo(servidorNoSincronizado);
     }
 
-    
+    public boolean estaListo()
+    {
+        return estaListo;
+    }
+       
     /**
      * Recibe comandos del directorio para
      *  - Agregar un nuevo servidor a la lista de servidores del sincronizador
@@ -259,11 +263,15 @@ public class ComunicacionDirectorio implements Runnable{
     public void run() {
         try {
             this.socketParaDirectorio = new ServerSocket(puertoParaDirectorio);
+            estaListo = true;
             Socket socketDirectorio = socketParaDirectorio.accept();
             BufferedReader in = new BufferedReader(new InputStreamReader(socketDirectorio.getInputStream()));
             try {
                 while(enEjecucion){
                     String comando = in.readLine();
+                    if (comando == null) {
+                        continue;
+                    }
                     switch (comando) {
                         case "AGREGAR SERVIDOR":
                             agregarServidor(in);
@@ -279,7 +287,11 @@ public class ComunicacionDirectorio implements Runnable{
             } catch(Exception e){
                 socketParaDirectorio.close();
                 socket.close();
-                if(enEjecucion) controlador.actionPerformed(new ActionEvent("Comunicacion con directorio caida", 80, "COMPONENTE CAIDO"));
+                if(enEjecucion) 
+                {
+                    System.out.println("Entre aca"+e);
+                    controlador.actionPerformed(new ActionEvent("Comunicacion con directorio caida", 80, "COMPONENTE CAIDO"));
+                }
             }finally{
                 try {
                     socketParaDirectorio.close();
@@ -289,6 +301,7 @@ public class ComunicacionDirectorio implements Runnable{
                 }
             }
         } catch(IOException ex){
+           System.out.println("Entre por abajo");
            controlador.actionPerformed(new ActionEvent("Comunicacion con directorio caida", 80, "COMPONENTE CAIDO"));
            
         }
